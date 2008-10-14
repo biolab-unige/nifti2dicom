@@ -4,6 +4,10 @@
 #include <itkGDCMSeriesFileNames.h>
 #include <itkImageSeriesWriter.h>
 #include <itkNumericSeriesFileNames.h>
+#include <itkRescaleIntensityImageFilter.h>
+#include <itkCastImageFilter.h>
+
+
 
 #define DEBUG
 
@@ -11,9 +15,9 @@ int main(int argc, char* argv[])
 {
 
   // Arguments check
-  if (argc < 3 || argc >5)
+  if (argc < 3 || argc >6)
   {
-    std::cout << "Usage: " << argv[0] << " <InputFile> <OutputDirectory> [Suffix = \".dcm\"] [Prefix]" << std::endl;
+    std::cout << "Usage: " << argv[0] << " <InputFile> <OutputDirectory> [Suffix = \".dcm\"] [Prefix = \"\"] [Rescale = OFF]" << std::endl;
     return EXIT_FAILURE;
   }
 
@@ -32,7 +36,9 @@ int main(int argc, char* argv[])
   else
     Prefix = "";
 
-  std::string Format = OutputDirectory + Prefix + std::string("%04d") + Suffix;
+  std::string Format = OutputDirectory +  std::string("/")+ Prefix + std::string("%04d") + Suffix;
+
+  bool doRescale = argc >= 6 ? true : false;
 
 #ifdef DEBUG
   std::cout << "InputFile       = " << InputFile       << std::endl;
@@ -40,6 +46,7 @@ int main(int argc, char* argv[])
   std::cout << "Suffix          = " << Suffix          << std::endl;
   std::cout << "Prefix          = " << Prefix          << std::endl;
   std::cout << "Format          = " << Format          << std::endl;
+  std::cout << "doRescale       = " << doRescale       << std::endl;
 #endif // DEBUG
 
 
@@ -50,7 +57,10 @@ int main(int argc, char* argv[])
 
   typedef signed short DICOMPixelType;
   const int DICOMDimension = 2;
-  typedef itk::Image<PixelType, DICOMDimension> DICOMImageType;
+  typedef itk::Image<DICOMPixelType, DICOMDimension> DICOMImageType;
+
+  typedef itk::Image<DICOMPixelType, Dimension> RescaledImageType;
+
 
   // Reader
   typedef itk::ImageFileReader< ImageType >  ReaderType;
@@ -68,8 +78,53 @@ int main(int argc, char* argv[])
   }
 
 
+
+  typedef itk::RescaleIntensityImageFilter< ImageType, RescaledImageType > RescaleType;
+  RescaleType::Pointer rescale;
+
+  typedef itk::CastImageFilter < ImageType, RescaledImageType > CastType;
+  CastType::Pointer cast;
+
+  if (doRescale)
+  {
+    // Rescale
+    rescale = RescaleType::New();
+
+    rescale->SetInput(reader->GetOutput());
+    rescale->SetOutputMinimum( 0 );
+    rescale->SetOutputMaximum( 2^11 -1 );
+
+    try
+    {
+      rescale->Update();
+    }
+    catch(...)
+    {
+      std::cout<<"Error Rescaling"<<std::endl;
+      return EXIT_FAILURE;
+    }
+  }
+  else  
+  {
+    // Caster
+    CastType::Pointer cast = CastType::New();
+
+    cast->SetInput(reader->GetOutput());
+
+    try
+    {
+      cast->Update();
+    }
+    catch(...)
+    {
+      std::cout<<"Error Casting"<<std::endl;
+      return EXIT_FAILURE;
+    }
+
+  }
+
   // Writer
-  typedef itk::ImageSeriesWriter<ImageType, DICOMImageType> SeriesWriterType;
+  typedef itk::ImageSeriesWriter<RescaledImageType, DICOMImageType> SeriesWriterType;
   typedef itk::GDCMImageIO ImageIOType;
 //  typedef itk::GDCMSeriesFileNames NamesGeneratorType;
 
@@ -96,7 +151,11 @@ int main(int argc, char* argv[])
 
 //  namesGenerator->SetOutputDirectory( OutputDirectory );
 
-  seriesWriter->SetInput( reader->GetOutput() );
+  if(doRescale)
+    seriesWriter->SetInput( rescale->GetOutput() );
+  else
+    seriesWriter->SetInput( cast->GetOutput() );
+
   seriesWriter->SetImageIO( gdcmIO );
   seriesWriter->SetFileNames( namesGenerator->GetFileNames() );
   //seriesWriter->SetMetaDataDictionaryArray( reader->GetMetaDataDictionaryArray ); //TODO MetaDataDictionary in tutti i files o roba del genere?
