@@ -107,7 +107,7 @@ int main(int argc, char* argv[])
   else  
   {
     // Caster
-    CastType::Pointer cast = CastType::New();
+    cast = CastType::New();
 
     cast->SetInput(reader->GetOutput());
 
