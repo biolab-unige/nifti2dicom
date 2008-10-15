@@ -69,11 +69,13 @@ int main(int argc, char* argv[])
 
   try
   {
+    std::cout << "Reading... " << std::flush;
     reader->Update();
+    std::cout << "DONE" << std::endl;
   }
   catch(...)
   {
-    std::cout<<"Error Reading"<<std::endl;
+    std::cout << "Error Reading" << std::endl;
     return EXIT_FAILURE;
   }
 
@@ -84,6 +86,8 @@ int main(int argc, char* argv[])
 
   typedef itk::CastImageFilter < ImageType, RescaledImageType > CastType;
   CastType::Pointer cast;
+
+  RescaledImageType::Pointer Image;
 
   if (doRescale)
   {
@@ -96,13 +100,17 @@ int main(int argc, char* argv[])
 
     try
     {
+      std::cout << "Rescaling... " << std::flush;
       rescale->Update();
+      std::cout << "DONE" << std::endl;
     }
     catch(...)
     {
-      std::cout<<"Error Rescaling"<<std::endl;
+      std::cout << "Error Rescaling" << std::endl;
       return EXIT_FAILURE;
     }
+
+    Image = rescale->GetOutput();
   }
   else  
   {
@@ -113,13 +121,17 @@ int main(int argc, char* argv[])
 
     try
     {
+      std::cout << "Casting... " << std::flush;
       cast->Update();
+      std::cout << "DONE" << std::endl;
     }
     catch(...)
     {
-      std::cout<<"Error Casting"<<std::endl;
+      std::cout << "Error Casting" << std::endl;
       return EXIT_FAILURE;
     }
+
+    Image = cast->GetOutput();
 
   }
 
@@ -132,8 +144,12 @@ int main(int argc, char* argv[])
   typedef itk::NumericSeriesFileNames NameGeneratorType;
   NameGeneratorType::Pointer namesGenerator = NameGeneratorType::New();
 
-  ImageType::RegionType region = reader->GetOutput()->GetLargestPossibleRegion();
+  ImageType::RegionType region = Image->GetLargestPossibleRegion();
   ImageType::SizeType dimensions = region.GetSize();
+
+#ifdef DEBUG
+  std::cout << "Dimensions: [" << dimensions[0] << "," << dimensions[1] << "," << dimensions[2] << "]" << std::endl;
+#endif
 
   namesGenerator->SetStartIndex( 1 );
   namesGenerator->SetEndIndex( dimensions[2] );
@@ -163,7 +179,9 @@ int main(int argc, char* argv[])
 
   try
   {
+    std::cout << "Writing... " << std::flush;
     seriesWriter->Update();
+    std::cout << "DONE" << std::endl;
   }
   catch ( itk::ExceptionObject & ex )
   {
