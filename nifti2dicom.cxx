@@ -6,7 +6,7 @@
 #include <itkNumericSeriesFileNames.h>
 #include <itkRescaleIntensityImageFilter.h>
 #include <itkCastImageFilter.h>
-
+#include <itkOrientImageFilter.h>
 
 
 #define DEBUG
@@ -50,16 +50,22 @@ int main(int argc, char* argv[])
 #endif // DEBUG
 
 
-  // Base definitions
-  typedef unsigned char PixelType;
-  const int Dimension = 3;
-  typedef itk::Image <PixelType, Dimension> ImageType;
 
-  typedef signed short DICOMPixelType;
+
+  // Base definitions
+  const int Dimension = 3;
   const int DICOMDimension = 2;
+
+  typedef unsigned int PixelType;
+  typedef signed short DICOMPixelType;
+
+  typedef itk::Image <PixelType, Dimension> ImageType;
+  typedef itk::Image<DICOMPixelType, Dimension> DICOM3DImageType;
   typedef itk::Image<DICOMPixelType, DICOMDimension> DICOMImageType;
 
-  typedef itk::Image<DICOMPixelType, Dimension> RescaledImageType;
+// -----------------------------------------------------------------------------
+// Lettura dell'immagine
+// -----------------------------------------------------------------------------
 
 
   // Reader
@@ -73,28 +79,66 @@ int main(int argc, char* argv[])
     reader->Update();
     std::cout << "DONE" << std::endl;
   }
-  catch(...)
+  catch ( itk::ExceptionObject & ex )
   {
-    std::cout << "Error Reading" << std::endl;
+    std::string message;
+    message = ex.GetLocation();
+    message += "\n";
+    message += ex.GetDescription();
+    std::cerr << message << std::endl;
+    return EXIT_FAILURE;
+  }
+
+
+// -----------------------------------------------------------------------------
+// Orientamento dell'immagine
+// -----------------------------------------------------------------------------
+
+
+  typedef itk::OrientImageFilter<ImageType,ImageType> OrienterType;
+  OrienterType::Pointer orienter = OrienterType::New();
+  orienter->UseImageDirectionOn();
+  orienter->SetDesiredCoordinateOrientation(itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_RAI); //Orient to RAI
+  orienter->SetInput(reader->GetOutput());
+
+  try
+  {
+    std::cout << "Orienting... " << std::flush;
+    orienter->Update();
+    std::cout << "DONE" << std::endl;
+  }
+  catch ( itk::ExceptionObject & ex )
+  {
+    std::string message;
+    message = ex.GetLocation();
+    message += "\n";
+    message += ex.GetDescription();
+    std::cerr << message << std::endl;
     return EXIT_FAILURE;
   }
 
 
 
-  typedef itk::RescaleIntensityImageFilter< ImageType, RescaledImageType > RescaleType;
+
+// -----------------------------------------------------------------------------
+// Riscalamento o cast dell'immagine
+// -----------------------------------------------------------------------------
+
+
+  typedef itk::RescaleIntensityImageFilter< ImageType, DICOM3DImageType > RescaleType;
   RescaleType::Pointer rescale;
 
-  typedef itk::CastImageFilter < ImageType, RescaledImageType > CastType;
+  typedef itk::CastImageFilter < ImageType, DICOM3DImageType > CastType;
   CastType::Pointer cast;
 
-  RescaledImageType::Pointer Image;
+  DICOM3DImageType::Pointer Image;
 
   if (doRescale)
   {
     // Rescale
     rescale = RescaleType::New();
 
-    rescale->SetInput(reader->GetOutput());
+    rescale->SetInput(orienter->GetOutput());
     rescale->SetOutputMinimum( 0 );
     rescale->SetOutputMaximum( 2^11 -1 );
 
@@ -104,11 +148,16 @@ int main(int argc, char* argv[])
       rescale->Update();
       std::cout << "DONE" << std::endl;
     }
-    catch(...)
+    catch ( itk::ExceptionObject & ex )
     {
-      std::cout << "Error Rescaling" << std::endl;
+      std::string message;
+      message = ex.GetLocation();
+      message += "\n";
+      message += ex.GetDescription();
+      std::cerr << message << std::endl;
       return EXIT_FAILURE;
     }
+
 
     Image = rescale->GetOutput();
   }
@@ -117,7 +166,7 @@ int main(int argc, char* argv[])
     // Caster
     cast = CastType::New();
 
-    cast->SetInput(reader->GetOutput());
+    cast->SetInput(orienter->GetOutput());
 
     try
     {
@@ -125,18 +174,31 @@ int main(int argc, char* argv[])
       cast->Update();
       std::cout << "DONE" << std::endl;
     }
-    catch(...)
+    catch ( itk::ExceptionObject & ex )
     {
-      std::cout << "Error Casting" << std::endl;
+      std::string message;
+      message = ex.GetLocation();
+      message += "\n";
+      message += ex.GetDescription();
+      std::cerr << message << std::endl;
       return EXIT_FAILURE;
-    }
+  }
+
 
     Image = cast->GetOutput();
 
   }
 
+
+
+
+// -----------------------------------------------------------------------------
+// Scrittura dell'immagine
+// -----------------------------------------------------------------------------
+
+
   // Writer
-  typedef itk::ImageSeriesWriter<RescaledImageType, DICOMImageType> SeriesWriterType;
+  typedef itk::ImageSeriesWriter<DICOM3DImageType, DICOMImageType> SeriesWriterType;
   typedef itk::GDCMImageIO ImageIOType;
 //  typedef itk::GDCMSeriesFileNames NamesGeneratorType;
 
