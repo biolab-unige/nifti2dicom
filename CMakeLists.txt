@@ -7,7 +7,9 @@ else(ITK_FOUND)
 	message(FATAL_ERROR "Itk not found")
 endif(ITK_FOUND)
 
+#TODO Inserire controllo libreria TCLAP (command line parsing)
+
 add_executable(nifti2dicom nifti2dicom.cxx)
-target_link_libraries(nifti2dicom ITKIO ITKCommon )
+target_link_libraries(nifti2dicom ITKIO ITKCommon)
 install(TARGETS nifti2dicom RUNTIME DESTINATION bin)
 
