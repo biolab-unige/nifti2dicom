@@ -18,11 +18,15 @@
 
 
 #include "n2dCommandLineParser.h"
+#include "Nifti2DicomConfig.h"
 
+namespace n2d
+{
 
-nifti2dicomCommandLineParser::nifti2dicomCommandLineParser()
-try //WARNING Non è detto che tutti i compilatori lo riconoscano
- : cmd("Converts NIFTI 1 images to DICOM", ' ', "0.2 experimental pre-alpha\n\t\t\t\tby Dado, BioLab")
+//WARNING Non è detto che tutti i compilatori riconoscano il try nell'inizializzazione
+CommandLineParser::CommandLineParser()
+try
+ : cmd("Converts NIFTI 1 images to DICOM", ' ', "Nifti2Dicom_VERSION\n\t\t\t\tby Daniele E. Domenichelli, BioLab, DIST, University of Genoa")
 {
 }
 catch (TCLAP::ArgException &e)
@@ -33,16 +37,21 @@ catch (TCLAP::ArgException &e)
 
 
 
-nifti2dicomCommandLineParser::~nifti2dicomCommandLineParser()
+CommandLineParser::~CommandLineParser()
 {
 }
 
 
 
-void nifti2dicomCommandLineParser::parse(int argc, char* argv[])
+void CommandLineParser::parse(int argc, char* argv[])
 {
   try
   {
+
+
+//BEGIN Command line arguments declaration
+
+  //BEGIN Input command line arguments
   // -----------------------------------------------------------------------------
   // NIFTI Input file
   // -----------------------------------------------------------------------------
@@ -52,7 +61,11 @@ void nifti2dicomCommandLineParser::parse(int argc, char* argv[])
                                                 true,
                                                 "", "string",
                                                 cmd);
+  //END Input command line arguments
 
+
+
+  //BEGIN Output command line arguments
   // -----------------------------------------------------------------------------
   // DICOM Output directory
   // -----------------------------------------------------------------------------
@@ -93,7 +106,12 @@ void nifti2dicomCommandLineParser::parse(int argc, char* argv[])
                                          false,
                                          3, "int",
                                          cmd);
+  //END Output command line arguments
 
+
+
+
+  //BEGIN Filters command line arguments
   // -----------------------------------------------------------------------------
   // Rescale image
   // -----------------------------------------------------------------------------
@@ -102,17 +120,11 @@ void nifti2dicomCommandLineParser::parse(int argc, char* argv[])
                                          "Set Rescale = ON (default = OFF)",
                                          cmd,
                                          false);
+  //END Filters command line arguments
 
-  // -----------------------------------------------------------------------------
-  // Dicom header to import
-  // -----------------------------------------------------------------------------
 
-  TCLAP::ValueArg<std::string> dicomheaderfileArg ( "d", "dicomheaderfile",
-                                                          "File containing DICOM header to import",
-                                                          false,
-                                                          "", "string",
-                                                          cmd);
 
+  //BEGIN Accession number command line arguments
  // -----------------------------------------------------------------------------
  // Accession number
  // -----------------------------------------------------------------------------
@@ -131,6 +143,19 @@ void nifti2dicomCommandLineParser::parse(int argc, char* argv[])
                                      "Do not prompt for Accession Number Warning",
                                      cmd,
                                      false);
+  //END Accession number command line arguments
+
+
+  //BEGIN Dicom Tags command line arguments
+  // -----------------------------------------------------------------------------
+  // Dicom header to import
+  // -----------------------------------------------------------------------------
+
+  TCLAP::ValueArg<std::string> dicomheaderfileArg ( "d", "dicomheaderfile",
+                                                          "File containing DICOM header to import",
+                                                          false,
+                                                          "", "string",
+                                                          cmd);
 
   // -----------------------------------------------------------------------------
   // Study Date
@@ -325,39 +350,48 @@ void nifti2dicomCommandLineParser::parse(int argc, char* argv[])
                                                            cmd);
 
   // -----------------------------------------------------------------------------
+  // Other Arguments
+  // -----------------------------------------------------------------------------
+  //TODO
+
+  //END Dicom Tags command line arguments
+
+//END Command line arguments declaration
 
 
 
 
-
-
-
+//BEGIN Command line arguments parsing
     cmd.parse( argc, argv );
 
-    args.inputfile       = inputArg.getValue();
-    args.outputdirectory = outputArg.getValue();
-    prefix                = prefixArg.getValue();
-    suffix                = suffixArg.getValue();
-    digits                = digitsArg.getValue(); // TODO Digits
+  //BEGIN Input command line arguments
+    inputArgs.inputfile       = inputArg.getValue();
+  //END Input command line arguments
+
+
+  //BEGIN Output command line arguments
+    outputArgs.outputdirectory = outputArg.getValue();
+    outputArgs.prefix          = prefixArg.getValue();
+    outputArgs.suffix          = suffixArg.getValue();
+    outputArgs.digits          = digitsArg.getValue(); // TODO Digits
 
 // TODO   togliere -> std::string("/")
-    args.Format = args.outputdirectory + std::string("/")+ prefix + std::string("%04d") + suffix;
-
-    args.rescale         = rescaleSwitch.getValue();
-
+    outputArgs.Format = outputArgs.outputdirectory + std::string("/")+ outputArgs.prefix + std::string("%04d") + outputArgs.suffix;
+  //END Output command line arguments
 
 
-    if (dicomheaderfileArg.isSet())
-    {
-      args.dicomheaderfile = dicomheaderfileArg.getValue();
-    }
+  //BEGIN Filters command line arguments
+    filtersArgs.rescale         = rescaleSwitch.getValue();
+  //END Filters command line arguments
 
-    args.yes = yesSwitch.getValue();
+
+  //BEGIN Accession number command line arguments
+    accessionNumberArgs.yes = yesSwitch.getValue();
     if (accessionnumberArg.isSet())
     {
-      args.accessionnumber = accessionnumberArg.getValue();
+      accessionNumberArgs.accessionnumber = accessionnumberArg.getValue();
     }
-    else if (!args.yes)
+    else if (!accessionNumberArgs.yes)
     {
       //Stampa un warning minaccioso
       if(!AccessionNumberWarning(dicomheaderfileArg.isSet()))
@@ -366,59 +400,71 @@ void nifti2dicomCommandLineParser::parse(int argc, char* argv[])
         //EXIT_FAILURE;
         //throw?
     }
+  //END Accession number command line arguments
 
 
-    args.studydate          = studydateArg.getValue();
-    args.seriesdate         = seriesdateArg.getValue();
-    args.modality           = modalityArg.getValue();
-    args.manufacturer       = manufacturerArg.getValue();
-    args.istitutionname     = istitutionnameArg.getValue();
-    args.referphysicianname = referphysiciannameArg.getValue();
-    args.studydescription   = studydescriptionArg.getValue();
-    args.seriesdescription  = seriesdescriptionArg.getValue();
-    args.patientname        = patientnameArg.getValue();
-    args.patientid          = patientidArg.getValue();
-    args.patientdob         = patientdobArg.getValue();
-    args.patientsex         = patientsexArg.getValue();
-    args.patientage         = patientageArg.getValue();
-    args.studyistanceuid    = studyistanceuidArg.getValue();
-    args.seriesistanceuid   = seriesistanceuidArg.getValue();
-    args.seriesnumber       = seriesnumberArg.getValue();
-    args.acquisitionnumber  = acquisitionnumberArg.getValue();
+  //BEGIN Dicom Tags command line arguments
+    if (dicomheaderfileArg.isSet())
+    {
+      dicomTagsArgs.dicomheaderfile = dicomheaderfileArg.getValue();
+    }
+
+    dicomTagsArgs.studydate          = studydateArg.getValue();
+    dicomTagsArgs.seriesdate         = seriesdateArg.getValue();
+    dicomTagsArgs.modality           = modalityArg.getValue();
+    dicomTagsArgs.manufacturer       = manufacturerArg.getValue();
+    dicomTagsArgs.istitutionname     = istitutionnameArg.getValue();
+    dicomTagsArgs.referphysicianname = referphysiciannameArg.getValue();
+    dicomTagsArgs.studydescription   = studydescriptionArg.getValue();
+    dicomTagsArgs.seriesdescription  = seriesdescriptionArg.getValue();
+    dicomTagsArgs.patientname        = patientnameArg.getValue();
+    dicomTagsArgs.patientid          = patientidArg.getValue();
+    dicomTagsArgs.patientdob         = patientdobArg.getValue();
+    dicomTagsArgs.patientsex         = patientsexArg.getValue();
+    dicomTagsArgs.patientage         = patientageArg.getValue();
+    dicomTagsArgs.studyistanceuid    = studyistanceuidArg.getValue();
+    dicomTagsArgs.seriesistanceuid   = seriesistanceuidArg.getValue();
+    dicomTagsArgs.seriesnumber       = seriesnumberArg.getValue();
+    dicomTagsArgs.acquisitionnumber  = acquisitionnumberArg.getValue();
+  //END Dicom Tags command line arguments
+
+//END Command line arguments parsing
+
+
 
 #ifdef DEBUG
-    std::cout << "inputfile       = " << args.inputfile       << std::endl;
-    std::cout << "outputdirectory = " << args.outputdirectory << std::endl;
+    std::cout << "inputfile       = " << inputArgs.inputfile       << std::endl;
+    std::cout << "outputdirectory = " << outputArgs.outputdirectory << std::endl;
     std::cout << "---------------   " << std::endl;
-    std::cout << "suffix          = " << suffix << std::endl;
-    std::cout << "prefix          = " << prefix << std::endl;
-    std::cout << "digits          = " << digits << std::endl;
-    std::cout << "Format          = " << args.Format << std::endl;
+    std::cout << "suffix          = " << outputArgs.suffix << std::endl;
+    std::cout << "prefix          = " << outputArgs.prefix << std::endl;
+    std::cout << "digits          = " << outputArgs.digits << std::endl;
+    std::cout << "Format          = " << outputArgs.Format << std::endl;
     std::cout << "---------------   " << std::endl;
-    std::cout << "rescale         = " << args.rescale         << std::endl;
+    std::cout << "rescale         = " << filtersArgs.rescale         << std::endl;
+    std::cout << "---------------   " << std::endl;
+    std::cout << "(0008|0050) Accession Number      (" << accessionnumberArg.isSet()    << ") = " << accessionNumberArgs.accessionnumber    << std::endl;
+    std::cout << "             yes                  (" << yesSwitch.isSet()             << ") = " << accessionNumberArgs.yes                << std::endl;
     std::cout << "---------------   " << std::endl;
     std::cout << "dicomheaderfile = " << args.dicomheaderfile << std::endl;
     std::cout << "---------------   " << std::endl;
-    std::cout << "(0008|0050) Accession Number      (" << accessionnumberArg.isSet()    << ") = " << args.accessionnumber    << std::endl;
-    std::cout << "             yes                  (" << yesSwitch.isSet()             << ") = " << args.yes                << std::endl;
-    std::cout << "---------------   " << std::endl;
-    std::cout << "(0008|0020) Study Date            (" << studydateArg.isSet()          << ") = " << args.studydate          << std::endl;
-    std::cout << "(0008|0021) Series Date           (" << seriesdateArg.isSet()         << ") = " << args.seriesdate         << std::endl;
-    std::cout << "(0008|0060) Modality              (" << modalityArg.isSet()           << ") = " << args.modality           << std::endl;
-    std::cout << "(0008|0070) Manufacturer          (" << manufacturerArg.isSet()       << ") = " << args.manufacturer       << std::endl;
-    std::cout << "(0008|0080) Istitution Name       (" << istitutionnameArg.isSet()     << ") = " << args.istitutionname     << std::endl;
-    std::cout << "(0008|0090) Refer Physician Name  (" << referphysiciannameArg.isSet() << ") = " << args.referphysicianname << std::endl;
-    std::cout << "(0008|1030) Study Description     (" << studydescriptionArg.isSet()   << ") = " << args.studydescription   << std::endl;
-    std::cout << "(0008|103e) Series Description    (" << seriesdescriptionArg.isSet()  << ") = " << args.seriesdescription  << std::endl;
-    std::cout << "(0010|0010) Patient Name          (" << patientnameArg.isSet()        << ") = " << args.patientname        << std::endl;
-    std::cout << "(0010|0020) Patient ID            (" << patientidArg.isSet()          << ") = " << args.patientid          << std::endl;
-    std::cout << "(0010|0030) Patient Date of Birth (" << patientdobArg.isSet()         << ") = " << args.patientdob         << std::endl;
-    std::cout << "(0010|0040) Patient Sex           (" << patientsexArg.isSet()         << ") = " << args.patientsex         << std::endl;
-    std::cout << "(0010|1010) Patient Age           (" << patientageArg.isSet()         << ") = " << args.patientage         << std::endl;
-    std::cout << "(0020|000d) Study Istance         (" << studyistanceuidArg.isSet()    << ") = " << args.studyistanceuid    << std::endl;
-    std::cout << "(0020|000e) Series Istance        (" << seriesistanceuidArg.isSet()   << ") = " << args.seriesistanceuid   << std::endl;
-    std::cout << "(0020|0011) Series Number         (" << seriesnumberArg.isSet()       << ") = " << args.seriesnumber       << std::endl;
-    std::cout << "(0020|0012) Aquisition Number     (" << acquisitionnumberArg.isSet()  << ") = " << args.acquisitionnumber  << std::endl;
+    std::cout << "(0008|0020) Study Date            (" << studydateArg.isSet()          << ") = " << dicomTagsArgs.studydate          << std::endl;
+    std::cout << "(0008|0021) Series Date           (" << seriesdateArg.isSet()         << ") = " << dicomTagsArgs.seriesdate         << std::endl;
+    std::cout << "(0008|0060) Modality              (" << modalityArg.isSet()           << ") = " << dicomTagsArgs.modality           << std::endl;
+    std::cout << "(0008|0070) Manufacturer          (" << manufacturerArg.isSet()       << ") = " << dicomTagsArgs.manufacturer       << std::endl;
+    std::cout << "(0008|0080) Istitution Name       (" << istitutionnameArg.isSet()     << ") = " << dicomTagsArgs.istitutionname     << std::endl;
+    std::cout << "(0008|0090) Refer Physician Name  (" << referphysiciannameArg.isSet() << ") = " << dicomTagsArgs.referphysicianname << std::endl;
+    std::cout << "(0008|1030) Study Description     (" << studydescriptionArg.isSet()   << ") = " << dicomTagsArgs.studydescription   << std::endl;
+    std::cout << "(0008|103e) Series Description    (" << seriesdescriptionArg.isSet()  << ") = " << dicomTagsArgs.seriesdescription  << std::endl;
+    std::cout << "(0010|0010) Patient Name          (" << patientnameArg.isSet()        << ") = " << dicomTagsArgs.patientname        << std::endl;
+    std::cout << "(0010|0020) Patient ID            (" << patientidArg.isSet()          << ") = " << dicomTagsArgs.patientid          << std::endl;
+    std::cout << "(0010|0030) Patient Date of Birth (" << patientdobArg.isSet()         << ") = " << dicomTagsArgs.patientdob         << std::endl;
+    std::cout << "(0010|0040) Patient Sex           (" << patientsexArg.isSet()         << ") = " << dicomTagsArgs.patientsex         << std::endl;
+    std::cout << "(0010|1010) Patient Age           (" << patientageArg.isSet()         << ") = " << dicomTagsArgs.patientage         << std::endl;
+    std::cout << "(0020|000d) Study Istance         (" << studyistanceuidArg.isSet()    << ") = " << dicomTagsArgs.studyistanceuid    << std::endl;
+    std::cout << "(0020|000e) Series Istance        (" << seriesistanceuidArg.isSet()   << ") = " << dicomTagsArgs.seriesistanceuid   << std::endl;
+    std::cout << "(0020|0011) Series Number         (" << seriesnumberArg.isSet()       << ") = " << dicomTagsArgs.seriesnumber       << std::endl;
+    std::cout << "(0020|0012) Aquisition Number     (" << acquisitionnumberArg.isSet()  << ") = " << dicomTagsArgs.acquisitionnumber  << std::endl;
 #endif // DEBUG
   }
   catch (TCLAP::ArgException &e)
@@ -438,7 +484,7 @@ void nifti2dicomCommandLineParser::parse(int argc, char* argv[])
 /*!
  * \brief Stampa un warning minaccioso e aspetta che l'utente inserisca YES o NO
  */
-bool nifti2dicomCommandLineParser::AccessionNumberWarning(bool hasDicomHeaderFile)
+bool CommandLineParser::AccessionNumberWarning(bool hasDicomHeaderFile)
 {
   std::cout << std::endl;
   std::cout << " " << "\033[1;37;41m" << "                                                                      " << "\033[0m" << " " << std::endl;
@@ -474,3 +520,6 @@ bool nifti2dicomCommandLineParser::AccessionNumberWarning(bool hasDicomHeaderFil
   return true;
 
 }
+
+
+} // namespace n2d

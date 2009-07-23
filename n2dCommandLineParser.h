@@ -17,10 +17,11 @@
 // $Id$
 
 
-#ifndef NIFTI2DICOMCOMMANDLINEPARSER_H
-#define NIFTI2DICOMCOMMANDLINEPARSER_H
+#ifndef N2DCOMMANDLINEPARSER_H
+#define N2DCOMMANDLINEPARSER_H
 
 #include <string>
+#include <map>
 
 //TODO Test nel CMakeLists per trovare TCLAP
 #include <tclap/CmdLine.h>
@@ -29,83 +30,154 @@
 #include <iostream>
 #endif // DEBUG
 
-//BEGIN nifti2dicomCommandLineParser.h
 
-/*!
- * \struct nifti2dicomArgs
- *
- * \brief Contains all data read from command line.
- */
-typedef struct nifti2dicomArgs
+namespace n2d
 {
-  std::string inputfile;
-  std::string outputdirectory;
-  std::string Format;
-
-  bool rescale;
-
-  std::string dicomheaderfile;
-
-  std::string accessionnumber;
-  bool yes;
-
-  std::string studydate;
-  std::string seriesdate;
-  std::string modality;
-  std::string manufacturer;
-  std::string istitutionname;
-  std::string referphysicianname;
-  std::string studydescription;
-  std::string seriesdescription;
-  std::string patientname;
-  std::string patientid;
-  std::string patientdob;
-  std::string patientsex;
-  std::string patientage;
-  std::string studyistanceuid;
-  std::string seriesistanceuid;
-  std::string seriesnumber;
-  std::string acquisitionnumber;
-
-} nifti2dicomArgs;
 
 
-static nifti2dicomArgs args;
 
 
+
+//BEGIN class n2d::CommandLineParser
 
 /*!
- * \class nifti2dicomCommandLineParser
+ * \class CommandLineParser
  *
  * \brief Parses command line and fills nifti2dicomArgs
  */
-class nifti2dicomCommandLineParser
+class CommandLineParser
 {
 public:
-  nifti2dicomCommandLineParser();
-  ~nifti2dicomCommandLineParser();
+  CommandLineParser();
+  ~CommandLineParser();
 
   void parse(int argc, char* argv[]);
+
+
+
+  //BEGIN struct n2d::CommandLineParser::DicomTagsArgs
+  /*!
+  * \struct DicomTagsArgs
+  *
+  * \brief Contains all arguments read from command line related to dicom tags.
+  */
+  typedef struct DicomTagsArgs
+  {
+
+    std::string dicomheaderfile;
+
+    std::string studydate;
+    std::string seriesdate;
+    std::string modality;
+    std::string manufacturer;
+    std::string istitutionname;
+    std::string referphysicianname;
+    std::string studydescription;
+    std::string seriesdescription;
+    std::string patientname;
+    std::string patientid;
+    std::string patientdob;
+    std::string patientsex;
+    std::string patientage;
+    std::string studyistanceuid;
+    std::string seriesistanceuid;
+    std::string seriesnumber;
+    std::string acquisitionnumber;
+
+    std::map<std::string, std::string> othertags; //TODO
+
+  } DicomTagsArgs;
+  //END struct n2d::CommandLineParser::DicomTagsArgs
+
+
+
+
+
+  //BEGIN struct n2d::CommandLineParser::InputArgs
+  /*!
+  * \struct InputArgs
+  *
+  * \brief Contains all arguments read from command line related to input.
+  */
+  typedef struct InputArgs
+  {
+    std::string inputfile;
+  } InputArgs;
+  //END struct n2d::CommandLineParser::InputArgs
+
+
+
+
+
+  //BEGIN struct n2d::CommandLineParser::OutputArgs
+  /*!
+  * \struct OutputArgs
+  *
+  * \brief Contains all arguments read from command line related to output.
+  */
+  typedef struct OutputArgs
+  {
+    std::string outputdirectory;
+    std::string Format;
+    std::string suffix;
+    std::string prefix;
+    int digits; //TODO
+  } OutputArgs;
+  //END struct n2d::CommandLineParser::OutputArgs
+
+
+
+
+
+  //BEGIN struct n2d::CommandLineParser::FiltersArgs
+  /*!
+  * \struct FiltersArgs
+  *
+  * \brief Contains all arguments read from command line related to filters.
+  */
+  typedef struct FiltersArgs
+  {
+    bool rescale;
+  } FiltersArgs;
+  //END struct n2d::CommandLineParser::FiltersArgs
+
+
+
+
+  //BEGIN struct n2d::CommandLineParser::AccessionNumberArgs
+  /*!
+  * \struct AccessionNumberArgs
+  *
+  * \brief Contains all arguments read from command line related to filters.
+  */
+  typedef struct AccessionNumberArgs
+  {
+    std::string accessionnumber;
+    bool yes;
+  } AccessionNumberArgs;
+  //END struct n2d::CommandLineParser::AccessionNumberArgs
+
+
+
+  DicomTagsArgs       dicomTagsArgs;
+  InputArgs           inputArgs;
+  OutputArgs          outputArgs;
+  FiltersArgs         filtersArgs;
+  AccessionNumberArgs accessionNumberArgs;
 
 
 private:
   TCLAP::CmdLine cmd;
 
-  std::string suffix;
-  std::string prefix;
-  int digits; //TODO
-
   bool AccessionNumberWarning(bool hasDicomHeaderFile);
 };
+//END class n2d::CommandLineParser
 
-//END nifti2dicomCommandLineParser.h
 
-
-// -------------------------------------------------------------------------------
-
+} // namespace n2d
 
 
 
 
 
-#endif // NIFTI2DICOMCOMMANDLINEPARSER_H
+#endif // N2DCOMMANDLINEPARSER_H

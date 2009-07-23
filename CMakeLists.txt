@@ -1,4 +1,32 @@
+#    This file is part of Nifti2Dicom.
+#    Copyright (C) 2008,2009 Daniele E, Domenichelli
+#
+#    Nifti2Dicom is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    Nifti2Dicom is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+
+# $Id$
+
+
 cmake_minimum_required(VERSION 2.6.2)
+project(Nifti2Dicom)
+
+
+set(Nifti2Dicom_MAJOR_VERSION "0")
+set(Nifti2Dicom_MINOR_VERSION "2")
+set(Nifti2Dicom_PATCH_VERSION "80")
+
+set(Nifti2Dicom_VERSION "${Nifti2Dicom_MAJOR_VERSION}.${Nifti2Dicom_MINOR_VERSION}.${Nifti2Dicom_PATCH_VERSION}")
+
 
 find_package(ITK)
 if(ITK_FOUND)
@@ -6,6 +34,12 @@ if(ITK_FOUND)
 else(ITK_FOUND)
 	message(FATAL_ERROR "Itk not found")
 endif(ITK_FOUND)
+
+
+configure_file(${CMAKE_SOURCE_DIR}/Nifti2DicomConfig.h.cmake ${CMAKE_BINARY_DIR}/Nifti2DicomConfig.h)
+
+include_directories(${CMAKE_BINARY_DIR})
+
 
 #TODO Inserire controllo libreria TCLAP (command line parsing)
 set(nifti2dicom_SOURCES nifti2dicom.cxx
