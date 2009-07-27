@@ -17,11 +17,16 @@
 // $Id$
 
 
-#include "n2dInputImporter.h"
+#ifndef N2DOUTPUTEXPORTER_H
+#define N2DOUTPUTEXPORTER_H
 
-namespace n2d
+namespace n2d {
+
+class OutputExporter
 {
-
-
+public:
+};
 
 }
+
+#endif // N2DOUTPUTEXPORTER_H

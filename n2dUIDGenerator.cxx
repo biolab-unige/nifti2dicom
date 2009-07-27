@@ -15,13 +15,3 @@
 //    along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 
 // $Id$
-
-
-#include "n2dInputImporter.h"
-
-namespace n2d
-{
-
-
-
-}
