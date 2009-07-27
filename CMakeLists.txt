@@ -1,5 +1,5 @@
 #    This file is part of Nifti2Dicom.
-#    Copyright (C) 2008,2009 Daniele E, Domenichelli
+#    Copyright (C) 2008,2009 Daniele E. Domenichelli
 #
 #    Nifti2Dicom is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -30,22 +30,32 @@ set(Nifti2Dicom_VERSION "${Nifti2Dicom_MAJOR_VERSION}.${Nifti2Dicom_MINOR_VERSIO
 
 find_package(ITK)
 if(ITK_FOUND)
-	include(${ITK_USE_FILE})
+    include(${ITK_USE_FILE})
 else(ITK_FOUND)
-	message(FATAL_ERROR "Itk not found")
+    message(FATAL_ERROR "Itk not found")
 endif(ITK_FOUND)
+#TODO Inserire controllo libreria TCLAP (command line parsing)
 
 
 configure_file(${CMAKE_SOURCE_DIR}/Nifti2DicomConfig.h.cmake ${CMAKE_BINARY_DIR}/Nifti2DicomConfig.h)
 
 include_directories(${CMAKE_BINARY_DIR})
 
+#TODO Inserire -DDEBUG
 
-#TODO Inserire controllo libreria TCLAP (command line parsing)
+
 set(nifti2dicom_SOURCES nifti2dicom.cxx
                         n2dCommandLineParser.cxx
+                        n2dVitalStatisticsImporter.cxx
+                        n2dDicomTagsImporter.cxx
 )
-set(nifti2dicom_NO_INSTALL_HEADERS n2dCommandLineParser.h)
+set(nifti2dicom_NO_INSTALL_HEADERS Nifti2DicomConfig.h
+                                   n2dImageDefs.h
+                                   n2dCommandLineArgsStructs.h
+                                   n2dCommandLineParser.h
+                                   n2dVitalStatisticsImporter.h
+                                   n2dDicomTagsImporter.h
+)
 
 
 add_executable(nifti2dicom ${nifti2dicom_SOURCES})
