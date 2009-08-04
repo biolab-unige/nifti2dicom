@@ -1,18 +1,20 @@
-//    This file is part of Nifti2Dicom.
-//    Copyright (C) 2008,2009 Daniele E. Domenichelli
+//  This file is part of Nifti2Dicom, is an open source converter from 
+//  3D NIfTI images to 2D DICOM series.
 //
-//    Nifti2Dicom is free software: you can redistribute it and/or modify
-//    it under the terms of the GNU General Public License as published by
-//    the Free Software Foundation, either version 3 of the License, or
-//    (at your option) any later version.
+//  Copyright (C) 2008,2009 Daniele E. Domenichelli
 //
-//    Nifti2Dicom is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//    GNU General Public License for more details.
+//  Nifti2Dicom is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
 //
-//    You should have received a copy of the GNU General Public License
-//    along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+//  Nifti2Dicom is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with Nifti2Dicom.  If not, see <http://www.gnu.org/licenses/>.
 
 // $Id$
 
@@ -26,7 +28,20 @@ namespace n2d {
 class UIDGenerator
 {
 public:
+
+
+
+/*
+        if (!m_UIDArgs.studyistanceuid.empty())
+            itk::EncapsulateMetaData<std::string>( m_Dict, "0020|000d", m_UIDArgs.studyistanceuid);
+        if (!m_UIDArgs.seriesistanceuid.empty())
+            itk::EncapsulateMetaData<std::string>( m_Dict, "0020|000e", m_UIDArgs.seriesistanceuid);
+        if (!m_UIDArgs.seriesnumber.empty())
+            itk::EncapsulateMetaData<std::string>( m_Dict, "0020|0011", m_UIDArgs.seriesnumber);
+        if (!m_UIDArgs.acquisitionnumber.empty())
+            itk::EncapsulateMetaData<std::string>( m_Dict, "0020|0012", m_UIDArgs.acquisitionnumber);
+*/
 };
 
 }
-#endif N2DUIDGENERATOR_H
+#endif // N2DUIDGENERATOR_H

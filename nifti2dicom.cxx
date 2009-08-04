@@ -1,18 +1,20 @@
-//    This file is part of Nifti2Dicom.
-//    Copyright (C) 2008,2009 Daniele E. Domenichelli
+//  This file is part of Nifti2Dicom, is an open source converter from 
+//  3D NIfTI images to 2D DICOM series.
 //
-//    Nifti2Dicom is free software: you can redistribute it and/or modify
-//    it under the terms of the GNU General Public License as published by
-//    the Free Software Foundation, either version 3 of the License, or
-//    (at your option) any later version.
+//  Copyright (C) 2008,2009 Daniele E. Domenichelli
 //
-//    Nifti2Dicom is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//    GNU General Public License for more details.
+//  Nifti2Dicom is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
 //
-//    You should have received a copy of the GNU General Public License
-//    along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+//  Nifti2Dicom is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with Nifti2Dicom.  If not, see <http://www.gnu.org/licenses/>.
 
 // $Id$
 
@@ -42,6 +44,7 @@
 
 #include "n2dCommandLineParser.h"
 #include "n2dImageDefs.h"
+#include "n2dMetaDataDictionaryTools.h"
 
 
 
@@ -69,10 +72,6 @@ Alcune note:
 */
 
 
-
-void PrintDictionary (itk::MetaDataDictionary &Dict);
-
-bool ReadDICOMTags(std::string file, itk::MetaDataDictionary &dict);
 
 
 
@@ -283,12 +282,12 @@ int main(int argc, char* argv[])
         SeriesWriterType::DictionaryArrayType outputArray;
 
 
-        PrintDictionary( inputDict );
+        n2d::PrintDictionary( inputDict );
 
         for (unsigned int i=0; i<nbSlices; i++)
         {
             dictionary[i] = new SeriesWriterType::DictionaryType;
-            CopyDictionary(inputDict, *dictionary[i]);
+            n2d::CopyDictionary(inputDict, *dictionary[i]);
 
 
 
@@ -398,28 +397,3 @@ int main(int argc, char* argv[])
 
 
 
-
-
-void PrintDictionary (itk::MetaDataDictionary &Dict)
-{
-    typedef itk::MetaDataDictionary DictionaryType;
-
-    DictionaryType::ConstIterator itr = Dict.Begin();
-    DictionaryType::ConstIterator end = Dict.End();
-    typedef itk::MetaDataObject< std::string > MetaDataStringType;
-
-    while ( itr != end )
-    {
-        itk::MetaDataObjectBase::Pointer  entry = itr->second;
-
-        MetaDataStringType::Pointer entryvalue = dynamic_cast<MetaDataStringType *>( entry.GetPointer() ) ;
-        if ( entryvalue )
-        {
-            std::string tagkey   = itr->first;
-            std::string tagvalue = entryvalue->GetMetaDataObjectValue();
-
-            std::cout << "(" << tagkey << ") " << tagvalue << std::endl;
-        }
-        ++itr;
-    }
-}
