@@ -17,8 +17,6 @@
 // $Id$
 
 
-
-
 #ifndef N2DINPUTIMPORTER_H
 #define N2DINPUTIMPORTER_H
 

@@ -69,8 +69,6 @@ Alcune note:
 */
 
 
-void CopyDictionary (itk::MetaDataDictionary &fromDict,
-                     itk::MetaDataDictionary &toDict);
 
 void PrintDictionary (itk::MetaDataDictionary &Dict);
 
@@ -162,7 +160,7 @@ int main(int argc, char* argv[])
 
             rescaleFilter->SetInput(orienter->GetOutput());
             rescaleFilter->SetOutputMinimum( 0 );
-            rescaleFilter->SetOutputMaximum( 2^11 -1 );
+            rescaleFilter->SetOutputMaximum( (2^11)-1 );
 
             try
             {
@@ -261,11 +259,6 @@ int main(int argc, char* argv[])
             itk::EncapsulateMetaData<std::string>(inputDict, "0002|0003", sopInstanceUID);
 
 
-
-
-
-        if (!parser.accessionNumberArgs.accessionnumber.empty())
-            itk::EncapsulateMetaData<std::string>( inputDict, "0008|0050", parser.accessionNumberArgs.accessionnumber);
 
 
 
@@ -406,28 +399,6 @@ int main(int argc, char* argv[])
 
 
 
-void CopyDictionary (itk::MetaDataDictionary &fromDict, itk::MetaDataDictionary &toDict)
-{
-    typedef itk::MetaDataDictionary DictionaryType;
-
-    DictionaryType::ConstIterator itr = fromDict.Begin();
-    DictionaryType::ConstIterator end = fromDict.End();
-    typedef itk::MetaDataObject< std::string > MetaDataStringType;
-
-    while ( itr != end )
-    {
-        itk::MetaDataObjectBase::Pointer  entry = itr->second;
-
-        MetaDataStringType::Pointer entryvalue = dynamic_cast<MetaDataStringType *>( entry.GetPointer() ) ;
-        if ( entryvalue )
-        {
-            std::string tagkey   = itr->first;
-            std::string tagvalue = entryvalue->GetMetaDataObjectValue();
-            itk::EncapsulateMetaData<std::string>(toDict, tagkey, tagvalue);
-        }
-        ++itr;
-    }
-}
 
 void PrintDictionary (itk::MetaDataDictionary &Dict)
 {

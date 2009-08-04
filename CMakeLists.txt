@@ -45,6 +45,7 @@ include_directories(${CMAKE_BINARY_DIR})
 
 
 set(nifti2dicom_SOURCES nifti2dicom.cxx
+                        n2dMetaDataDictionaryTools.cxx
                         n2dCommandLineParser.cxx
                         n2dVitalStatisticsImporter.cxx
                         n2dDicomTagsImporter.cxx
@@ -56,6 +57,7 @@ set(nifti2dicom_SOURCES nifti2dicom.cxx
 
 set(nifti2dicom_NO_INSTALL_HEADERS Nifti2DicomConfig.h
                                    n2dImageDefs.h
+                                   n2dMetaDataDictionaryTools.h
                                    n2dCommandLineArgsStructs.h
                                    n2dCommandLineParser.h
                                    n2dVitalStatisticsImporter.h

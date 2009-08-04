@@ -15,3 +15,18 @@
 //    along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 
 // $Id$
+
+
+#ifndef N2DUIDGENERATOR_H
+#define N2DUIDGENERATOR_H
+
+
+namespace n2d {
+
+class UIDGenerator
+{
+public:
+};
+
+}
+#endif N2DUIDGENERATOR_H

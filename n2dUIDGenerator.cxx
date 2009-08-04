@@ -15,3 +15,14 @@
 //    along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 
 // $Id$
+
+
+#include "n2dUIDGenerator.h"
+
+namespace n2d
+{
+
+
+
+}
+

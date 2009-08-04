@@ -16,6 +16,7 @@
 
 // $Id$
 
+
 #ifndef N2DIMAGEDEFS_H
 #define N2DIMAGEDEFS_H
 
