@@ -41,10 +41,10 @@
 #include <vector>
 
 
-
-#include "n2dCommandLineParser.h"
 #include "n2dImageDefs.h"
 #include "n2dMetaDataDictionaryTools.h"
+#include "n2dCommandLineParser.h"
+#include "n2dInputImporter.h"
 
 
 
@@ -77,141 +77,70 @@ Alcune note:
 
 int main(int argc, char* argv[])
 {
+//BEGIN Common objects declaration
+    n2d::ImageType::Pointer inputImage;
+//END Common objects declaration
+
+
+
+//BEGIN Command line parsing
     try
     {
         n2d::CommandLineParser parser;
         parser.parse(argc,argv);
-
-        // -----------------------------------------------------------------------------
-        // Lettura dell'immagine
-        // -----------------------------------------------------------------------------
-
-
-        // Reader
-        typedef itk::ImageFileReader< ImageType >  ReaderType;
-        ReaderType::Pointer reader = ReaderType::New();
-        reader->SetFileName( parser.inputArgs.inputfile );
-
-        try
-        {
-            std::cout << "Reading... " << std::flush;
-            reader->Update();
-            std::cout << "DONE" << std::endl;
-        }
-        catch ( itk::ExceptionObject & ex )
-        {
-            std::string message;
-            message = ex.GetLocation();
-            message += "\n";
-            message += ex.GetDescription();
-            std::cerr << message << std::endl;
-            return EXIT_FAILURE;
-        }
-
-
-        // -----------------------------------------------------------------------------
-        // Orientamento dell'immagine
-        // -----------------------------------------------------------------------------
-
-
-        typedef itk::OrientImageFilter<ImageType,ImageType> OrienterType;
-        OrienterType::Pointer orienter = OrienterType::New();
-        orienter->UseImageDirectionOn();
-        orienter->SetDesiredCoordinateOrientation(itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_RAI); //Orient to RAI
-        orienter->SetInput(reader->GetOutput());
-
-        try
-        {
-            std::cout << "Orienting... " << std::flush;
-            orienter->Update();
-            std::cout << "DONE" << std::endl;
-        }
-        catch ( itk::ExceptionObject & ex )
-        {
-            std::string message;
-            message = ex.GetLocation();
-            message += "\n";
-            message += ex.GetDescription();
-            std::cerr << message << std::endl;
-            return EXIT_FAILURE;
-        }
+    }
+    catch (...)
+    {
+        std::cerr << "ERROR in \"Command line parsing\"." << std::endl;
+        exit(1);
+    }
+//END Command line parsing
 
 
 
 
-        // -----------------------------------------------------------------------------
-        // Riscalamento o cast dell'immagine
-        // -----------------------------------------------------------------------------
-
-
-        typedef itk::RescaleIntensityImageFilter< ImageType, DICOM3DImageType > RescaleType;
-        RescaleType::Pointer rescaleFilter;
-
-        typedef itk::CastImageFilter < ImageType, DICOM3DImageType > CastType;
-        CastType::Pointer cast;
-
-        DICOM3DImageType::Pointer Image;
-
-        if (parser.filtersArgs.rescale)
-        {
-            // Rescale
-            rescaleFilter = RescaleType::New();
-
-            rescaleFilter->SetInput(orienter->GetOutput());
-            rescaleFilter->SetOutputMinimum( 0 );
-            rescaleFilter->SetOutputMaximum( (2^11)-1 );
-
-            try
-            {
-                std::cout << "Rescaling... " << std::flush;
-                rescaleFilter->Update();
-                std::cout << "DONE" << std::endl;
-            }
-            catch ( itk::ExceptionObject & ex )
-            {
-                std::string message;
-                message = ex.GetLocation();
-                message += "\n";
-                message += ex.GetDescription();
-                std::cerr << message << std::endl;
-                return EXIT_FAILURE;
-            }
-
-
-            Image = rescaleFilter->GetOutput();
-        }
+//BEGIN Input image import
+/*
+    try
+    {
+        n2d::InputImporter inputImporter(parser.inputArgs);
+        if (inputImporter.Import());
+            std::cout << "TODO: " << __FILE__ << ":" << __LINE__ << " - OK" << std::endl;
         else
-        {
-            // Caster
-            cast = CastType::New();
+            std::cout << "TODO: " << __FILE__ << ":" << __LINE__ << " - FAIL" << std::endl;
 
-            cast->SetInput(orienter->GetOutput());
-
-            try
-            {
-                std::cout << "Casting... " << std::flush;
-                cast->Update();
-                std::cout << "DONE" << std::endl;
-            }
-            catch ( itk::ExceptionObject & ex )
-            {
-                std::string message;
-                message = ex.GetLocation();
-                message += "\n";
-                message += ex.GetDescription();
-                std::cerr << message << std::endl;
-                return EXIT_FAILURE;
-            }
+        inputImage = inputImporter.getImage();
+    catch (...)
+    {
+        std::cerr << "ERROR in \"Input image import\"." << std::endl;
+        exit(1);
+    }
+*/
+//END Input image import
 
 
-            Image = cast->GetOutput();
 
-        }
+//BEGIN Input filtering
+/*
+    try
+    {
+        n2d::InputFilter inputFilter(parser.filterArgs, inputImage);
+        if (inputFilter.Filter());
+            std::cout << "TODO: " << __FILE__ << ":" << __LINE__ << " - OK" << std::endl;
+        else
+            std::cout << "TODO: " << __FILE__ << ":" << __LINE__ << " - FAIL" << std::endl;
 
-        ImageType::RegionType region = Image->GetLargestPossibleRegion();
-        ImageType::SizeType dimensions = region.GetSize();
+        ImageType inputImage = inputImporter.getImage();
+    catch (...)
+    {
+        std::cerr << "ERROR in \"Input filtering\"." << std::endl;
+        exit(1);
+    }    
+*/
+//END Input filtering
 
-        unsigned int nbSlices = dimensions[2];
+
+
 
 
         // -----------------------------------------------------------------------------
@@ -220,7 +149,7 @@ int main(int argc, char* argv[])
 
 
 
-        typedef itk::ImageSeriesWriter<DICOM3DImageType, DICOMImageType> SeriesWriterType;
+        typedef itk::ImageSeriesWriter<n2d::DICOM3DImageType, n2d::DICOMImageType> SeriesWriterType;
         typedef itk::GDCMImageIO ImageIOType;
 
         ImageIOType::Pointer gdcmIO = ImageIOType::New();

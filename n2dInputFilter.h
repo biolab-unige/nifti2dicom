@@ -19,41 +19,18 @@
 // $Id$
 
 
-#include "n2dInputImporter.h"
+#ifndef N2DINPUTFILTER_H
+#define N2DINPUTFILTER_H
 
-#include <itkImageFileReader.h>
+namespace n2d {
 
-
-namespace n2d
+class InputFilter
 {
+public:
+};
 
-
-bool InputImporter::Import(void )
-{
-        // Reader
-        typedef itk::ImageFileReader< ImageType >  ReaderType;
-        ReaderType::Pointer reader = ReaderType::New();
-        reader->SetFileName( parser.inputArgs.inputfile );
-
-        try
-        {
-            std::cout << "Reading... " << std::flush;
-            reader->Update();
-            std::cout << "DONE" << std::endl;
-        }
-        catch ( itk::ExceptionObject & ex )
-        {
-            std::string message;
-            message = ex.GetLocation();
-            message += "\n";
-            message += ex.GetDescription();
-            std::cerr << message << std::endl;
-            return EXIT_FAILURE;
-        }
-
-}
+} // namespace n2d
 
 
 
-
-}
+#endif // N2DINPUTFILTER_H

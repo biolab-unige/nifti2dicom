@@ -25,6 +25,8 @@
 #include <itkImage.h>
 
 
+namespace n2d {
+
 // Base definitions
 const int Dimension = 3;
 const int DICOMDimension = 2;
@@ -35,5 +37,7 @@ typedef signed short DICOMPixelType;
 typedef itk::Image <PixelType, Dimension> ImageType;
 typedef itk::Image<DICOMPixelType, Dimension> DICOM3DImageType;
 typedef itk::Image<DICOMPixelType, DICOMDimension> DICOMImageType;
+
+} // namespace n2d
 
 #endif // N2DIMAGEDEFS_H

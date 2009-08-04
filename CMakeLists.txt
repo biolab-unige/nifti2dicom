@@ -52,6 +52,7 @@ set(nifti2dicom_SOURCES nifti2dicom.cxx
                         n2dVitalStatisticsImporter.cxx
                         n2dDicomTagsImporter.cxx
                         n2dInputImporter.cxx
+                        n2dInputFilter.cxx
                         n2dOutputExporter.cxx
                         n2dUIDGenerator.cxx
                         n2dAccessionNumberValidator.cxx
@@ -65,6 +66,7 @@ set(nifti2dicom_NO_INSTALL_HEADERS Nifti2DicomConfig.h
                                    n2dVitalStatisticsImporter.h
                                    n2dDicomTagsImporter.h
                                    n2dInputImporter.h
+                                   n2dInputFilter.h
                                    n2dOutputExporter.h
                                    n2dUIDGenerator.h
                                    n2dAccessionNumberValidator.h
