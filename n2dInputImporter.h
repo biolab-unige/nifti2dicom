@@ -23,7 +23,10 @@
 #define N2DINPUTIMPORTER_H
 
 #include "n2dCommandLineArgsStructs.h"
-#include <itkMetaDataDictionary.h>
+#include "n2dImageDefs.h"
+
+#include <itkImageFileReader.h>
+
 
 namespace n2d
 {
@@ -31,16 +34,44 @@ namespace n2d
 class InputImporter
 {
 public:
-    InputImporter(InputArgs inputArgs, itk::MetaDataDictionary& dict);
-    ~InputImporter();
+    InputImporter(const InputArgs& inputArgs) :
+            m_InputArgs(inputArgs)
+    {
+    }
 
+    ~InputImporter() {}
+
+/*!
+ * \brief Get internal DICOM tags dictionary
+ *
+ * \return Internal DICOM tags dictionary.
+ */
+    inline n2d::DictionaryType& getMetaDataDictionary(void) const { return reader->GetMetaDataDictionary(); }
+
+/*!
+ * \brief Import NIfTI image.
+ *
+ * \return true on success.
+ * \throw n2d::exception on failure.
+ */
     bool Import(void);
 
-private:
-    bool ReadDICOMTags(std::string file, itk::MetaDataDictionary &dict);
+/*!
+ * \brief Get imported image.
+ *
+ * \return Imported image
+ */
+    inline n2d::ImageType::Pointer getImportedImage(void) const { return m_ImportedImage; }
 
-    InputArgs m_InputArgs;
-    itk::MetaDataDictionary& m_Dict;
+
+private:
+    typedef itk::ImageFileReader< ImageType >  ReaderType;
+
+    const InputArgs& m_InputArgs; //!< Input Arguments. 
+    ImageType::Pointer m_ImportedImage; //!< Imported image.
+    ReaderType::Pointer reader; //!< Internal reader.
+
+    bool ReadDICOMTags(std::string file, DictionaryType &dict);
 };
 
 }

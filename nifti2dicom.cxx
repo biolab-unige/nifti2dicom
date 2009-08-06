@@ -18,16 +18,14 @@
 
 // $Id$
 
-
+/*
 
 #include <itkImageFileReader.h>
 #include <itkGDCMImageIO.h>
 #include <itkGDCMSeriesFileNames.h>
 #include <itkImageSeriesWriter.h>
 #include <itkNumericSeriesFileNames.h>
-#include <itkRescaleIntensityImageFilter.h>
-#include <itkCastImageFilter.h>
-#include <itkOrientImageFilter.h>
+
 
 #include <itkMetaDataDictionary.h>
 #include <itkMetaDataObject.h>
@@ -35,16 +33,17 @@
 //#include <itksys/SystemTools.hxx>
 #include <gdcm/src/gdcmFile.h>
 #include <gdcm/src/gdcmUtil.h>
-
+*/
 #include <iostream>
-#include <string>
-#include <vector>
+//#include <string>
+//#include <vector>
 
 
 #include "n2dImageDefs.h"
 #include "n2dMetaDataDictionaryTools.h"
 #include "n2dCommandLineParser.h"
 #include "n2dInputImporter.h"
+#include "n2dInputFilter.h"
 
 
 
@@ -79,6 +78,8 @@ int main(int argc, char* argv[])
 {
 //BEGIN Common objects declaration
     n2d::ImageType::Pointer inputImage;
+    n2d::CommandLineParser parser;
+    n2d::DictionaryType dictionary;
 //END Common objects declaration
 
 
@@ -86,7 +87,6 @@ int main(int argc, char* argv[])
 //BEGIN Command line parsing
     try
     {
-        n2d::CommandLineParser parser;
         parser.parse(argc,argv);
     }
     catch (...)
@@ -100,49 +100,52 @@ int main(int argc, char* argv[])
 
 
 //BEGIN Input image import
-/*
+
     try
     {
         n2d::InputImporter inputImporter(parser.inputArgs);
-        if (inputImporter.Import());
+        if (inputImporter.Import())
             std::cout << "TODO: " << __FILE__ << ":" << __LINE__ << " - OK" << std::endl;
         else
             std::cout << "TODO: " << __FILE__ << ":" << __LINE__ << " - FAIL" << std::endl;
 
-        inputImage = inputImporter.getImage();
+        inputImage = inputImporter.getImportedImage();
+        dictionary = inputImporter.getMetaDataDictionary();
+    }
     catch (...)
     {
         std::cerr << "ERROR in \"Input image import\"." << std::endl;
-        exit(1);
+        exit(2);
     }
-*/
+
 //END Input image import
 
 
 
 //BEGIN Input filtering
-/*
+
     try
     {
-        n2d::InputFilter inputFilter(parser.filterArgs, inputImage);
+/*        n2d::InputFilter inputFilter(parser.filterArgs, inputImage);
         if (inputFilter.Filter());
             std::cout << "TODO: " << __FILE__ << ":" << __LINE__ << " - OK" << std::endl;
         else
             std::cout << "TODO: " << __FILE__ << ":" << __LINE__ << " - FAIL" << std::endl;
 
         ImageType inputImage = inputImporter.getImage();
+*/
+    }
     catch (...)
     {
         std::cerr << "ERROR in \"Input filtering\"." << std::endl;
         exit(1);
     }    
-*/
 //END Input filtering
 
 
 
 
-
+/*
         // -----------------------------------------------------------------------------
         // Gestione dell'header DICOM
         // -----------------------------------------------------------------------------
@@ -167,7 +170,7 @@ int main(int argc, char* argv[])
         // to keep the same study UID. But we need new series and frame of
         // reference UID's.
 
-        itk::MetaDataDictionary& inputDict = reader->GetMetaDataDictionary();
+        DictionaryType& inputDict = reader->GetMetaDataDictionary();
 
 
 
@@ -190,17 +193,16 @@ int main(int argc, char* argv[])
 
 
 
-
         //TODO settare correttamente BITS ALLOCATED (0028,0100)/ BITS STORED (0028,0101) / HIGH BIT (0028,0102)
         // (pare impossibile con itk+gdcm)
-        /*
-        // Bits Allocated
-          itk::EncapsulateMetaData<std::string>( inputDict, "0028|0100", "16");
-        // Bits Stored
-          itk::EncapsulateMetaData<std::string>( inputDict, "0028|0101", "12");
-        // High Bit
-          itk::EncapsulateMetaData<std::string>( inputDict, "0028|0102", "11");
-        */
+        
+//        // Bits Allocated
+//          itk::EncapsulateMetaData<std::string>( inputDict, "0028|0100", "16");
+//        // Bits Stored
+//          itk::EncapsulateMetaData<std::string>( inputDict, "0028|0101", "12");
+//        // High Bit
+//          itk::EncapsulateMetaData<std::string>( inputDict, "0028|0102", "11");
+
 
         //TODO Controllare che non siano settati Rescale - Slope - Windows
         //     o che siano settati, ma correttamente
@@ -318,6 +320,7 @@ int main(int argc, char* argv[])
         std::cerr << "Unknown Exceprion" << std::endl;
         return EXIT_FAILURE;
     }
+*/
     return EXIT_SUCCESS;
 }
 

@@ -21,22 +21,66 @@
 
 #include "n2dInputFilter.h"
 
+#include <itkRescaleIntensityImageFilter.h>
+#include <itkCastImageFilter.h>
+#include <itkOrientImageFilter.h>
 
-        // -----------------------------------------------------------------------------
-        // Orientamento dell'immagine
-        // -----------------------------------------------------------------------------
+
+namespace n2d {
+
+bool InputFilter::Filter( void )
+{
+    // -----------------------------------------------------------------------------
+    // Orientamento dell'immagine
+    // -----------------------------------------------------------------------------
 
 
-        typedef itk::OrientImageFilter<ImageType,ImageType> OrienterType;
-        OrienterType::Pointer orienter = OrienterType::New();
-        orienter->UseImageDirectionOn();
-        orienter->SetDesiredCoordinateOrientation(itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_RAI); //Orient to RAI
-        orienter->SetInput(inputImage);
+    typedef itk::OrientImageFilter<ImageType,ImageType> OrienterType;
+    OrienterType::Pointer orienter = OrienterType::New();
+    orienter->UseImageDirectionOn();
+    orienter->SetDesiredCoordinateOrientation(itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_RAI); //Orient to RAI
+    orienter->SetInput(m_InputImage);
+
+    try
+    {
+        std::cout << "Orienting... " << std::flush;
+        orienter->Update();
+        std::cout << "DONE" << std::endl;
+    }
+    catch ( itk::ExceptionObject & ex )
+    {
+        std::string message;
+        message = ex.GetLocation();
+        message += "\n";
+        message += ex.GetDescription();
+        std::cerr << message << std::endl;
+        return false;
+    }
+
+
+    // -----------------------------------------------------------------------------
+    // Riscalamento o cast dell'immagine
+    // -----------------------------------------------------------------------------
+
+    typedef itk::RescaleIntensityImageFilter< ImageType, DICOM3DImageType > RescaleType;
+    RescaleType::Pointer rescaleFilter;
+
+    typedef itk::CastImageFilter < ImageType, DICOM3DImageType > CastType;
+    CastType::Pointer cast;
+
+    if (m_FiltersArgs.rescale)
+    {
+        // Rescale
+        rescaleFilter = RescaleType::New();
+
+        rescaleFilter->SetInput(orienter->GetOutput());
+        rescaleFilter->SetOutputMinimum( 0 );
+        rescaleFilter->SetOutputMaximum( (2^11)-1 );
 
         try
         {
-            std::cout << "Orienting... " << std::flush;
-            orienter->Update();
+            std::cout << "Rescaling... " << std::flush;
+            rescaleFilter->Update();
             std::cout << "DONE" << std::endl;
         }
         catch ( itk::ExceptionObject & ex )
@@ -46,83 +90,43 @@
             message += "\n";
             message += ex.GetDescription();
             std::cerr << message << std::endl;
-            return EXIT_FAILURE;
+            return true;
         }
 
 
-
-
-        // -----------------------------------------------------------------------------
-        // Riscalamento o cast dell'immagine
-        // -----------------------------------------------------------------------------
-
-
-        typedef itk::RescaleIntensityImageFilter< ImageType, DICOM3DImageType > RescaleType;
-        RescaleType::Pointer rescaleFilter;
-
-        typedef itk::CastImageFilter < ImageType, DICOM3DImageType > CastType;
-        CastType::Pointer cast;
-
-        DICOM3DImageType::Pointer Image;
-
-        if (parser.filtersArgs.rescale)
+ //!       m_FilteredImage = rescaleFilter->GetOutput();
+    }
+    else
+    {
+        // Caster
+        cast = CastType::New();
+        cast->SetInput(orienter->GetOutput());
+        try
         {
-            // Rescale
-            rescaleFilter = RescaleType::New();
-
-            rescaleFilter->SetInput(orienter->GetOutput());
-            rescaleFilter->SetOutputMinimum( 0 );
-            rescaleFilter->SetOutputMaximum( (2^11)-1 );
-
-            try
-            {
-                std::cout << "Rescaling... " << std::flush;
-                rescaleFilter->Update();
-                std::cout << "DONE" << std::endl;
-            }
-            catch ( itk::ExceptionObject & ex )
-            {
-                std::string message;
-                message = ex.GetLocation();
-                message += "\n";
-                message += ex.GetDescription();
-                std::cerr << message << std::endl;
-                return EXIT_FAILURE;
-            }
-
-
-            Image = rescaleFilter->GetOutput();
+            std::cout << "Casting... " << std::flush;
+            cast->Update();
+            std::cout << "DONE" << std::endl;
         }
-        else
+        catch ( itk::ExceptionObject & ex )
         {
-            // Caster
-            cast = CastType::New();
-
-            cast->SetInput(orienter->GetOutput());
-
-            try
-            {
-                std::cout << "Casting... " << std::flush;
-                cast->Update();
-                std::cout << "DONE" << std::endl;
-            }
-            catch ( itk::ExceptionObject & ex )
-            {
-                std::string message;
-                message = ex.GetLocation();
-                message += "\n";
-                message += ex.GetDescription();
-                std::cerr << message << std::endl;
-                return EXIT_FAILURE;
-            }
-
-
-            Image = cast->GetOutput();
-
+            std::string message;
+            message = ex.GetLocation();
+            message += "\n";
+            message += ex.GetDescription();
+            std::cerr << message << std::endl;
+            return false;
         }
 
+ //!       m_FilteredImage = cast->GetOutput();
+    }
+/*
         ImageType::RegionType region = Image->GetLargestPossibleRegion();
         ImageType::SizeType dimensions = region.GetSize();
 
         unsigned int nbSlices = dimensions[2];
+*/
+        return true;
+}
 
+
+} // namenspace n2d

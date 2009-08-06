@@ -21,36 +21,35 @@
 
 #include "n2dInputImporter.h"
 
-#include <itkImageFileReader.h>
 
 
 namespace n2d
 {
 
 
-bool InputImporter::Import(void )
+bool InputImporter::Import( void )
 {
-        // Reader
-        typedef itk::ImageFileReader< ImageType >  ReaderType;
-        ReaderType::Pointer reader = ReaderType::New();
-        reader->SetFileName( parser.inputArgs.inputfile );
-
-        try
-        {
-            std::cout << "Reading... " << std::flush;
-            reader->Update();
-            std::cout << "DONE" << std::endl;
-        }
-        catch ( itk::ExceptionObject & ex )
-        {
-            std::string message;
-            message = ex.GetLocation();
-            message += "\n";
-            message += ex.GetDescription();
-            std::cerr << message << std::endl;
-            return EXIT_FAILURE;
-        }
-
+    // Reader
+    reader = ReaderType::New();
+    reader->SetFileName( m_InputArgs.inputfile );
+    try
+    {
+        std::cout << "Reading... " << std::flush;
+        reader->Update();
+        std::cout << "DONE" << std::endl;
+    }
+    catch ( itk::ExceptionObject & ex )
+    {
+        std::string message;
+        message = ex.GetLocation();
+        message += "\n";
+        message += ex.GetDescription();
+        std::cerr << message << std::endl;
+        return false;
+    }
+    m_ImportedImage = reader->GetOutput();
+    
+   return true;    
 }
 
 

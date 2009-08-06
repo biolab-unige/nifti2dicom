@@ -23,6 +23,8 @@
 #define N2DIMAGEDEFS_H
 
 #include <itkImage.h>
+#include <itkMetaDataDictionary.h>
+#include <itkMetaDataObject.h>
 
 
 namespace n2d {
@@ -34,9 +36,12 @@ const int DICOMDimension = 2;
 typedef unsigned int PixelType;
 typedef signed short DICOMPixelType;
 
-typedef itk::Image <PixelType, Dimension> ImageType;
+typedef itk::Image<PixelType, Dimension> ImageType;
 typedef itk::Image<DICOMPixelType, Dimension> DICOM3DImageType;
 typedef itk::Image<DICOMPixelType, DICOMDimension> DICOMImageType;
+
+typedef itk::MetaDataDictionary DictionaryType;
+typedef itk::MetaDataObject< std::string > MetaDataStringType;
 
 } // namespace n2d
 
