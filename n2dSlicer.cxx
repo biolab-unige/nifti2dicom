@@ -18,4 +18,70 @@
 
 // $Id$
 
+
 #include "n2dSlicer.h"
+
+#include "n2dMetaDataDictionaryTools.h"
+#include "n2dDefsIO.h"
+
+
+namespace n2d {
+
+
+bool Slicer::Reslice(void)
+{
+    unsigned int nbSlices = (m_Image->GetLargestPossibleRegion().GetSize())[2];
+    n2d::SeriesWriterType::DictionaryRawPointer dictionaryRaw[ nbSlices ];
+
+    n2d::PrintDictionary( m_Dict );
+
+    for (unsigned int i=0; i<nbSlices; i++)
+    {
+        dictionaryRaw[i] = new SeriesWriterType::DictionaryType;
+        n2d::CopyDictionary(m_Dict, *dictionaryRaw[i]);
+
+
+
+        // Image Position Patient: This is calculated by computing the
+        // physical coordinate of the first pixel in each slice.
+        ImageType::PointType position;
+        ImageType::SpacingType spacing = m_Image->GetSpacing();
+        ImageType::IndexType index;
+
+        index[0] = 0;
+        index[1] = 0;
+        index[2] = i;
+        m_Image->TransformIndexToPhysicalPoint(index, position);
+
+        itksys_ios::ostringstream value;
+
+        // Image Number
+        value.str("");
+        value << i + 1;
+        itk::EncapsulateMetaData<std::string>(*dictionaryRaw[i],"0020|0013",value.str());
+
+
+        value.str("");
+        value << position[0] << "\\" << position[1] << "\\" << position[2];
+        itk::EncapsulateMetaData<std::string>(*dictionaryRaw[i],"0020|0032", value.str());
+
+        // Slice Location: For now, we store the z component of the Image
+        // Position Patient.
+        value.str("");
+        value << position[2];
+        itk::EncapsulateMetaData<std::string>(*dictionaryRaw[i],"0020|1041", value.str());
+
+        // Slice Thickness: For now, we store the z spacing
+        value.str("");
+        value << spacing[2];
+        itk::EncapsulateMetaData<std::string>(*dictionaryRaw[i],"0018|0050", value.str());
+
+        // Spacing Between Slices
+        itk::EncapsulateMetaData<std::string>(*dictionaryRaw[i],"0018|0088", value.str());
+
+        m_DictionaryArray.push_back(dictionaryRaw[i]);
+    }
+    return true;
+}
+
+} // namespace n2d

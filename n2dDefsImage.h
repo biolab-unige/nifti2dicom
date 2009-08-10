@@ -19,12 +19,11 @@
 // $Id$
 
 
-#ifndef N2DIMAGEDEFS_H
-#define N2DIMAGEDEFS_H
+#ifndef N2DDEFSIMAGE_H
+#define N2DDEFSIMAGE_H
 
 #include <itkImage.h>
-#include <itkMetaDataDictionary.h>
-#include <itkMetaDataObject.h>
+
 
 
 namespace n2d {
@@ -40,9 +39,6 @@ typedef itk::Image<PixelType, Dimension> ImageType;
 typedef itk::Image<DICOMPixelType, Dimension> DICOM3DImageType;
 typedef itk::Image<DICOMPixelType, DICOMDimension> DICOMImageType;
 
-typedef itk::MetaDataDictionary DictionaryType;
-typedef itk::MetaDataObject< std::string > MetaDataStringType;
-
 } // namespace n2d
 
-#endif // N2DIMAGEDEFS_H
+#endif // N2DDEFSIMAGE_H

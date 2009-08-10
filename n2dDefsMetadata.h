@@ -18,47 +18,17 @@
 
 // $Id$
 
+#ifndef N2DDEFSMETADATA_H
+#define N2DDEFSMETADATA_H
 
-#ifndef N2DINPUTFILTER_H
-#define N2DINPUTFILTER_H
-
-#include "n2dDefsImage.h"
-#include "n2dDefsCommandLineArgsStructs.h"
-
-
+#include <itkMetaDataDictionary.h>
+#include <itkMetaDataObject.h>
+#include "n2dDefsIO.h"
 namespace n2d {
 
-class InputFilter
-{
-public:
-    InputFilter(const FiltersArgs& filtersArgs, ImageType::ConstPointer inputImage) :
-            m_FiltersArgs(filtersArgs),
-            m_InputImage(inputImage)
-    {
-    }
-
-    ~InputFilter() {}
-
-    bool Filter( void );
-
-/*!
- * \brief Get filtered image.
- *
- * \return Internal image
- * \sa m_Image
- */
-    inline ImageType::Pointer getFilteredImage(void) const { return m_FilteredImage; }
-
-
-private:
-    const FiltersArgs& m_FiltersArgs;
-    ImageType::ConstPointer m_InputImage;
-    ImageType::Pointer m_FilteredImage;
-
-};
-
+typedef itk::MetaDataDictionary DictionaryType;
+typedef itk::MetaDataObject< std::string > MetaDataStringType;
+typedef SeriesWriterType::DictionaryArrayType DictionaryArrayType;
 } // namespace n2d
 
-
-
-#endif // N2DINPUTFILTER_H
+#endif // N2DDEFSMETADATA_H

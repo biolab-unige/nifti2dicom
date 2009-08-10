@@ -22,17 +22,20 @@
 #ifndef N2DUIDGENERATOR_H
 #define N2DUIDGENERATOR_H
 
-#include "n2dCommandLineArgsStructs.h"
-#include <itkMetaDataDictionary.h>
+#include "n2dDefsCommandLineArgsStructs.h"
+#include "n2dDefsMetadata.h"
+#include "n2dDefsIO.h"
+
 
 namespace n2d {
 
 class UIDGenerator
 {
 public:
-    UIDGenerator(const UIDArgs& uidArgs, itk::MetaDataDictionary& dict) :
+    UIDGenerator(const UIDArgs& uidArgs, DictionaryType& dict, DICOMImageIOType::Pointer dicomIO) :
             m_UIDArgs(uidArgs),
-            m_Dict(dict)
+            m_Dict(dict),
+            m_DicomIO(dicomIO)
     {
     }
 
@@ -42,7 +45,8 @@ public:
 
 private:
     const UIDArgs& m_UIDArgs;
-    itk::MetaDataDictionary& m_Dict;
+    DictionaryType& m_Dict;
+    DICOMImageIOType::Pointer m_DicomIO;
 }; // class UIDGenerator
 
 } // namespace n2d

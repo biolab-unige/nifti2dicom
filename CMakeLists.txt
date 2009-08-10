@@ -57,27 +57,30 @@ endif()
 set(nifti2dicom_SOURCES nifti2dicom.cxx
                         n2dMetaDataDictionaryTools.cxx
                         n2dCommandLineParser.cxx
-                        n2dVitalStatisticsImporter.cxx
-                        n2dDicomTagsImporter.cxx
                         n2dInputImporter.cxx
                         n2dInputFilter.cxx
-                        n2dOutputExporter.cxx
+                        n2dVitalStatisticsImporter.cxx
+                        n2dDicomTagsImporter.cxx
                         n2dUIDGenerator.cxx
+                        n2dSlicer.cxx
                         n2dAccessionNumberValidator.cxx
+                        n2dOutputExporter.cxx
 )
 
 set(nifti2dicom_NO_INSTALL_HEADERS Nifti2DicomConfig.h
-                                   n2dImageDefs.h
+                                   n2dDefsCommandLineArgsStructs.h
+                                   n2dDefsImage.h
+                                   n2dDefsMetadata.h
                                    n2dMetaDataDictionaryTools.h
-                                   n2dCommandLineArgsStructs.h
                                    n2dCommandLineParser.h
-                                   n2dVitalStatisticsImporter.h
-                                   n2dDicomTagsImporter.h
                                    n2dInputImporter.h
                                    n2dInputFilter.h
-                                   n2dOutputExporter.h
+                                   n2dVitalStatisticsImporter.h
+                                   n2dDicomTagsImporter.h
                                    n2dUIDGenerator.h
+                                   n2dSlicer.h
                                    n2dAccessionNumberValidator.h
+                                   n2dOutputExporter.h
 )
 
 

@@ -21,10 +21,75 @@
 
 #include "n2dOutputExporter.h"
 
+#include <string>
+#include <sstream>
+
+
 namespace n2d
 {
 
+bool OutputExporter::Export(void )
+{
+    unsigned int nbSlices = (m_Image->GetLargestPossibleRegion().GetSize())[2];
 
 
+//BEGIN Output filename
+    std::ostringstream fmt;
+
+    fmt << m_OutputArgs.outputdirectory;
+    fmt << "/";
+    fmt << m_OutputArgs.prefix;
+    fmt << "%0";
+    fmt << m_OutputArgs.digits;
+    fmt << "d";
+    fmt << m_OutputArgs.suffix;
+
+    std::string Format = fmt.str();
+#ifdef DEBUG
+    std::cout << "Format: " << format << std::endl;
+#endif // DEBUG
+
+    NameGeneratorType::Pointer namesGenerator = NameGeneratorType::New();
+    namesGenerator->SetStartIndex( 1 );
+    namesGenerator->SetEndIndex( nbSlices );
+    namesGenerator->SetIncrementIndex( 1 );
+
+    namesGenerator->SetSeriesFormat( Format.c_str() );
+//END Output filename
+
+
+    itksys::SystemTools::MakeDirectory( m_OutputArgs.outputdirectory.c_str() ); // Create directory if it does not exist yet
+
+
+//BEGIN Writer
+    SeriesWriterType::Pointer seriesWriter = SeriesWriterType::New();
+    seriesWriter->SetInput( m_Image );
+    seriesWriter->SetImageIO( m_DicomIO );
+    seriesWriter->SetFileNames( namesGenerator->GetFileNames() );
+
+
+    //seriesWriter->SetMetaDataDictionaryArray( reader->GetMetaDataDictionaryArray ); //TODO MetaDataDictionary in tutti i files o roba del genere?
+    seriesWriter->SetMetaDataDictionaryArray( &m_DictionaryArray );
+
+    try
+    {
+        std::cout << "Writing... " << std::flush;
+        seriesWriter->Update();
+        std::cout << "DONE" << std::endl;
+    }
+    catch ( itk::ExceptionObject & ex )
+    {
+        std::cout << "Error Writing:" << std::endl;
+        std::string message;
+        message = ex.GetLocation();
+        message += "\n";
+        message += ex.GetDescription();
+        std::cerr << message << std::endl;
+        return false;
+    }
+//END Writer
+
+    return true;
 }
 
+} // namespace n2d

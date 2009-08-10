@@ -22,12 +22,34 @@
 #ifndef N2DOUTPUTEXPORTER_H
 #define N2DOUTPUTEXPORTER_H
 
+#include "n2dDefsCommandLineArgsStructs.h"
+#include "n2dDefsImage.h"
+#include "n2dDefsMetadata.h"
+#include "n2dDefsIO.h"
+
+
 namespace n2d {
 
 class OutputExporter
 {
 public:
+    OutputExporter(const OutputArgs& outputArgs, ImageType::ConstPointer image, DictionaryArrayType& dictionaryArray, DICOMImageIOType::Pointer dicomIO) :
+            m_OutputArgs(outputArgs),
+            m_Image(image),
+            m_DictionaryArray(dictionaryArray),
+            m_DicomIO(dicomIO)
+    {
+    }
+    ~OutputExporter() {}
+
+    bool Export(void);
+private:
+    const OutputArgs& m_OutputArgs;
+    ImageType::ConstPointer m_Image;
+    DictionaryArrayType& m_DictionaryArray;
+    DICOMImageIOType::Pointer m_DicomIO;
 };
+
 
 }
 

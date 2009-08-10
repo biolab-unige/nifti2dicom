@@ -119,14 +119,9 @@ bool InputFilter::Filter( void )
 
  //!       m_FilteredImage = cast->GetOutput();
     }
-/*
-        ImageType::RegionType region = Image->GetLargestPossibleRegion();
-        ImageType::SizeType dimensions = region.GetSize();
 
-        unsigned int nbSlices = dimensions[2];
-*/
         return true;
 }
 
 
-} // namenspace n2d
+} // namespace n2d

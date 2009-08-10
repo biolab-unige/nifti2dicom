@@ -22,11 +22,10 @@
 #ifndef N2DINPUTIMPORTER_H
 #define N2DINPUTIMPORTER_H
 
-#include "n2dCommandLineArgsStructs.h"
-#include "n2dImageDefs.h"
-
-#include <itkImageFileReader.h>
-
+#include "n2dDefsCommandLineArgsStructs.h"
+#include "n2dDefsImage.h"
+#include "n2dDefsMetadata.h"
+#include "n2dDefsIO.h"
 
 namespace n2d
 {
@@ -65,8 +64,6 @@ public:
 
 
 private:
-    typedef itk::ImageFileReader< ImageType >  ReaderType;
-
     const InputArgs& m_InputArgs; //!< Input Arguments. 
     ImageType::Pointer m_ImportedImage; //!< Imported image.
     ReaderType::Pointer reader; //!< Internal reader.
