@@ -31,7 +31,7 @@ namespace n2d {
 class InputFilter
 {
 public:
-    InputFilter(const n2d::FiltersArgs& filtersArgs, n2d::ImageType::ConstPointer inputImage) :
+    InputFilter(const FiltersArgs& filtersArgs, ImageType::ConstPointer inputImage) :
             m_FiltersArgs(filtersArgs),
             m_InputImage(inputImage)
     {
@@ -47,13 +47,13 @@ public:
  * \return Internal image
  * \sa m_Image
  */
-    inline n2d::ImageType::Pointer getFilteredImage(void) const { return m_FilteredImage; }
+    inline ImageType::Pointer getFilteredImage(void) const { return m_FilteredImage; }
 
 
 private:
-    const n2d::FiltersArgs& m_FiltersArgs;
-    n2d::ImageType::ConstPointer m_InputImage;
-    n2d::ImageType::Pointer m_FilteredImage;
+    const FiltersArgs& m_FiltersArgs;
+    ImageType::ConstPointer m_InputImage;
+    ImageType::Pointer m_FilteredImage;
 
 };
 

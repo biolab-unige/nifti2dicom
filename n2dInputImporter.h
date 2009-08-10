@@ -70,8 +70,6 @@ private:
     const InputArgs& m_InputArgs; //!< Input Arguments. 
     ImageType::Pointer m_ImportedImage; //!< Imported image.
     ReaderType::Pointer reader; //!< Internal reader.
-
-    bool ReadDICOMTags(std::string file, DictionaryType &dict);
 };
 
 }

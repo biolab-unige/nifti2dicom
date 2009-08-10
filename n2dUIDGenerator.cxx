@@ -20,11 +20,24 @@
 
 
 #include "n2dUIDGenerator.h"
+#include "n2dImageDefs.h"
+#include "n2dMetaDataDictionaryTools.h"
 
 namespace n2d
 {
 
-
-
+bool UIDGenerator::Generate()
+{
+        if (!m_UIDArgs.studyistanceuid.empty())
+            itk::EncapsulateMetaData<std::string>( m_Dict, "0020|000d", m_UIDArgs.studyistanceuid);
+        if (!m_UIDArgs.seriesistanceuid.empty())
+            itk::EncapsulateMetaData<std::string>( m_Dict, "0020|000e", m_UIDArgs.seriesistanceuid);
+        if (!m_UIDArgs.seriesnumber.empty())
+            itk::EncapsulateMetaData<std::string>( m_Dict, "0020|0011", m_UIDArgs.seriesnumber);
+        if (!m_UIDArgs.acquisitionnumber.empty())
+            itk::EncapsulateMetaData<std::string>( m_Dict, "0020|0012", m_UIDArgs.acquisitionnumber);
+    return true;
 }
+
+} // namespace n2d
 

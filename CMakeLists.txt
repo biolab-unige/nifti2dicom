@@ -43,7 +43,15 @@ configure_file(${CMAKE_SOURCE_DIR}/Nifti2DicomConfig.h.cmake ${CMAKE_BINARY_DIR}
 
 include_directories(${CMAKE_BINARY_DIR})
 
-#TODO Inserire -DDEBUG
+
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebugInfo")
+  message(STATUS "DEBUG ENABLED")
+  add_definitions("-DDEBUG")
+else()
+  message(STATUS "DEBUG NOT ENABLED")
+endif()
+
 
 
 set(nifti2dicom_SOURCES nifti2dicom.cxx
@@ -76,4 +84,18 @@ set(nifti2dicom_NO_INSTALL_HEADERS Nifti2DicomConfig.h
 add_executable(nifti2dicom ${nifti2dicom_SOURCES})
 target_link_libraries(nifti2dicom ITKIO ITKCommon)
 install(TARGETS nifti2dicom RUNTIME DESTINATION bin)
+
+
+# make dist target
+
+set(CPACK_PACKAGE_VERSION_MAJOR ${Nifti2Dicom_MAJOR_VERSION})
+set(CPACK_PACKAGE_VERSION_MINOR ${Nifti2Dicom_MINOR_VERSION})
+set(CPACK_PACKAGE_VERSION_PATCH ${Nifti2Dicom_PATCH_VERSION})
+set(CPACK_SOURCE_GENERATOR "TGZ")
+set(CPACK_SOURCE_PACKAGE_FILE_NAME
+  "${CMAKE_PROJECT_NAME}-${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
+set(CPACK_SOURCE_IGNORE_FILES
+  "~$;/build/;/.svn/;/.kdev4/;\\\\.kdev4;${CPACK_SOURCE_IGNORE_FILES}")
+include(CPack)
+add_custom_target(dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
 

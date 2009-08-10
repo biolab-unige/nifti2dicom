@@ -19,32 +19,18 @@
 // $Id$
 
 
-#ifndef N2DUIDGENERATOR_H
-#define N2DUIDGENERATOR_H
-
-#include "n2dCommandLineArgsStructs.h"
-#include <itkMetaDataDictionary.h>
+#ifndef N2DSLICER_H
+#define N2DSLICER_H
 
 namespace n2d {
 
-class UIDGenerator
+class Slicer
 {
 public:
-    UIDGenerator(const UIDArgs& uidArgs, itk::MetaDataDictionary& dict) :
-            m_UIDArgs(uidArgs),
-            m_Dict(dict)
-    {
-    }
 
-    ~UIDGenerator() {}
 
-    bool Generate(void);
-
-private:
-    const UIDArgs& m_UIDArgs;
-    itk::MetaDataDictionary& m_Dict;
-}; // class UIDGenerator
+}; // class Slicer
 
 } // namespace n2d
 
-#endif // N2DUIDGENERATOR_H
+#endif // N2DSLICER_H

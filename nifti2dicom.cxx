@@ -44,7 +44,9 @@
 #include "n2dCommandLineParser.h"
 #include "n2dInputImporter.h"
 #include "n2dInputFilter.h"
-
+#include "n2dVitalStatisticsImporter.h"
+#include "n2dDicomTagsImporter.h"
+#include "n2dUIDGenerator.h"
 
 
 /*
@@ -77,10 +79,11 @@ Alcune note:
 int main(int argc, char* argv[])
 {
 //BEGIN Common objects declaration
-    n2d::ImageType::Pointer inputImage;
     n2d::CommandLineParser parser;
+    n2d::ImageType::ConstPointer inputImage;
     n2d::DictionaryType dictionary;
 //END Common objects declaration
+
 
 
 
@@ -122,18 +125,17 @@ int main(int argc, char* argv[])
 
 
 
-//BEGIN Input filtering
 
+//BEGIN Input filtering
     try
     {
-/*        n2d::InputFilter inputFilter(parser.filterArgs, inputImage);
-        if (inputFilter.Filter());
+        n2d::InputFilter inputFilter(parser.filtersArgs, inputImage);
+        if (inputFilter.Filter())
             std::cout << "TODO: " << __FILE__ << ":" << __LINE__ << " - OK" << std::endl;
         else
             std::cout << "TODO: " << __FILE__ << ":" << __LINE__ << " - FAIL" << std::endl;
 
-        ImageType inputImage = inputImporter.getImage();
-*/
+        inputImage = inputFilter.getFilteredImage();
     }
     catch (...)
     {
@@ -144,6 +146,60 @@ int main(int argc, char* argv[])
 
 
 
+
+//BEGIN Vital statistics import
+    try
+    {
+        n2d::VitalStatisticsImporter vitalStatisticsImporter(parser.vitalStatisticsArgs, dictionary);
+        if (vitalStatisticsImporter.Import())
+            std::cout << "TODO: " << __FILE__ << ":" << __LINE__ << " - OK" << std::endl;
+        else
+            std::cout << "TODO: " << __FILE__ << ":" << __LINE__ << " - FAIL" << std::endl;
+    }
+    catch (...)
+    {
+        std::cerr << "ERROR in \"Vital statistics import\"." << std::endl;
+        exit(1);
+    }    
+//END Vital statistics import
+
+
+
+
+//BEGIN DICOM tags import
+    try
+    {
+        n2d::DicomTagsImporter dicomTagsImporter(parser.dicomTagsArgs, dictionary);
+        if (dicomTagsImporter.Import())
+            std::cout << "TODO: " << __FILE__ << ":" << __LINE__ << " - OK" << std::endl;
+        else
+            std::cout << "TODO: " << __FILE__ << ":" << __LINE__ << " - FAIL" << std::endl;
+    }
+    catch (...)
+    {
+        std::cerr << "ERROR in \"DICOM tags import\"." << std::endl;
+        exit(1);
+    }    
+//END DICOM tags import
+
+
+
+
+//BEGIN DICOM UID generation
+    try
+    {
+        n2d::UIDGenerator uidGenerator(parser.uidArgs, dictionary);
+        if (uidGenerator.Generate())
+            std::cout << "TODO: " << __FILE__ << ":" << __LINE__ << " - OK" << std::endl;
+        else
+            std::cout << "TODO: " << __FILE__ << ":" << __LINE__ << " - FAIL" << std::endl;
+    }
+    catch (...)
+    {
+        std::cerr << "ERROR in \"DICOM UID generation\"." << std::endl;
+        exit(1);
+    }    
+//END DICOM UID generation
 
 /*
         // -----------------------------------------------------------------------------
@@ -193,15 +249,6 @@ int main(int argc, char* argv[])
 
 
 
-        //TODO settare correttamente BITS ALLOCATED (0028,0100)/ BITS STORED (0028,0101) / HIGH BIT (0028,0102)
-        // (pare impossibile con itk+gdcm)
-        
-//        // Bits Allocated
-//          itk::EncapsulateMetaData<std::string>( inputDict, "0028|0100", "16");
-//        // Bits Stored
-//          itk::EncapsulateMetaData<std::string>( inputDict, "0028|0101", "12");
-//        // High Bit
-//          itk::EncapsulateMetaData<std::string>( inputDict, "0028|0102", "11");
 
 
         //TODO Controllare che non siano settati Rescale - Slope - Windows
