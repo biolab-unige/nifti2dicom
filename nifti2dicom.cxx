@@ -81,7 +81,11 @@ int main(int argc, char* argv[])
 //BEGIN Command line parsing
     try
     {
-        parser.parse(argc,argv);
+        if(!parser.parse(argc,argv))
+        {
+            std::cerr << "ERROR in \"Command line parsing\"." << std::endl;
+            exit(101);
+        }
     }
     catch (...)
     {
@@ -98,11 +102,11 @@ int main(int argc, char* argv[])
     try
     {
         n2d::InputImporter inputImporter(parser.inputArgs);
-        if (inputImporter.Import())
-            std::cout << "TODO: " << __FILE__ << ":" << __LINE__ << " - OK" << std::endl;
-        else
-            std::cout << "TODO: " << __FILE__ << ":" << __LINE__ << " - FAIL" << std::endl;
-
+        if (!inputImporter.Import())
+        {
+            std::cerr << "ERROR in \"Input image import\"." << std::endl;
+            exit(102);
+        }
         inputImage = inputImporter.getImportedImage();
         dictionary = inputImporter.getMetaDataDictionary();
     }
@@ -121,10 +125,11 @@ int main(int argc, char* argv[])
     try
     {
         n2d::InputFilter inputFilter(parser.filtersArgs, inputImage);
-        if (inputFilter.Filter())
-            std::cout << "TODO: " << __FILE__ << ":" << __LINE__ << " - OK" << std::endl;
-        else
-            std::cout << "TODO: " << __FILE__ << ":" << __LINE__ << " - FAIL" << std::endl;
+        if (!inputFilter.Filter())
+        {
+            std::cerr << "ERROR in \"Input filtering\"." << std::endl;
+            exit(103);
+        }
         filteredImage = inputFilter.getFilteredImage();
     }
     catch (...)
@@ -141,10 +146,11 @@ int main(int argc, char* argv[])
     try
     {
         n2d::VitalStatisticsImporter vitalStatisticsImporter(parser.vitalStatisticsArgs, dictionary);
-        if (vitalStatisticsImporter.Import())
-            std::cout << "TODO: " << __FILE__ << ":" << __LINE__ << " - OK" << std::endl;
-        else
-            std::cout << "TODO: " << __FILE__ << ":" << __LINE__ << " - FAIL" << std::endl;
+        if (!vitalStatisticsImporter.Import())
+        {
+            std::cerr << "ERROR in \"Vital statistics import\"." << std::endl;
+            exit(104);
+        }    
     }
     catch (...)
     {
@@ -160,10 +166,11 @@ int main(int argc, char* argv[])
     try
     {
         n2d::DicomTagsImporter dicomTagsImporter(parser.dicomTagsArgs, dictionary);
-        if (dicomTagsImporter.Import())
-            std::cout << "TODO: " << __FILE__ << ":" << __LINE__ << " - OK" << std::endl;
-        else
-            std::cout << "TODO: " << __FILE__ << ":" << __LINE__ << " - FAIL" << std::endl;
+        if (!dicomTagsImporter.Import())
+        {
+            std::cerr << "ERROR in \"DICOM tags import\"." << std::endl;
+            exit(105);
+        }    
     }
     catch (...)
     {
@@ -179,10 +186,11 @@ int main(int argc, char* argv[])
     try
     {
         n2d::UIDGenerator uidGenerator(parser.uidArgs, dictionary, dicomIO);
-        if (uidGenerator.Generate())
-            std::cout << "TODO: " << __FILE__ << ":" << __LINE__ << " - OK" << std::endl;
-        else
-            std::cout << "TODO: " << __FILE__ << ":" << __LINE__ << " - FAIL" << std::endl;
+        if (!uidGenerator.Generate())
+        {
+            std::cerr << "ERROR in \"DICOM UID generation\"." << std::endl;
+            exit(106);
+        }    
     }
     catch (...)
     {
@@ -197,10 +205,12 @@ int main(int argc, char* argv[])
     try
     {
         n2d::Slicer slicer(parser.resliceArgs, filteredImage, dictionary, dictionaryArray);
-        if (slicer.Reslice())
-            std::cout << "TODO: " << __FILE__ << ":" << __LINE__ << " - OK" << std::endl;
-        else
-            std::cout << "TODO: " << __FILE__ << ":" << __LINE__ << " - FAIL" << std::endl;
+        if (!slicer.Reslice())
+        {
+            std::cerr << "ERROR in \"Slicer\"." << std::endl;
+            exit(107);
+        }
+
     }
     catch (...)
     {
@@ -216,10 +226,11 @@ int main(int argc, char* argv[])
     try
     {
         n2d::OutputExporter outputExporter(parser.outputArgs, filteredImage, dictionaryArray, dicomIO);
-        if (outputExporter.Export())
-            std::cout << "TODO: " << __FILE__ << ":" << __LINE__ << " - OK" << std::endl;
-        else
-            std::cout << "TODO: " << __FILE__ << ":" << __LINE__ << " - FAIL" << std::endl;
+        if (!outputExporter.Export())
+        {
+            std::cerr << "ERROR in \"Output\"." << std::endl;
+            exit(108);
+        }
     }
     catch (...)
     {
