@@ -19,46 +19,40 @@
 // $Id$
 
 
-#ifndef N2DCOMMANDLINEPARSER_H
-#define N2DCOMMANDLINEPARSER_H
-
-#include <tclap/CmdLine.h>
+#ifndef N2DACCESSIONNUMBERVALIDATOR_H
+#define N2DACCESSIONNUMBERVALIDATOR_H
 
 #include "n2dDefsCommandLineArgsStructs.h"
+#include "n2dDefsMetadata.h"
+
 
 namespace n2d {
 
-//BEGIN class n2d::CommandLineParser
-
+//BEGIN class n2d::AccessionNumberValidator
 /*!
- * \brief Parses command line and fills nifti2dicomArgs
+ * \brief [...]
  *
  */
-class CommandLineParser
+class AccessionNumberValidator
 {
 public:
-    CommandLineParser();
-    ~CommandLineParser();
+    AccessionNumberValidator(const AccessionNumberArgs& accessionNumberArgs, DictionaryType& dict) :
+            m_AccessionNumberArgs(accessionNumberArgs),
+            m_Dict(dict)
+    {
+    }
+    ~AccessionNumberValidator() {}
 
-    bool parse(int argc, char* argv[]);
-
-    VitalStatisticsArgs vitalStatisticsArgs;
-    InputArgs           inputArgs;
-    OutputArgs          outputArgs;
-    DicomTagsArgs       dicomTagsArgs;
-    UIDArgs             uidArgs;
-    ResliceArgs         resliceArgs;
-    AccessionNumberArgs accessionNumberArgs;
-    FiltersArgs         filtersArgs;
-
-
+    bool Validate(void);
 private:
-    TCLAP::CmdLine cmd;
+    const AccessionNumberArgs& m_AccessionNumberArgs;
+    DictionaryType& m_Dict;
 
-    bool AccessionNumberWarning(bool hasDicomHeaderFile);
+    bool AccessionNumberWarning();
+
 };
-//END class n2d::CommandLineParser
+//END class n2d::AccessionNumberValidator
 
 } // namespace n2d
 
-#endif // N2DCOMMANDLINEPARSER_H
+#endif // N2DACCESSIONNUMBERVALIDATOR_H

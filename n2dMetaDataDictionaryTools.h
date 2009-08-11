@@ -19,46 +19,20 @@
 // $Id$
 
 
-#ifndef N2DCOMMANDLINEPARSER_H
-#define N2DCOMMANDLINEPARSER_H
+#ifndef N2DMETADATATOOLS_H
+#define N2DMETADATATOOLS_H
 
-#include <tclap/CmdLine.h>
+#include <string>
 
-#include "n2dDefsCommandLineArgsStructs.h"
+namespace itk { class MetaDataDictionary; }
 
 namespace n2d {
 
-//BEGIN class n2d::CommandLineParser
-
-/*!
- * \brief Parses command line and fills nifti2dicomArgs
- *
- */
-class CommandLineParser
-{
-public:
-    CommandLineParser();
-    ~CommandLineParser();
-
-    bool parse(int argc, char* argv[]);
-
-    VitalStatisticsArgs vitalStatisticsArgs;
-    InputArgs           inputArgs;
-    OutputArgs          outputArgs;
-    DicomTagsArgs       dicomTagsArgs;
-    UIDArgs             uidArgs;
-    ResliceArgs         resliceArgs;
-    AccessionNumberArgs accessionNumberArgs;
-    FiltersArgs         filtersArgs;
-
-
-private:
-    TCLAP::CmdLine cmd;
-
-    bool AccessionNumberWarning(bool hasDicomHeaderFile);
-};
-//END class n2d::CommandLineParser
+void CopyDictionary (const itk::MetaDataDictionary &fromDict, itk::MetaDataDictionary &toDict);
+bool ReadDICOMTags(std::string file, itk::MetaDataDictionary &dict);
+void PrintDictionary (const itk::MetaDataDictionary &Dict);
 
 } // namespace n2d
 
-#endif // N2DCOMMANDLINEPARSER_H
+
+#endif // N2DMETADATATOOLS_H

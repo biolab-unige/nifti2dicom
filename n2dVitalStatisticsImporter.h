@@ -19,46 +19,39 @@
 // $Id$
 
 
-#ifndef N2DCOMMANDLINEPARSER_H
-#define N2DCOMMANDLINEPARSER_H
-
-#include <tclap/CmdLine.h>
+#ifndef N2DVITALSTATISTICSIMPORTER_H
+#define N2DVITALSTATISTICSIMPORTER_H
 
 #include "n2dDefsCommandLineArgsStructs.h"
+#include "n2dDefsImage.h"
+#include "n2dDefsMetadata.h"
 
-namespace n2d {
+namespace n2d
+{
 
-//BEGIN class n2d::CommandLineParser
-
+//BEGIN class n2d::VitalStatisticsImporter
 /*!
- * \brief Parses command line and fills nifti2dicomArgs
+ * \brief [...]
  *
  */
-class CommandLineParser
+class VitalStatisticsImporter
 {
 public:
-    CommandLineParser();
-    ~CommandLineParser();
+    VitalStatisticsImporter(const VitalStatisticsArgs vitalStatisticsArgs, DictionaryType& dict) :
+            m_VitalStatisticsArgs(vitalStatisticsArgs),
+            m_Dict(dict)
+    {
+    }
+    ~VitalStatisticsImporter() {}
 
-    bool parse(int argc, char* argv[]);
-
-    VitalStatisticsArgs vitalStatisticsArgs;
-    InputArgs           inputArgs;
-    OutputArgs          outputArgs;
-    DicomTagsArgs       dicomTagsArgs;
-    UIDArgs             uidArgs;
-    ResliceArgs         resliceArgs;
-    AccessionNumberArgs accessionNumberArgs;
-    FiltersArgs         filtersArgs;
-
+    bool Import(void);
 
 private:
-    TCLAP::CmdLine cmd;
-
-    bool AccessionNumberWarning(bool hasDicomHeaderFile);
+    const VitalStatisticsArgs m_VitalStatisticsArgs;
+    DictionaryType& m_Dict;
 };
-//END class n2d::CommandLineParser
+//END class n2d::VitalStatisticsImporter
 
-} // namespace n2d
+}
 
-#endif // N2DCOMMANDLINEPARSER_H
+#endif // N2DVITALSTATISTICSIMPORTER_H

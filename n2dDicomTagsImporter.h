@@ -19,46 +19,42 @@
 // $Id$
 
 
-#ifndef N2DCOMMANDLINEPARSER_H
-#define N2DCOMMANDLINEPARSER_H
-
-#include <tclap/CmdLine.h>
+#ifndef N2DDICOMTAGSIMPORTER_H
+#define N2DDICOMTAGSIMPORTER_H
 
 #include "n2dDefsCommandLineArgsStructs.h"
+#include "n2dDefsMetadata.h"
+#include <itkMetaDataDictionary.h>
 
 namespace n2d {
 
-//BEGIN class n2d::CommandLineParser
-
+//BEGIN class n2d::DicomTagsImporter
 /*!
- * \brief Parses command line and fills nifti2dicomArgs
+ * \brief [...]
  *
  */
-class CommandLineParser
+class DicomTagsImporter
 {
 public:
-    CommandLineParser();
-    ~CommandLineParser();
+    DicomTagsImporter(const DicomTagsArgs dicomTagsArgs, DictionaryType& dict) :
+            m_DicomTagsArgs(dicomTagsArgs),
+            m_Dict(dict)
+    {
+    }
 
-    bool parse(int argc, char* argv[]);
+    ~DicomTagsImporter() {}
 
-    VitalStatisticsArgs vitalStatisticsArgs;
-    InputArgs           inputArgs;
-    OutputArgs          outputArgs;
-    DicomTagsArgs       dicomTagsArgs;
-    UIDArgs             uidArgs;
-    ResliceArgs         resliceArgs;
-    AccessionNumberArgs accessionNumberArgs;
-    FiltersArgs         filtersArgs;
-
+    bool Import(void);
 
 private:
-    TCLAP::CmdLine cmd;
+    const DicomTagsArgs m_DicomTagsArgs;
+    DictionaryType& m_Dict;
 
-    bool AccessionNumberWarning(bool hasDicomHeaderFile);
 };
-//END class n2d::CommandLineParser
+//BEGIN class n2d::DicomTagsImporter
 
 } // namespace n2d
 
-#endif // N2DCOMMANDLINEPARSER_H
+
+
+#endif // N2DDICOMTAGSIMPORTER_H

@@ -18,47 +18,24 @@
 
 // $Id$
 
+#ifndef N2DDEFSIO_H
+#define N2DDEFSIO_H
 
-#ifndef N2DCOMMANDLINEPARSER_H
-#define N2DCOMMANDLINEPARSER_H
+#include <itkImageFileReader.h>
+#include <itkNumericSeriesFileNames.h>
+#include <itkImageFileReader.h>
+#include <itkGDCMImageIO.h>
+#include <itkGDCMSeriesFileNames.h>
+#include <itkImageSeriesWriter.h>
 
-#include <tclap/CmdLine.h>
-
-#include "n2dDefsCommandLineArgsStructs.h"
+#include "n2dDefsImage.h"
 
 namespace n2d {
-
-//BEGIN class n2d::CommandLineParser
-
-/*!
- * \brief Parses command line and fills nifti2dicomArgs
- *
- */
-class CommandLineParser
-{
-public:
-    CommandLineParser();
-    ~CommandLineParser();
-
-    bool parse(int argc, char* argv[]);
-
-    VitalStatisticsArgs vitalStatisticsArgs;
-    InputArgs           inputArgs;
-    OutputArgs          outputArgs;
-    DicomTagsArgs       dicomTagsArgs;
-    UIDArgs             uidArgs;
-    ResliceArgs         resliceArgs;
-    AccessionNumberArgs accessionNumberArgs;
-    FiltersArgs         filtersArgs;
-
-
-private:
-    TCLAP::CmdLine cmd;
-
-    bool AccessionNumberWarning(bool hasDicomHeaderFile);
-};
-//END class n2d::CommandLineParser
-
+    typedef itk::ImageFileReader< ImageType >  ReaderType;
+    typedef itk::ImageFileReader< DICOMImageType > DICOMReaderType;
+    typedef itk::GDCMImageIO DICOMImageIOType;
+    typedef itk::NumericSeriesFileNames NameGeneratorType;
+    typedef itk::ImageSeriesWriter< DICOM3DImageType, DICOMImageType > SeriesWriterType;
 } // namespace n2d
 
-#endif // N2DCOMMANDLINEPARSER_H
+#endif // N2DDEFSIO_H
