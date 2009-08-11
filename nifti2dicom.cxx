@@ -31,6 +31,7 @@
 #include "n2dVitalStatisticsImporter.h"
 #include "n2dDicomTagsImporter.h"
 #include "n2dUIDGenerator.h"
+#include "n2dAccessionNumberValidator.h"
 #include "n2dSlicer.h"
 #include "n2dOutputExporter.h"
 
@@ -97,15 +98,34 @@ int main(int argc, char* argv[])
 
 
 
-//BEGIN Input image import
+//BEGIN DICOM accession number validation
+    try
+    {
+        n2d::AccessionNumberValidator accessionNumberValidator(parser.accessionNumberArgs, dictionary);
+        if (!accessionNumberValidator.Validate())
+        {
+            std::cerr << "ERROR in \"DICOM accession number validation\"." << std::endl;
+            exit(102);
+        }    
+    }
+    catch (...)
+    {
+        std::cerr << "ERROR in \"DICOM accession number validation\"." << std::endl;
+        exit(2);
+    }  
+//END DICOM accession number validation
 
+
+
+
+//BEGIN Input image import
     try
     {
         n2d::InputImporter inputImporter(parser.inputArgs);
         if (!inputImporter.Import())
         {
             std::cerr << "ERROR in \"Input image import\"." << std::endl;
-            exit(102);
+            exit(103);
         }
         inputImage = inputImporter.getImportedImage();
         dictionary = inputImporter.getMetaDataDictionary();
@@ -113,9 +133,8 @@ int main(int argc, char* argv[])
     catch (...)
     {
         std::cerr << "ERROR in \"Input image import\"." << std::endl;
-        exit(2);
+        exit(3);
     }
-
 //END Input image import
 
 
@@ -128,14 +147,14 @@ int main(int argc, char* argv[])
         if (!inputFilter.Filter())
         {
             std::cerr << "ERROR in \"Input filtering\"." << std::endl;
-            exit(103);
+            exit(104);
         }
         filteredImage = inputFilter.getFilteredImage();
     }
     catch (...)
     {
         std::cerr << "ERROR in \"Input filtering\"." << std::endl;
-        exit(3);
+        exit(4);
     }    
 //END Input filtering
 
@@ -149,13 +168,13 @@ int main(int argc, char* argv[])
         if (!vitalStatisticsImporter.Import())
         {
             std::cerr << "ERROR in \"Vital statistics import\"." << std::endl;
-            exit(104);
+            exit(105);
         }    
     }
     catch (...)
     {
         std::cerr << "ERROR in \"Vital statistics import\"." << std::endl;
-        exit(4);
+        exit(5);
     }    
 //END Vital statistics import
 
@@ -169,13 +188,13 @@ int main(int argc, char* argv[])
         if (!dicomTagsImporter.Import())
         {
             std::cerr << "ERROR in \"DICOM tags import\"." << std::endl;
-            exit(105);
+            exit(106);
         }    
     }
     catch (...)
     {
         std::cerr << "ERROR in \"DICOM tags import\"." << std::endl;
-        exit(5);
+        exit(6);
     }    
 //END DICOM tags import
 
@@ -189,15 +208,16 @@ int main(int argc, char* argv[])
         if (!uidGenerator.Generate())
         {
             std::cerr << "ERROR in \"DICOM UID generation\"." << std::endl;
-            exit(106);
+            exit(107);
         }    
     }
     catch (...)
     {
         std::cerr << "ERROR in \"DICOM UID generation\"." << std::endl;
-        exit(6);
+        exit(7);
     }    
 //END DICOM UID generation
+
 
 
 
@@ -208,14 +228,14 @@ int main(int argc, char* argv[])
         if (!slicer.Reslice())
         {
             std::cerr << "ERROR in \"Slicer\"." << std::endl;
-            exit(107);
+            exit(108);
         }
 
     }
     catch (...)
     {
         std::cerr << "ERROR in \"Slicer\"." << std::endl;
-        exit(7);
+        exit(8);
     }
 //END Slicer
 
@@ -229,13 +249,13 @@ int main(int argc, char* argv[])
         if (!outputExporter.Export())
         {
             std::cerr << "ERROR in \"Output\"." << std::endl;
-            exit(108);
+            exit(109);
         }
     }
     catch (...)
     {
         std::cerr << "ERROR in \"Output\"." << std::endl;
-        exit(8);
+        exit(9);
     }
 
 
@@ -243,9 +263,3 @@ int main(int argc, char* argv[])
 
     return EXIT_SUCCESS;
 }
-
-
-
-
-
-

@@ -28,6 +28,11 @@
 
 namespace n2d {
 
+//BEGIN class n2d::InputFilter
+/*!
+ * \brief [...]
+ *
+ */
 class InputFilter
 {
 public:
@@ -56,6 +61,7 @@ private:
     DICOM3DImageType::ConstPointer m_FilteredImage;
 
 };
+//END class n2d::InputFilter
 
 } // namespace n2d
 

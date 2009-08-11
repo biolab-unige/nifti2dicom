@@ -29,6 +29,11 @@
 
 namespace n2d {
 
+//BEGIN class n2d::UIDGenerator
+/*!
+ * \brief [...]
+ *
+ */
 class UIDGenerator
 {
 public:
@@ -47,7 +52,8 @@ private:
     const UIDArgs& m_UIDArgs;
     DictionaryType& m_Dict;
     DICOMImageIOType::Pointer m_DicomIO;
-}; // class UIDGenerator
+};
+//END class n2d::UIDGenerator
 
 } // namespace n2d
 

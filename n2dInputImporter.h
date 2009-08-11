@@ -30,6 +30,11 @@
 namespace n2d
 {
 
+//BEGIN class n2d::InputImporter
+/*!
+ * \brief [...]
+ *
+ */
 class InputImporter
 {
 public:
@@ -68,6 +73,7 @@ private:
     ImageType::Pointer m_ImportedImage; //!< Imported image.
     ReaderType::Pointer reader; //!< Internal reader.
 };
+//END class n2d::InputImporter
 
 }
 

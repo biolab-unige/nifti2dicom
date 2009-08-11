@@ -30,6 +30,11 @@
 
 namespace n2d {
 
+//BEGIN class n2d::OutputExporter
+/*!
+ * \brief [...]
+ *
+ */
 class OutputExporter
 {
 public:
@@ -49,6 +54,7 @@ private:
     DictionaryArrayType& m_DictionaryArray;
     DICOMImageIOType::Pointer m_DicomIO;
 };
+//END class n2d::OutputExporter
 
 
 }

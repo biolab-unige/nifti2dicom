@@ -28,6 +28,11 @@
 
 namespace n2d {
 
+//BEGIN class n2d::Slicer
+/*!
+ * \brief [...]
+ *
+ */
 class Slicer
 {
 public:
@@ -49,7 +54,8 @@ private:
     DictionaryArrayType& m_DictionaryArray;
 
 
-}; // class Slicer
+};
+//END class n2d::Slicer
 
 } // namespace n2d
 
