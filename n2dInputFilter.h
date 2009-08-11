@@ -47,13 +47,13 @@ public:
  * \return Internal image
  * \sa m_Image
  */
-    inline ImageType::Pointer getFilteredImage(void) const { return m_FilteredImage; }
+    inline DICOM3DImageType::ConstPointer getFilteredImage(void) const { return m_FilteredImage; }
 
 
 private:
     const FiltersArgs& m_FiltersArgs;
     ImageType::ConstPointer m_InputImage;
-    ImageType::Pointer m_FilteredImage;
+    DICOM3DImageType::ConstPointer m_FilteredImage;
 
 };
 

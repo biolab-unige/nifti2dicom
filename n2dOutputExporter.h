@@ -33,7 +33,7 @@ namespace n2d {
 class OutputExporter
 {
 public:
-    OutputExporter(const OutputArgs& outputArgs, ImageType::ConstPointer image, DictionaryArrayType& dictionaryArray, DICOMImageIOType::Pointer dicomIO) :
+    OutputExporter(const OutputArgs& outputArgs, DICOM3DImageType::ConstPointer image, DictionaryArrayType& dictionaryArray, DICOMImageIOType::Pointer dicomIO) :
             m_OutputArgs(outputArgs),
             m_Image(image),
             m_DictionaryArray(dictionaryArray),
@@ -45,7 +45,7 @@ public:
     bool Export(void);
 private:
     const OutputArgs& m_OutputArgs;
-    ImageType::ConstPointer m_Image;
+    DICOM3DImageType::ConstPointer m_Image;
     DictionaryArrayType& m_DictionaryArray;
     DICOMImageIOType::Pointer m_DicomIO;
 };

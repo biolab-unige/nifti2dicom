@@ -93,8 +93,7 @@ bool InputFilter::Filter( void )
             return true;
         }
 
-
- //!       m_FilteredImage = rescaleFilter->GetOutput();
+        m_FilteredImage =rescaleFilter->GetOutput();
     }
     else
     {
@@ -116,8 +115,7 @@ bool InputFilter::Filter( void )
             std::cerr << message << std::endl;
             return false;
         }
-
- //!       m_FilteredImage = cast->GetOutput();
+        m_FilteredImage = cast->GetOutput();
     }
 
         return true;

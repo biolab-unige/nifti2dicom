@@ -30,8 +30,13 @@ namespace n2d {
 
 bool Slicer::Reslice(void)
 {
+std::cout << "Go go! " << __LINE__ << std::endl;
+    std::cout << m_Image;
     unsigned int nbSlices = (m_Image->GetLargestPossibleRegion().GetSize())[2];
+std::cout << "nbSlices = " << nbSlices << std::endl;
+std::cout << "Go go! " << __LINE__ << std::endl;
     n2d::SeriesWriterType::DictionaryRawPointer dictionaryRaw[ nbSlices ];
+std::cout << "Go go! " << __LINE__ << std::endl;
 
     n2d::PrintDictionary( m_Dict );
 
@@ -40,6 +45,7 @@ bool Slicer::Reslice(void)
         dictionaryRaw[i] = new SeriesWriterType::DictionaryType;
         n2d::CopyDictionary(m_Dict, *dictionaryRaw[i]);
 
+std::cout << "Go go! " << __LINE__ << std::endl;
 
 
         // Image Position Patient: This is calculated by computing the
@@ -47,6 +53,7 @@ bool Slicer::Reslice(void)
         ImageType::PointType position;
         ImageType::SpacingType spacing = m_Image->GetSpacing();
         ImageType::IndexType index;
+std::cout << "Go go! " << __LINE__ << std::endl;
 
         index[0] = 0;
         index[1] = 0;
@@ -70,6 +77,7 @@ bool Slicer::Reslice(void)
         value.str("");
         value << position[2];
         itk::EncapsulateMetaData<std::string>(*dictionaryRaw[i],"0020|1041", value.str());
+std::cout << "Go go! " << __LINE__ << std::endl;
 
         // Slice Thickness: For now, we store the z spacing
         value.str("");
@@ -81,6 +89,7 @@ bool Slicer::Reslice(void)
 
         m_DictionaryArray.push_back(dictionaryRaw[i]);
     }
+std::cout << "Go go! " << __LINE__ << std::endl;
     return true;
 }
 

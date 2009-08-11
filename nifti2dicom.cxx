@@ -67,6 +67,7 @@ int main(int argc, char* argv[])
 //BEGIN Common objects declaration
     n2d::CommandLineParser parser;
     n2d::ImageType::ConstPointer inputImage;
+    n2d::DICOM3DImageType::ConstPointer filteredImage;
     n2d::DictionaryType dictionary;
     n2d::DictionaryArrayType dictionaryArray;
 
@@ -124,8 +125,7 @@ int main(int argc, char* argv[])
             std::cout << "TODO: " << __FILE__ << ":" << __LINE__ << " - OK" << std::endl;
         else
             std::cout << "TODO: " << __FILE__ << ":" << __LINE__ << " - FAIL" << std::endl;
-
-        inputImage = inputFilter.getFilteredImage();
+        filteredImage = inputFilter.getFilteredImage();
     }
     catch (...)
     {
@@ -193,11 +193,10 @@ int main(int argc, char* argv[])
 
 
 
-
 //BEGIN Slicer
     try
     {
-        n2d::Slicer slicer(parser.resliceArgs, inputImage, dictionary, dictionaryArray);
+        n2d::Slicer slicer(parser.resliceArgs, filteredImage, dictionary, dictionaryArray);
         if (slicer.Reslice())
             std::cout << "TODO: " << __FILE__ << ":" << __LINE__ << " - OK" << std::endl;
         else
@@ -216,7 +215,7 @@ int main(int argc, char* argv[])
 //BEGIN Output
     try
     {
-        n2d::OutputExporter outputExporter(parser.outputArgs, inputImage, dictionaryArray, dicomIO);
+        n2d::OutputExporter outputExporter(parser.outputArgs, filteredImage, dictionaryArray, dicomIO);
         if (outputExporter.Export())
             std::cout << "TODO: " << __FILE__ << ":" << __LINE__ << " - OK" << std::endl;
         else
