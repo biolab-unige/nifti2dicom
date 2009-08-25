@@ -54,33 +54,33 @@ endif()
 
 
 
-set(nifti2dicom_SOURCES nifti2dicom.cxx
-                        n2dMetaDataDictionaryTools.cxx
-                        n2dCommandLineParser.cxx
-                        n2dInputImporter.cxx
-                        n2dInputFilter.cxx
-                        n2dVitalStatisticsImporter.cxx
-                        n2dDicomTagsImporter.cxx
-                        n2dUIDGenerator.cxx
-                        n2dSlicer.cxx
-                        n2dAccessionNumberValidator.cxx
-                        n2dOutputExporter.cxx
+set(nifti2dicom_SOURCES src/nifti2dicom.cxx
+                        src/n2dMetaDataDictionaryTools.cxx
+                        src/n2dCommandLineParser.cxx
+                        src/n2dInputImporter.cxx
+                        src/n2dInputFilter.cxx
+                        src/n2dVitalStatisticsImporter.cxx
+                        src/n2dDicomTagsImporter.cxx
+                        src/n2dUIDGenerator.cxx
+                        src/n2dSlicer.cxx
+                        src/n2dAccessionNumberValidator.cxx
+                        src/n2dOutputExporter.cxx
 )
 
 set(nifti2dicom_NO_INSTALL_HEADERS Nifti2DicomConfig.h
-                                   n2dDefsCommandLineArgsStructs.h
-                                   n2dDefsImage.h
-                                   n2dDefsMetadata.h
-                                   n2dMetaDataDictionaryTools.h
-                                   n2dCommandLineParser.h
-                                   n2dInputImporter.h
-                                   n2dInputFilter.h
-                                   n2dVitalStatisticsImporter.h
-                                   n2dDicomTagsImporter.h
-                                   n2dUIDGenerator.h
-                                   n2dSlicer.h
-                                   n2dAccessionNumberValidator.h
-                                   n2dOutputExporter.h
+                                   src/n2dDefsCommandLineArgsStructs.h
+                                   src/n2dDefsImage.h
+                                   src/n2dDefsMetadata.h
+                                   src/n2dMetaDataDictionaryTools.h
+                                   src/n2dCommandLineParser.h
+                                   src/n2dInputImporter.h
+                                   src/n2dInputFilter.h
+                                   src/n2dVitalStatisticsImporter.h
+                                   src/n2dDicomTagsImporter.h
+                                   src/n2dUIDGenerator.h
+                                   src/n2dSlicer.h
+                                   src/n2dAccessionNumberValidator.h
+                                   src/n2dOutputExporter.h
 )
 
 
