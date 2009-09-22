@@ -23,6 +23,7 @@
 #define N2DINPUTFILTER_H
 
 #include "n2dDefsImage.h"
+#include "n2dDefsMetadata.h"
 #include "n2dDefsCommandLineArgsStructs.h"
 
 
@@ -36,9 +37,10 @@ namespace n2d {
 class InputFilter
 {
 public:
-    InputFilter(const FiltersArgs& filtersArgs, ImageType::ConstPointer inputImage) :
+    InputFilter(const FiltersArgs& filtersArgs, ImageType::ConstPointer inputImage, DictionaryType& dict) :
             m_FiltersArgs(filtersArgs),
-            m_InputImage(inputImage)
+            m_InputImage(inputImage),
+            m_Dict(dict)
     {
     }
 
@@ -59,6 +61,7 @@ private:
     const FiltersArgs& m_FiltersArgs;
     ImageType::ConstPointer m_InputImage;
     DICOM3DImageType::ConstPointer m_FilteredImage;
+    DictionaryType& m_Dict;
 
 };
 //END class n2d::InputFilter

@@ -73,7 +73,8 @@ int main(int argc, char* argv[])
     n2d::DictionaryArrayType dictionaryArray;
 
     n2d::DICOMImageIOType::Pointer dicomIO = n2d::DICOMImageIOType::New();
-//    dicomIO->KeepOriginalUIDOn(); // Preserve the original DICOM UID of the input files
+    dicomIO->KeepOriginalUIDOn(); // Preserve the original DICOM UID of the input files
+    dicomIO->UseCompressionOff();
 //END Common objects declaration
 
 
@@ -143,7 +144,7 @@ int main(int argc, char* argv[])
 //BEGIN Input filtering
     try
     {
-        n2d::InputFilter inputFilter(parser.filtersArgs, inputImage);
+        n2d::InputFilter inputFilter(parser.filtersArgs, inputImage, dictionary);
         if (!inputFilter.Filter())
         {
             std::cerr << "ERROR in \"Input filtering\"." << std::endl;

@@ -23,7 +23,7 @@
 
 #include "n2dMetaDataDictionaryTools.h"
 #include "n2dDefsIO.h"
-
+#include <iomanip>
 
 namespace n2d {
 
@@ -38,6 +38,7 @@ bool Slicer::Reslice(void)
         dictionaryRaw[i] = new SeriesWriterType::DictionaryType;
         n2d::CopyDictionary(m_Dict, *dictionaryRaw[i]);
 
+/*
         // Image Position Patient: This is calculated by computing the
         // physical coordinate of the first pixel in each slice.
         ImageType::PointType position;
@@ -50,7 +51,7 @@ bool Slicer::Reslice(void)
         m_Image->TransformIndexToPhysicalPoint(index, position);
 
         itksys_ios::ostringstream value;
-
+        value << itksys_ios::setprecision(14);
         // Image Number
         value.str("");
         value << i + 1;
@@ -74,8 +75,9 @@ bool Slicer::Reslice(void)
 
         // Spacing Between Slices
         itk::EncapsulateMetaData<std::string>(*dictionaryRaw[i],"0018|0088", value.str());
-
+*/
         m_DictionaryArray.push_back(dictionaryRaw[i]);
+
     }
     return true;
 }
