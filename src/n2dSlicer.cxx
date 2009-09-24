@@ -33,12 +33,14 @@ bool Slicer::Reslice(void)
     unsigned int nbSlices = (m_Image->GetLargestPossibleRegion().GetSize())[2];
     n2d::SeriesWriterType::DictionaryRawPointer dictionaryRaw[ nbSlices ];
 
+
+
+
     for (unsigned int i=0; i<nbSlices; i++)
     {
         dictionaryRaw[i] = new SeriesWriterType::DictionaryType;
         n2d::CopyDictionary(m_Dict, *dictionaryRaw[i]);
 
-/*
         // Image Position Patient: This is calculated by computing the
         // physical coordinate of the first pixel in each slice.
         ImageType::PointType position;
@@ -51,7 +53,7 @@ bool Slicer::Reslice(void)
         m_Image->TransformIndexToPhysicalPoint(index, position);
 
         itksys_ios::ostringstream value;
-        value << itksys_ios::setprecision(14);
+        value << itksys_ios::setprecision(12);
         // Image Number
         value.str("");
         value << i + 1;
@@ -64,9 +66,9 @@ bool Slicer::Reslice(void)
 
         // Slice Location: For now, we store the z component of the Image
         // Position Patient.
-        value.str("");
-        value << position[2];
-        itk::EncapsulateMetaData<std::string>(*dictionaryRaw[i],"0020|1041", value.str());
+//        value.str("");
+//        value << position[2];
+//        itk::EncapsulateMetaData<std::string>(*dictionaryRaw[i],"0020|1041", value.str());
 
         // Slice Thickness: For now, we store the z spacing
         value.str("");
@@ -75,10 +77,34 @@ bool Slicer::Reslice(void)
 
         // Spacing Between Slices
         itk::EncapsulateMetaData<std::string>(*dictionaryRaw[i],"0018|0088", value.str());
+
+/*
+        itk::EncapsulateMetaData<unsigned int>(*dictionaryRaw[i], "ITK_NumberOfDimensions", 3);
+
+        typedef itk::Array< double > DoubleArrayType;
+        DoubleArrayType originArray(3);
+        for(int j = 0; j<3; j++)
+            originArray[j]=position[j];
+        itk::EncapsulateMetaData<DoubleArrayType>(*dictionaryRaw[i], "ITK_Origin", originArray);
+
+        DoubleArrayType spacingArray(3);
+        for(int j = 0; j<3; j++)
+            spacingArray[j]=spacing[j];
+         itk::EncapsulateMetaData<DoubleArrayType>(*dictionaryRaw[i], "ITK_Spacing", spacingArray);
+
 */
         m_DictionaryArray.push_back(dictionaryRaw[i]);
 
     }
+//#define DEBUG
+#ifdef DEBUG
+    for (unsigned int i=0; i<nbSlices; i++)
+    {
+        std::cout << "m_DictionaryArray[" << i << "]" << std::endl;
+        PrintDictionary(*m_DictionaryArray[i]);
+        std::cout << "-------------------------------------------------------------------" << std::endl;
+    }
+#endif
     return true;
 }
 
