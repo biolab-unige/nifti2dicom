@@ -28,6 +28,7 @@ namespace n2d {
 
 typedef itk::MetaDataDictionary DictionaryType;
 typedef itk::MetaDataObject< std::string > MetaDataStringType;
+typedef itk::MetaDataObject< unsigned short > MetaDataUnsignedShortType;
 typedef SeriesWriterType::DictionaryArrayType DictionaryArrayType;
 } // namespace n2d
 

@@ -25,7 +25,6 @@
 #include <itkImage.h>
 
 
-
 namespace n2d {
 
 // Base definitions

@@ -36,7 +36,7 @@ namespace n2d {
 class Slicer
 {
 public:
-    Slicer(const ResliceArgs& resliceArgs, DICOM3DImageType::ConstPointer image, const DictionaryType& dict, DictionaryArrayType& dictionaryArray) :
+    Slicer(const ResliceArgs& resliceArgs, DICOM3DImageType::ConstPointer image, DictionaryType& dict, DictionaryArrayType& dictionaryArray) :
             m_ResliceArgs(resliceArgs),
             m_Image(image),
             m_Dict(dict),
@@ -50,7 +50,7 @@ public:
 private:
     const ResliceArgs& m_ResliceArgs;
     DICOM3DImageType::ConstPointer m_Image;
-    const DictionaryType& m_Dict;
+    DictionaryType& m_Dict;
     DictionaryArrayType& m_DictionaryArray;
 
 

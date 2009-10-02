@@ -75,6 +75,7 @@ int main(int argc, char* argv[])
     n2d::DICOMImageIOType::Pointer dicomIO = n2d::DICOMImageIOType::New();
     dicomIO->KeepOriginalUIDOn(); // Preserve the original DICOM UID of the input files
     dicomIO->UseCompressionOff();
+    dicomIO->UseExplicitVRLittleEndianOn();
 //END Common objects declaration
 
 
@@ -247,6 +248,8 @@ int main(int argc, char* argv[])
     try
     {
         n2d::OutputExporter outputExporter(parser.outputArgs, filteredImage, dictionaryArray, dicomIO);
+//        n2d::OutputExporter outputExporter(parser.outputArgs, filteredImage, dictionary, dicomIO);
+
         if (!outputExporter.Export())
         {
             std::cerr << "ERROR in \"Output\"." << std::endl;

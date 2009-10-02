@@ -34,7 +34,23 @@ bool Slicer::Reslice(void)
     n2d::SeriesWriterType::DictionaryRawPointer dictionaryRaw[ nbSlices ];
 
 
+    ImageType::PointType position;
+    ImageType::SpacingType spacing = m_Image->GetSpacing();
+    ImageType::DirectionType direction = m_Image->GetDirection();
+    ImageType::IndexType index;
 
+    ImageType::PointType start_position;
+    index[0] = 0;
+    index[1] = 0;
+    index[2] = 0;
+    m_Image->TransformIndexToPhysicalPoint(index, start_position);
+
+    itksys_ios::ostringstream value;
+    value << std::dec << std::setprecision(15);
+
+    value.str("");
+    value << spacing[0] << "\\" << spacing[1];
+    itk::EncapsulateMetaData<std::string>(m_Dict,"0028|0030", value.str().substr(0,16));
 
     for (unsigned int i=0; i<nbSlices; i++)
     {
@@ -43,42 +59,40 @@ bool Slicer::Reslice(void)
 
         // Image Position Patient: This is calculated by computing the
         // physical coordinate of the first pixel in each slice.
-        ImageType::PointType position;
-        ImageType::SpacingType spacing = m_Image->GetSpacing();
-        ImageType::IndexType index;
-
         index[0] = 0;
         index[1] = 0;
         index[2] = i;
         m_Image->TransformIndexToPhysicalPoint(index, position);
 
-        itksys_ios::ostringstream value;
-        value << itksys_ios::setprecision(12);
+
         // Image Number
         value.str("");
         value << i + 1;
         itk::EncapsulateMetaData<std::string>(*dictionaryRaw[i],"0020|0013",value.str());
 
 
+/* GDCM2 lo setta automaticamente corretto
         value.str("");
         value << position[0] << "\\" << position[1] << "\\" << position[2];
-        itk::EncapsulateMetaData<std::string>(*dictionaryRaw[i],"0020|0032", value.str());
+//        itk::EncapsulateMetaData<std::string>(*dictionaryRaw[i],"0020|0032", value.str());
+*/
+
 
         // Slice Location: For now, we store the z component of the Image
         // Position Patient.
-//        value.str("");
-//        value << position[2];
-//        itk::EncapsulateMetaData<std::string>(*dictionaryRaw[i],"0020|1041", value.str());
+        value.str("");
+        value << position[2] - start_position[2];
+        itk::EncapsulateMetaData<std::string>(*dictionaryRaw[i],"0020|1041", value.str().substr(0,16));
 
         // Slice Thickness: For now, we store the z spacing
         value.str("");
-        value << spacing[2];
-        itk::EncapsulateMetaData<std::string>(*dictionaryRaw[i],"0018|0050", value.str());
+        value << sqrt( pow( spacing[0],2) + pow(spacing[1],2) + pow(spacing[2],2) );
+        itk::EncapsulateMetaData<std::string>(*dictionaryRaw[i],"0018|0050", value.str().substr(0,16));
 
         // Spacing Between Slices
-        itk::EncapsulateMetaData<std::string>(*dictionaryRaw[i],"0018|0088", value.str());
+        itk::EncapsulateMetaData<std::string>(*dictionaryRaw[i],"0018|0088", value.str().substr(0,16));
 
-/*
+
         itk::EncapsulateMetaData<unsigned int>(*dictionaryRaw[i], "ITK_NumberOfDimensions", 3);
 
         typedef itk::Array< double > DoubleArrayType;
@@ -92,7 +106,14 @@ bool Slicer::Reslice(void)
             spacingArray[j]=spacing[j];
          itk::EncapsulateMetaData<DoubleArrayType>(*dictionaryRaw[i], "ITK_Spacing", spacingArray);
 
-*/
+        typedef itk::Matrix< double, 3, 3 > DoubleMatrixType;
+        DoubleMatrixType directionMatrix;
+        for(int j = 0; j<3; j++)
+            for(int k = 0; k<3; k++)
+                directionMatrix[j][k]=direction[j][k];
+         itk::EncapsulateMetaData<DoubleMatrixType>(*dictionaryRaw[i], "ITK_Direction", directionMatrix);
+
+
         m_DictionaryArray.push_back(dictionaryRaw[i]);
 
     }
