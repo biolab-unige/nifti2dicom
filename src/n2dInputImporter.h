@@ -27,13 +27,14 @@
 #include "n2dDefsMetadata.h"
 #include "n2dDefsIO.h"
 
-namespace n2d
-{
+namespace n2d {
 
 //BEGIN class n2d::InputImporter
 /*!
- * \brief [...]
+ * \brief Imports a 3D image
  *
+ * \warning Image format must be supported by ITK
+ * \todo Copy MetaDataDictionary ?
  */
 class InputImporter
 {
@@ -50,22 +51,22 @@ public:
  *
  * \return Internal DICOM tags dictionary.
  */
-    inline n2d::DictionaryType& getMetaDataDictionary(void) const { return reader->GetMetaDataDictionary(); }
+    inline n2d::DictionaryType& getMetaDataDictionary( void ) const { return reader->GetMetaDataDictionary(); }
 
 /*!
- * \brief Import NIfTI image.
+ * \brief Import a 3D image image.
  *
  * \return true on success.
  * \throw n2d::exception on failure.
  */
-    bool Import(void);
+    bool Import( void );
 
 /*!
  * \brief Get imported image.
  *
  * \return Imported image
  */
-    inline n2d::ImageType::Pointer getImportedImage(void) const { return m_ImportedImage; }
+    inline n2d::ImageType::Pointer getImportedImage( void ) const { return m_ImportedImage; }
 
 
 private:
@@ -75,6 +76,7 @@ private:
 };
 //END class n2d::InputImporter
 
-}
+} // namespace n2d
 
-#endif // N2DVITALSTATISTICSIMPORTER_H
+
+#endif // N2DINPUTIMPORTER_H

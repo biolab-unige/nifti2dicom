@@ -1,0 +1,20 @@
+Index: Source/DataStructureAndEncodingDefinition/gdcmDataSet.h
+===================================================================
+--- Source/DataStructureAndEncodingDefinition/gdcmDataSet.h	(revision 6152)
++++ Source/DataStructureAndEncodingDefinition/gdcmDataSet.h	(working copy)
+@@ -129,13 +129,13 @@
+   void Insert(const DataElement& de) {
+     // FIXME: there is a special case where a dataset can have value < 0x8, see:
+     // $ gdcmdump --csa gdcmData/SIEMENS-JPEG-CorruptFrag.dcm 
+-    if( de.GetTag().GetGroup() >= 0x0008 || de.GetTag().GetGroup() == 0x4 )
++    if( de.GetTag().GetGroup() >= 0x0008 || de.GetTag().GetGroup() == 0x0004 )
+       {
+       InsertDataElement( de );
+       }
+     else
+       {
+-      gdcmErrorMacro( "Cannot add element with group < 0x0008 and != 0x4 in the dataset" );
++      gdcmErrorMacro( "Cannot add element with group < 0x0008 and != 0x0004 in the dataset" );
+       }
+   }
+   /// Replace a dataelement with another one

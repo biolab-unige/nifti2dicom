@@ -19,8 +19,8 @@
 // $Id$
 
 
-#ifndef N2DACCESSIONNUMBERVALIDATOR_H
-#define N2DACCESSIONNUMBERVALIDATOR_H
+#ifndef N2DOTHERDICOMTAGS_H
+#define N2DOTHERDICOMTAGS_H
 
 #include "n2dDefsCommandLineArgsStructs.h"
 #include "n2dDefsMetadata.h"
@@ -28,31 +28,36 @@
 
 namespace n2d {
 
-//BEGIN class n2d::AccessionNumberValidator
+//BEGIN class n2d::OtherDicomTags
 /*!
- * \brief [...]
+ * \brief A class that handles DICOM tags related to Other DICOM Tags
  *
+ * The following tags are handled by this class:
+ *
+ * \li (0008,0070) Manufacturer
+ * \li (0008,1090) Manufacturer's Model Name
+ * \li (0008,0080) Institution Name
+ * \li (0008,0090) Referring Physician's Name
  */
-class AccessionNumberValidator
+class OtherDicomTags
 {
 public:
-    AccessionNumberValidator(const AccessionNumberArgs& accessionNumberArgs, DictionaryType& dict) :
-            m_AccessionNumberArgs(accessionNumberArgs),
+    OtherDicomTags(const OtherDicomTagsArgs& otherDicomTagsArgs, DictionaryType& dict) :
+            m_OtherDicomTagsArgs(otherDicomTagsArgs),
             m_Dict(dict)
     {
     }
-    ~AccessionNumberValidator() {}
 
-    bool Validate(void);
+    ~OtherDicomTags() {}
+
+    bool Update( void );
+
 private:
-    const AccessionNumberArgs& m_AccessionNumberArgs;
+    const OtherDicomTagsArgs& m_OtherDicomTagsArgs;
     DictionaryType& m_Dict;
-
-    bool AccessionNumberWarning();
-
 };
-//END class n2d::AccessionNumberValidator
+//END class n2d::OtherDicomTags
 
 } // namespace n2d
 
-#endif // N2DACCESSIONNUMBERVALIDATOR_H
+#endif // N2DOTHERDICOMTAGS_H

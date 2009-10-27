@@ -27,6 +27,7 @@
 #include "n2dDefsMetadata.h"
 #include "n2dDefsIO.h"
 
+//#define DONT_USE_ARRAY
 
 namespace n2d {
 
@@ -38,6 +39,8 @@ namespace n2d {
 class OutputExporter
 {
 public:
+
+#ifndef DONT_USE_ARRAY
     OutputExporter(const OutputArgs& outputArgs, DICOM3DImageType::ConstPointer image, DictionaryArrayType& dictionaryArray, DICOMImageIOType::Pointer dicomIO) :
             m_OutputArgs(outputArgs),
             m_Image(image),
@@ -45,16 +48,74 @@ public:
             m_DicomIO(dicomIO)
     {
     }
+#else // DONT_USE_ARRAY
+    OutputExporter(const OutputArgs& outputArgs, DICOM3DImageType::ConstPointer image, DictionaryType& dictionary, DICOMImageIOType::Pointer dicomIO) :
+            m_OutputArgs(outputArgs),
+            m_Image(image),
+            m_Dict(dictionary),
+            m_DicomIO(dicomIO)
+    {
+    }
+#endif // DONT_USE_ARRAY
+
     ~OutputExporter() {}
 
-    bool Export(void);
+    bool Export( void );
+
 private:
     const OutputArgs& m_OutputArgs;
     DICOM3DImageType::ConstPointer m_Image;
+
+#ifndef DONT_USE_ARRAY
     DictionaryArrayType& m_DictionaryArray;
+#else // DONT_USE_ARRAY
+    DictionaryType& m_Dict;
+#endif // DONT_USE_ARRAY
+
     DICOMImageIOType::Pointer m_DicomIO;
 };
 //END class n2d::OutputExporter
+
+
+//BEGIN FIXME
+//FIXME This command is needed because "seriesWriter->Update()" causes a segmentation fault after
+//      writing the second image (I cannot find a reason for this)
+//      Adding a command fix this, but this behaviour should be investigated.
+
+#include "itkCommand.h"
+
+class CommandUpdate : public itk::Command
+{
+public:
+    typedef CommandUpdate Self;
+    typedef itk::Command Superclass;
+    typedef itk::SmartPointer<Self> Pointer;
+    itkNewMacro( Self );
+
+protected:
+    CommandUpdate() {}
+
+    inline void Execute(itk::Object* object, const itk::EventObject& event)
+    {
+        Execute( (const itk::Object*)object, event);
+    }
+
+    inline void Execute(const itk::Object *object, const itk::EventObject & event )
+    {
+#if (0)
+        if ( ! itk::ProgressEvent().CheckEvent( &event ) )
+            return;
+        const SeriesWriterType* ptr = dynamic_cast<const SeriesWriterType*>(object);
+        if (ptr)
+        {
+            std::cout << "\t" << (ptr->GetProgress())*100 << "%" << std::endl;
+        }
+#endif
+    }
+//END FIXME
+
+};
+
 
 
 }

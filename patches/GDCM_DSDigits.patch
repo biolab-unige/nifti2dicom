@@ -1,0 +1,91 @@
+Index: Source/DataStructureAndEncodingDefinition/gdcmElement.h
+===================================================================
+--- Source/DataStructureAndEncodingDefinition/gdcmElement.h	(revision 6137)
++++ Source/DataStructureAndEncodingDefinition/gdcmElement.h	(working copy)
+@@ -211,21 +211,77 @@
+     }
+ };
+ 
++// WARNING: The number of digits in exponent can be dependent from compiler.
++//          gcc uses 2 digits if the exponent is < 100 and 3 digits if >=, but
++//          some compilers (i.e. MSVC) may always use 3 digits in exponent.
++//          If some other compiler with this behaviour is detected, should be
++//          added here.
++#if defined(_MSC_VER)
++ #define ALWAYS_3_DIGITS_IN_EXPONENT
++#endif
++
++
++#ifdef ALWAYS_3_DIGITS_IN_EXPONENT
++ #define MIN_NEGATIVE_EXP 6 //MSVC always use 3 digits in exponent.
++#else
++ #define MIN_NEGATIVE_EXP 5
++#endif
++
+ template < typename Float >
+ std::string to_string ( Float data ) {
+-  std::stringstream in;
+-  // in.imbue(std::locale::classic()); // This is not required AFAIK
+-  unsigned long const digits =
++
++    std::stringstream in;
++    // in.imbue(std::locale::classic()); // This is not required AFAIK
++
++    unsigned long digits = 0;
++
++    // 16 integer digits number or 15 integer digits negative number
++    if ( (data >= 1e+15 && data < 1e16) || (data  <= -1e14 && data > -1e+15))
++        in << std::fixed;
++    else
++    {
++        digits = 15; // 16 - 1 (dot)
++
++        // negative number
++        if (data < 0)
++            digits -= 1; // (minus)
++
++        if (data != 0)
++        {
++            Float ldata = log10(fabs(data));
++
++            // numbers that need std::scientific representation
++            if ( ldata > 16 || (ldata > 15 && data < 0) || ldata < -MIN_NEGATIVE_EXP+1 )
++            {
++                in << std::scientific;
++#ifdef ALWAYS_3_DIGITS_IN_EXPONENT
++                digits -= 6; // (first digit + exponent)
++#else
++                digits -= 5; // (first digit + exponent)
++                // 3 digits in exponent
++                if ( ldata >= 100 || ldata < -99 )
++                    digits -=1;
++#endif
++            }
++            else if( ldata < 0)
++                digits += ldata; // (zeros before first significant digit)
++        }
++    }
++    /*
++    // I don't know if you really need this check
++    unsigned long const max_digits =
+     static_cast< unsigned long >(
+     - std::log( std::numeric_limits<Float>::epsilon() )
+     / std::log( 10.0 ) );
+-  if ( in << std::dec << std::setprecision(/*2+*/digits) << data ) {
+-    return ( in.str() );
+-  } else {
+-    throw "Impossible Conversion"; // should not happen ...
+-  }
+-} 
++    digits = (digits > max_digits) ? max_digits : digits;
++    */
+ 
++    if ( in << std::dec << std::setprecision(digits) << data )
++        return ( in.str() );
++    else
++        throw "Impossible Conversion"; // should not happen ...
++}
++
+ /* Writing VR::DS is not that easy after all */
+ // http://groups.google.com/group/comp.lang.c++/browse_thread/thread/69ccd26f000a0802
+ template<> inline void EncodingImplementation<VR::VRASCII>::Write(const float * data, unsigned long length, std::ostream &_os)  {

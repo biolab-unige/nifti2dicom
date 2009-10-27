@@ -1,0 +1,94 @@
+Index: Code/IO/itkIOCommon.h
+===================================================================
+RCS file: /cvsroot/Insight/Insight/Code/IO/itkIOCommon.h,v
+retrieving revision 1.27
+diff -u -r1.27 itkIOCommon.h
+--- Code/IO/itkIOCommon.h   27 May 2008 11:41:08 -0000  1.27
++++ Code/IO/itkIOCommon.h   29 Sep 2009 10:32:09 -0000
+@@ -110,6 +110,7 @@
+ #endif
+ extern const char *const ITK_Origin;
+ extern const char *const ITK_Spacing;
++extern const char *const ITK_Direction;
+ extern const char *const ITK_FileOriginator;
+ extern const char *const ITK_OriginationDate;
+ extern const char *const ITK_PatientID;
+Index: Code/IO/itkIOCommon.cxx
+===================================================================
+RCS file: /cvsroot/Insight/Insight/Code/IO/itkIOCommon.cxx,v
+retrieving revision 1.29
+diff -u -r1.29 itkIOCommon.cxx
+--- Code/IO/itkIOCommon.cxx	5 Apr 2009 10:56:48 -0000	1.29
++++ Code/IO/itkIOCommon.cxx	29 Sep 2009 10:32:09 -0000
+@@ -33,6 +33,7 @@
+ #endif
+ const char *const ITK_Origin = "ITK_Origin";
+ const char *const ITK_Spacing = "ITK_Spacing";
++const char *const ITK_Direction = "ITK_Direction";
+ const char *const ITK_FileOriginator = "ITK_FileOriginator";
+ const char *const ITK_OriginationDate = "ITK_OriginationDate";
+ const char *const ITK_PatientID = "ITK_PatientID";
+Index: Code/IO/itkImageSeriesWriter.txx
+===================================================================
+RCS file: /cvsroot/Insight/Insight/Code/IO/itkImageSeriesWriter.txx,v
+retrieving revision 1.33
+diff -u -r1.33 itkImageSeriesWriter.txx
+--- Code/IO/itkImageSeriesWriter.txx	11 May 2009 19:26:54 -0000	1.33
++++ Code/IO/itkImageSeriesWriter.txx	29 Sep 2009 10:32:09 -0000
+@@ -362,6 +362,17 @@
+         EncapsulateMetaData< DoubleArrayType >( dictionary, ITK_Spacing, spacingArray );
+         EncapsulateMetaData<  unsigned int   >( dictionary, ITK_NumberOfDimensions, inputImageDimension );
+ 
++        typename InputImageType::DirectionType direction2 = inputImage->GetDirection();
++        typedef Matrix< double, inputImageDimension, inputImageDimension> DoubleMatrixType;
++        DoubleMatrixType directionMatrix;
++        for( unsigned int i = 0; i < inputImageDimension; i++ )
++          {
++          for( unsigned int j = 0; j < inputImageDimension; j++ )
++            {
++            directionMatrix[i][j]  = direction2[i][j];
++            }
++          }
++        EncapsulateMetaData< DoubleMatrixType >( dictionary, ITK_Direction, directionMatrix );
+         }
+       }
+     
+Index: Code/IO/itkGDCMImageIO.cxx
+===================================================================
+RCS file: /cvsroot/Insight/Insight/Code/IO/itkGDCMImageIO.cxx,v
+retrieving revision 1.167
+diff -u -r1.167 itkGDCMImageIO.cxx
+--- Code/IO/itkGDCMImageIO.cxx  22 Sep 2009 20:00:07 -0000  1.167
++++ Code/IO/itkGDCMImageIO.cxx  29 Sep 2009 10:32:09 -0000
+@@ -1418,6 +1418,15 @@
+         m_Spacing[1] = spacingArray[1];
+         m_Spacing[2] = spacingArray[2];
+         }
++      else if( key == ITK_Direction )
++        {
++        typedef Matrix< double > DoubleMatrixType;
++        DoubleMatrixType directionMatrix;
++        ExposeMetaData< DoubleMatrixType >( dict, key, directionMatrix );
++        for(int i = 0; i<3; i++)
++            for(int j = 0; j<3; j++)
++                m_Direction[j][i]=directionMatrix[i][j];
++        }
+       else
+         {
+         itkDebugMacro(
+@@ -1959,6 +1959,15 @@
+         m_Spacing[1] = spacingArray[1];
+         m_Spacing[2] = spacingArray[2];
+         }
++      else if( key == ITK_Direction )
++        {
++        typedef Matrix< double > DoubleMatrixType;
++        DoubleMatrixType directionMatrix;
++        ExposeMetaData< DoubleMatrixType >( dict, key, directionMatrix );
++        for(int i = 0; i<3; i++)
++            for(int j = 0; j<3; j++)
++                m_Direction[j][i]=directionMatrix[i][j];
++        }
+       else
+         {
+         itkDebugMacro(

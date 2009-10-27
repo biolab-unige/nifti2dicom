@@ -19,26 +19,43 @@
 // $Id$
 
 
-#ifndef N2DDEFSIMAGE_H
-#define N2DDEFSIMAGE_H
+#ifndef N2DACCESSIONNUMBERVALIDATOR_H
+#define N2DACCESSIONNUMBERVALIDATOR_H
 
-#include <itkImage.h>
-
+#include "n2dDefsCommandLineArgsStructs.h"
+#include "n2dDefsMetadata.h"
 
 
 namespace n2d {
 
-// Base definitions
-const int Dimension = 3;
-const int DICOMDimension = 2;
+//BEGIN class n2d::AccessionNumberValidator
+/*!
+ * \brief A class that handles DICOM Accession Number Tag
+ *
+ * The following tags are handled by this class:
+ *
+ * \li (0008,0050) Accession Number
+ */
+class AccessionNumberValidator
+{
+public:
+    AccessionNumberValidator(const AccessionNumberArgs& accessionNumberArgs, DictionaryType& dict) :
+            m_AccessionNumberArgs(accessionNumberArgs),
+            m_Dict(dict)
+    {
+    }
+    ~AccessionNumberValidator() {}
 
-typedef unsigned int PixelType;
-typedef signed short DICOMPixelType;
+    bool Validate( void );
+private:
+    const AccessionNumberArgs& m_AccessionNumberArgs;
+    DictionaryType& m_Dict;
 
-typedef itk::Image<PixelType, Dimension> ImageType;
-typedef itk::Image<DICOMPixelType, Dimension> DICOM3DImageType;
-typedef itk::Image<DICOMPixelType, DICOMDimension> DICOMImageType;
+    bool AccessionNumberWarning();
+
+};
+//END class n2d::AccessionNumberValidator
 
 } // namespace n2d
 
-#endif // N2DDEFSIMAGE_H
+#endif // N2DACCESSIONNUMBERVALIDATOR_H

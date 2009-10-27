@@ -1,4 +1,4 @@
-//  This file is part of Nifti2Dicom, is an open source converter from 
+//  This file is part of Nifti2Dicom, is an open source converter from
 //  3D NIfTI images to 2D DICOM series.
 //
 //  Copyright (C) 2008,2009 Daniele E. Domenichelli
@@ -19,7 +19,7 @@
 // $Id$
 
 
-#include "n2dMetaDataDictionaryTools.h"
+#include "n2dToolsMetaDataDictionary.h"
 
 #include <string>
 #include <itkMetaDataDictionary.h>
@@ -34,6 +34,7 @@
 
 
 namespace n2d {
+namespace tools {
 
 void CopyDictionary (const DictionaryType &fromDict, DictionaryType &toDict)
 {
@@ -48,9 +49,35 @@ void CopyDictionary (const DictionaryType &fromDict, DictionaryType &toDict)
         if ( entryvalue )
         {
             std::string tagkey   = itr->first;
-            std::string tagvalue = entryvalue->GetMetaDataObjectValue();
-            itk::EncapsulateMetaData<std::string>(toDict, tagkey, tagvalue);
+            if (tagkey.compare(0, 4, "ITK_"))
+            {
+                std::string tagvalue = entryvalue->GetMetaDataObjectValue();
+#ifdef DEBUG
+                std::cout << "Copying " << tagkey << "  " << tagvalue<< std::endl;
+#endif //DEBUG
+                itk::EncapsulateMetaData<std::string>(toDict, tagkey, tagvalue);
+            }
+            ++itr;
+            continue;
         }
+/*
+        MetaDataUnsignedShortType::Pointer entryvalue2 = dynamic_cast<MetaDataUnsignedShortType *>( entry.GetPointer() ) ;
+        else if ( entryvalue2 )
+        {
+            std::string tagkey   = itr->first;
+            if (tagkey.compare(0, 4, "ITK_"))
+            {
+                unsigned short tagvalue = entryvalue2->GetMetaDataObjectValue();
+                itk::EncapsulateMetaData<unsigned short>(toDict, tagkey, tagvalue);
+            }
+            ++itr
+            continue;
+        }
+*/
+#ifdef DEBUG
+        else
+           std::cout << itr->first << " NON COPIATO" << std::endl;
+#endif // DEBUG
         ++itr;
     }
 }
@@ -73,38 +100,13 @@ void PrintDictionary (const itk::MetaDataDictionary &Dict)
 
             std::cout << "(" << tagkey << ") " << tagvalue << std::endl;
         }
+        else
+        {
+            std::cout << "(" << itr->first << ") " << itr->second;
+        }
         ++itr;
     }
 }
 
-
-
-bool ReadDICOMTags(std::string file, itk::MetaDataDictionary &dict)
-{
-    DICOMReaderType::Pointer reader = DICOMReaderType::New();
-    DICOMImageIOType::Pointer dicomIO = DICOMImageIOType::New();
-    reader->SetImageIO( dicomIO );
-    reader->SetFileName( file );
-
-    try
-    {
-       // std::cout << "Reading DICOM Tags... " << std::flush;
-        reader->Update();
-       // std::cout << "DONE" << std::endl;
-    }
-    catch ( itk::ExceptionObject & ex )
-    {
-        std::string message;
-        message = ex.GetLocation();
-        message += "\n";
-        message += ex.GetDescription();
-        std::cerr << message << std::endl;
-        return false;
-    }
-
-    CopyDictionary( reader->GetMetaDataDictionary(), dict );
-    return true;
-}
-
-
+} // namespace tools
 } // namespace n2d

@@ -37,25 +37,24 @@ namespace n2d {
 class CommandLineParser
 {
 public:
-    CommandLineParser();
-    ~CommandLineParser();
+    CommandLineParser() {}
+    ~CommandLineParser() {}
 
-    bool parse(int argc, char* argv[]);
+    bool Parse( int argc, char* argv[] );
+    void DebugPrint( void );
 
-    VitalStatisticsArgs vitalStatisticsArgs;
-    InputArgs           inputArgs;
-    OutputArgs          outputArgs;
-    DicomTagsArgs       dicomTagsArgs;
-    UIDArgs             uidArgs;
-    ResliceArgs         resliceArgs;
     AccessionNumberArgs accessionNumberArgs;
+    DicomHeaderArgs     dicomHeaderArgs;
+    DicomClassArgs      dicomClassArgs;
+    OtherDicomTagsArgs  otherDicomTagsArgs;
+    PatientArgs         patientArgs;
+    StudyArgs           studyArgs;
+    SeriesArgs          seriesArgs;
+    AcquisitionArgs     acquisitionArgs;
+    InputArgs           inputArgs;
     FiltersArgs         filtersArgs;
-
-
-private:
-    TCLAP::CmdLine cmd;
-
-    bool AccessionNumberWarning(bool hasDicomHeaderFile);
+    InstanceArgs        instanceArgs;
+    OutputArgs          outputArgs;
 };
 //END class n2d::CommandLineParser
 

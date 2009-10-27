@@ -22,10 +22,7 @@
 #include "n2dInputImporter.h"
 
 
-
-namespace n2d
-{
-
+namespace n2d {
 
 bool InputImporter::Import( void )
 {
@@ -34,12 +31,13 @@ bool InputImporter::Import( void )
     reader->SetFileName( m_InputArgs.inputfile );
     try
     {
-        std::cout << "Reading... " << std::flush;
+        std::cout << " * \033[1;34mReading input image\033[0m... " << std::endl;
         reader->Update();
-        std::cout << "DONE" << std::endl;
+        std::cout << " * \033[1;34mReading input image\033[0m... \033[1;32mDONE\033[0m" << std::endl;
     }
     catch ( itk::ExceptionObject & ex )
     {
+        std::cout << " * \033[1;34mReading input image\033[0m... \033[1;31mFAIL\033[0m" << std::endl;
         std::string message;
         message = ex.GetLocation();
         message += "\n";
@@ -48,8 +46,8 @@ bool InputImporter::Import( void )
         return false;
     }
     m_ImportedImage = reader->GetOutput();
-    
-   return true;    
+
+   return true;
 }
 
 

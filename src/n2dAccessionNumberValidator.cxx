@@ -26,11 +26,17 @@
 
 namespace n2d {
 
+
+//BEGIN DICOM tags
+const std::string accessionnumbertag("0008|0050");
+//END DICOM tags
+
+
 bool AccessionNumberValidator::Validate(void)
 {
         if (!m_AccessionNumberArgs.accessionnumber.empty())
         {
-            itk::EncapsulateMetaData<std::string>( m_Dict, "0008|0050", m_AccessionNumberArgs.accessionnumber);
+            itk::EncapsulateMetaData<std::string>( m_Dict, accessionnumbertag, m_AccessionNumberArgs.accessionnumber);
         }
         else if (!m_AccessionNumberArgs.yes)
         {

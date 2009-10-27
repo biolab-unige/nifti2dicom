@@ -20,18 +20,21 @@
 
 
 #include "n2dOutputExporter.h"
+#include "n2dToolsMetaDataDictionary.h"
 
 #include <string>
 #include <sstream>
 
 
-namespace n2d
-{
+namespace n2d {
 
-bool OutputExporter::Export(void )
+bool OutputExporter::Export( void )
 {
+#ifdef DEBUG
+    std::cout << "OutputExporter - BEGIN" << std::endl;
+#endif // DEBUG
+
     unsigned int nbSlices = (m_Image->GetLargestPossibleRegion().GetSize())[2];
-
 
 //BEGIN Output filename
     std::ostringstream fmt;
@@ -46,7 +49,7 @@ bool OutputExporter::Export(void )
 
     std::string Format = fmt.str();
 #ifdef DEBUG
-    std::cout << "Format: " << format << std::endl;
+    std::cout << "Format: " << Format << std::endl;
 #endif // DEBUG
 
     NameGeneratorType::Pointer namesGenerator = NameGeneratorType::New();
@@ -55,6 +58,7 @@ bool OutputExporter::Export(void )
     namesGenerator->SetIncrementIndex( 1 );
 
     namesGenerator->SetSeriesFormat( Format.c_str() );
+
 //END Output filename
 
 
@@ -67,19 +71,28 @@ bool OutputExporter::Export(void )
     seriesWriter->SetImageIO( m_DicomIO );
     seriesWriter->SetFileNames( namesGenerator->GetFileNames() );
 
-
-    //seriesWriter->SetMetaDataDictionaryArray( reader->GetMetaDataDictionaryArray ); //TODO MetaDataDictionary in tutti i files o roba del genere?
+#ifndef DONT_USE_ARRAY
     seriesWriter->SetMetaDataDictionaryArray( &m_DictionaryArray );
+#else // DONT_USE_ARRAY
+    seriesWriter->SetMetaDataDictionary( m_Dict );
+    //seriesWriter->SetMetaDataDictionary(*m_DictionaryArray[0]);
+#endif // DONT_USE_ARRAY
+
+
+//BEGIN FIXME (see n2dOutputExporter.h)
+    CommandUpdate::Pointer observer = CommandUpdate::New();
+    seriesWriter->AddObserver(itk::AnyEvent(), observer);
+//END FIXME (see n2dOutputExporter.h)
 
     try
     {
-        std::cout << "Writing... " << std::flush;
+        std::cout << " * \033[1;34mWriting\033[0m... " << std::endl;
         seriesWriter->Update();
-        std::cout << "DONE" << std::endl;
+        std::cout << " * \033[1;34mWriting\033[0m... \033[1;32mDONE\033[0m" << std::endl;
     }
     catch ( itk::ExceptionObject & ex )
     {
-        std::cout << "Error Writing:" << std::endl;
+        std::cout << " * \033[1;34mWriting\033[0m... \033[1;31mFAIL\033[0m" << std::endl;
         std::string message;
         message = ex.GetLocation();
         message += "\n";
@@ -89,7 +102,12 @@ bool OutputExporter::Export(void )
     }
 //END Writer
 
+#ifdef DEBUG
+    std::cout << "OutputExporter - END" << std::endl;
+#endif // DEBUG
+
     return true;
 }
+
 
 } // namespace n2d

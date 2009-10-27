@@ -19,19 +19,19 @@
 // $Id$
 
 
-#ifndef N2DMETADATATOOLS_H
-#define N2DMETADATATOOLS_H
+#ifndef N2DTOOLSMETADATADICTIONARY_H
+#define N2DTOOLSMETADATADICTIONARY_H
 
 #include <string>
-
-namespace itk { class MetaDataDictionary; }
+#include "n2dDefsMetadata.h"
 
 namespace n2d {
+namespace tools {
 
-void CopyDictionary (const itk::MetaDataDictionary &fromDict, itk::MetaDataDictionary &toDict);
-bool ReadDICOMTags(std::string file, itk::MetaDataDictionary &dict);
-void PrintDictionary (const itk::MetaDataDictionary &Dict);
+void CopyDictionary (const DictionaryType &fromDict, DictionaryType &toDict);
+void PrintDictionary (const DictionaryType &Dict);
 
+} // namespace tools
 } // namespace n2d
 
 

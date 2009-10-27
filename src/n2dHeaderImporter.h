@@ -1,4 +1,4 @@
-//  This file is part of Nifti2Dicom, is an open source converter from 
+//  This file is part of Nifti2Dicom, is an open source converter from
 //  3D NIfTI images to 2D DICOM series.
 //
 //  Copyright (C) 2008,2009 Daniele E. Domenichelli
@@ -19,42 +19,55 @@
 // $Id$
 
 
-#ifndef N2DUIDGENERATOR_H
-#define N2DUIDGENERATOR_H
+#ifndef N2DHEADERIMPORTER_H
+#define N2DHEADERIMPORTER_H
 
 #include "n2dDefsCommandLineArgsStructs.h"
 #include "n2dDefsMetadata.h"
-#include "n2dDefsIO.h"
+
+
 
 
 namespace n2d {
 
-//BEGIN class n2d::UIDGenerator
+//BEGIN class n2d::HeaderImporter
 /*!
- * \brief [...]
+ * \brief Reads a DICOM file and imports its header
  *
  */
-class UIDGenerator
+
+class HeaderImporter
 {
 public:
-    UIDGenerator(const UIDArgs& uidArgs, DictionaryType& dict, DICOMImageIOType::Pointer dicomIO) :
-            m_UIDArgs(uidArgs),
-            m_Dict(dict),
-            m_DicomIO(dicomIO)
+    HeaderImporter(const DicomHeaderArgs& dicomHeaderArgs, DictionaryType& dict) :
+            m_DicomHeaderArgs(dicomHeaderArgs),
+            m_Dictionary(dict)
     {
     }
 
-    ~UIDGenerator() {}
+    ~HeaderImporter() {}
 
-    bool Generate(void);
+    bool Import( void );
+
+
+/*!
+ * \brief Get internal DICOM tags dictionary
+ *
+ * \return Internal DICOM tags dictionary.
+ */
+    inline const n2d::DictionaryType& getMetaDataDictionary(void) const { return m_Dictionary; }
+
 
 private:
-    const UIDArgs& m_UIDArgs;
-    DictionaryType& m_Dict;
-    DICOMImageIOType::Pointer m_DicomIO;
+    bool ReadDICOMTags( std::string file );
+
+    const DicomHeaderArgs& m_DicomHeaderArgs; //!< Input Arguments.
+    n2d::DictionaryType &m_Dictionary;
 };
-//END class n2d::UIDGenerator
+//END class n2d::HeaderImporter
+
 
 } // namespace n2d
 
-#endif // N2DUIDGENERATOR_H
+
+#endif // #ifndef N2DHEADERIMPORTER_H
