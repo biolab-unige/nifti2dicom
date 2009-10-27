@@ -19,23 +19,6 @@
 // $Id$
 
 
-#include <iostream>
-
-#include "n2dDefsImage.h"
-#include "n2dDefsMetadata.h"
-#include "n2dDefsIO.h"
-#include "n2dMetaDataDictionaryTools.h"
-#include "n2dCommandLineParser.h"
-#include "n2dInputImporter.h"
-#include "n2dInputFilter.h"
-#include "n2dVitalStatisticsImporter.h"
-#include "n2dDicomTagsImporter.h"
-#include "n2dUIDGenerator.h"
-#include "n2dAccessionNumberValidator.h"
-#include "n2dSlicer.h"
-#include "n2dOutputExporter.h"
-
-
 /*
 Alcune note:
   1. seriesdescription: l'elenco fisso deve avere questi campi:
@@ -49,7 +32,7 @@ Alcune note:
      1. (default) da inserire a mano;
      2. copia dall'header DICOM ma dà un warning per avvertire che ci saranno due/o più
         immagini con lo stesso Accession Number.
-  3. studyistanceUID e seriesnumber: il filtro li completa già da solo (sono campi univoci
+  3. studyinstanceUID e seriesnumber: il filtro li completa già da solo (sono campi univoci
      creati a partire dalla data dell'esame, dall'ora) bisogna capire come vengono creati
      per controllare l'effettiva correttezza di tali campi.
   4. patientName: allo stato attuale di default viene settato a "GDCM" quindi loro lo
@@ -60,40 +43,80 @@ Alcune note:
 */
 
 
+/*
+Altre note:
+  Ordine delle operazioni:
+ ( -1. Dichiarazioni degli oggetti comuni  )
+ (  0. Lettura della command line  )
+    1. Controllo dell'accession number
+    2. Importazione dell'header
+    3. Class/Modality/Transfer Syntax
+    4. Other DICOM tags
+    5. Patient
+    6. Study
+    7. Series
+    8. Acquisition
+    9. Image import
+   10. Image filters
+   11. Instance (Reslicing)
+   12. Output
+*/
 
+
+#include <iostream>
+
+#include "n2dDefsImage.h"
+#include "n2dDefsMetadata.h"
+#include "n2dDefsIO.h"
+
+#include "n2dCommandLineParser.h"
+
+#include "n2dAccessionNumberValidator.h"
+#include "n2dHeaderImporter.h"
+#include "n2dDicomClass.h"
+#include "n2dOtherDicomTags.h"
+#include "n2dPatient.h"
+#include "n2dStudy.h"
+#include "n2dSeries.h"
+#include "n2dAcquisition.h"
+#include "n2dInputImporter.h"
+#include "n2dInputFilter.h"
+#include "n2dInstance.h"
+#include "n2dOutputExporter.h"
+
+#include "n2dToolsMetaDataDictionary.h"
 
 
 int main(int argc, char* argv[])
 {
+
 //BEGIN Common objects declaration
     n2d::CommandLineParser parser;
     n2d::ImageType::ConstPointer inputImage;
     n2d::DICOM3DImageType::ConstPointer filteredImage;
-    n2d::DictionaryType dictionary;
+    n2d::DictionaryType dictionary, importedDictionary;
     n2d::DictionaryArrayType dictionaryArray;
 
     n2d::DICOMImageIOType::Pointer dicomIO = n2d::DICOMImageIOType::New();
     dicomIO->KeepOriginalUIDOn(); // Preserve the original DICOM UID of the input files
     dicomIO->UseCompressionOff();
-    dicomIO->UseExplicitVRLittleEndianOn();
 //END Common objects declaration
-
 
 
 
 //BEGIN Command line parsing
     try
     {
-        if (!parser.parse(argc,argv))
+        if (!parser.Parse(argc,argv))
         {
             std::cerr << "ERROR in \"Command line parsing\"." << std::endl;
-            exit(101);
+            exit(1);
         }
     }
     catch (...)
     {
         std::cerr << "ERROR in \"Command line parsing\"." << std::endl;
-        exit(1);
+        exit(101);
     }
 //END Command line parsing
 
@@ -107,16 +130,149 @@ int main(int argc, char* argv[])
         if (!accessionNumberValidator.Validate())
         {
             std::cerr << "ERROR in \"DICOM accession number validation\"." << std::endl;
-            exit(102);
+            exit(2);
         }
     }
     catch (...)
     {
-        std::cerr << "ERROR in \"DICOM accession number validation\"." << std::endl;
-        exit(2);
+        std::cerr << "Unknown ERROR in \"DICOM accession number validation\"." << std::endl;
+        exit(102);
     }
 //END DICOM accession number validation
 
+
+
+//BEGIN DICOM header import
+    try
+    {
+        n2d::HeaderImporter headerImporter(parser.dicomHeaderArgs, importedDictionary);
+        if (!headerImporter.Import())
+        {
+            std::cerr << "ERROR in \"DICOM header import\"." << std::endl;
+            exit(3);
+        }
+    }
+    catch (...)
+    {
+        std::cerr << "Unknown ERROR in \"DICOM header import\"." << std::endl;
+        exit(103);
+    }
+//END DICOM header import
+
+
+
+
+//BEGIN DICOM Class
+    try
+    {
+        n2d::DicomClass dicomClass(parser.dicomClassArgs, importedDictionary, dictionary);
+        if (!dicomClass.Update())
+        {
+            std::cerr << "ERROR in \"DICOM Class\"." << std::endl;
+            exit(4);
+        }
+    }
+    catch (...)
+    {
+        std::cerr << "Unknown ERROR in \"DICOM Class\"." << std::endl;
+        exit(104);
+    }
+//END DICOM Class
+
+
+
+//BEGIN Other DICOM Tags
+    try
+    {
+        n2d::OtherDicomTags otherDicomTags(parser.otherDicomTagsArgs, dictionary);
+        if (!otherDicomTags.Update())
+        {
+            std::cerr << "ERROR in \"Other DICOM Tags\"." << std::endl;
+            exit(5);
+        }
+    }
+    catch (...)
+    {
+        std::cerr << "Unknown ERROR in \"Other DICOM Tags\"." << std::endl;
+        exit(105);
+    }
+//END Other DICOM Tags
+
+
+
+//BEGIN Patient
+    try
+    {
+        n2d::Patient patient(parser.patientArgs, importedDictionary, dictionary);
+        if (!patient.Update())
+        {
+            std::cerr << "ERROR in \"Patient\"." << std::endl;
+            exit(6);
+        }
+    }
+    catch (...)
+    {
+        std::cerr << "Unknown ERROR in \"Patient\"." << std::endl;
+        exit(106);
+    }
+//END Patient
+
+
+
+//BEGIN Study
+    try
+    {
+        n2d::Study study(parser.studyArgs, importedDictionary, dictionary);
+        if (!study.Update())
+        {
+            std::cerr << "ERROR in \"Study\"." << std::endl;
+            exit(7);
+        }
+    }
+    catch (...)
+    {
+        std::cerr << "Unknown ERROR in \"Study\"." << std::endl;
+        exit(107);
+    }
+//END Study
+
+
+
+//BEGIN Series
+    try
+    {
+        n2d::Series series(parser.seriesArgs, importedDictionary, dictionary);
+        if (!series.Update())
+        {
+            std::cerr << "ERROR in \"Series\"." << std::endl;
+            exit(8);
+        }
+    }
+    catch (...)
+    {
+        std::cerr << "Unknown ERROR in \"Series\"." << std::endl;
+        exit(108);
+    }
+//END Series
+
+
+
+//BEGIN Acquisition
+    try
+    {
+        n2d::Acquisition acquisition(parser.acquisitionArgs, dictionary);
+        if (!acquisition.Update())
+        {
+            std::cerr << "ERROR in \"Acquisition\"." << std::endl;
+            exit(9);
+        }
+    }
+    catch (...)
+    {
+        std::cerr << "Unknown ERROR in \"Acquisition\"." << std::endl;
+        exit(109);
+    }
+//END Acquisition
 
 
 
@@ -127,18 +283,16 @@ int main(int argc, char* argv[])
         if (!inputImporter.Import())
         {
             std::cerr << "ERROR in \"Input image import\"." << std::endl;
-            exit(103);
+            exit(10);
         }
         inputImage = inputImporter.getImportedImage();
-        dictionary = inputImporter.getMetaDataDictionary();
     }
     catch (...)
     {
-        std::cerr << "ERROR in \"Input image import\"." << std::endl;
-        exit(3);
+        std::cerr << "Unknown ERROR in \"Input image import\"." << std::endl;
+        exit(110);
     }
 //END Input image import
-
 
 
 
@@ -149,120 +303,59 @@ int main(int argc, char* argv[])
         if (!inputFilter.Filter())
         {
             std::cerr << "ERROR in \"Input filtering\"." << std::endl;
-            exit(104);
+            exit(11);
         }
         filteredImage = inputFilter.getFilteredImage();
     }
     catch (...)
     {
-        std::cerr << "ERROR in \"Input filtering\"." << std::endl;
-        exit(4);
+        std::cerr << "Unknown ERROR in \"Input filtering\"." << std::endl;
+        exit(111);
     }
 //END Input filtering
 
 
 
-
-//BEGIN Vital statistics import
+//BEGIN Instance
     try
     {
-        n2d::VitalStatisticsImporter vitalStatisticsImporter(parser.vitalStatisticsArgs, dictionary);
-        if (!vitalStatisticsImporter.Import())
+        n2d::Instance instance(parser.instanceArgs, filteredImage, dictionary, dictionaryArray);
+        if (!instance.Update())
         {
-            std::cerr << "ERROR in \"Vital statistics import\"." << std::endl;
-            exit(105);
+            std::cerr << "ERROR in \"Instance\"." << std::endl;
+            exit(12);
         }
     }
     catch (...)
     {
-        std::cerr << "ERROR in \"Vital statistics import\"." << std::endl;
-        exit(5);
+        std::cerr << "Unknown ERROR in \"Instance\"." << std::endl;
+        exit(112);
     }
-//END Vital statistics import
-
-
-
-
-//BEGIN DICOM tags import
-    try
-    {
-        n2d::DicomTagsImporter dicomTagsImporter(parser.dicomTagsArgs, dictionary);
-        if (!dicomTagsImporter.Import())
-        {
-            std::cerr << "ERROR in \"DICOM tags import\"." << std::endl;
-            exit(106);
-        }
-    }
-    catch (...)
-    {
-        std::cerr << "ERROR in \"DICOM tags import\"." << std::endl;
-        exit(6);
-    }
-//END DICOM tags import
-
-
-
-
-//BEGIN DICOM UID generation
-    try
-    {
-        n2d::UIDGenerator uidGenerator(parser.uidArgs, dictionary, dicomIO);
-        if (!uidGenerator.Generate())
-        {
-            std::cerr << "ERROR in \"DICOM UID generation\"." << std::endl;
-            exit(107);
-        }
-    }
-    catch (...)
-    {
-        std::cerr << "ERROR in \"DICOM UID generation\"." << std::endl;
-        exit(7);
-    }
-//END DICOM UID generation
-
-
-
-
-//BEGIN Slicer
-    try
-    {
-        n2d::Slicer slicer(parser.resliceArgs, filteredImage, dictionary, dictionaryArray);
-        if (!slicer.Reslice())
-        {
-            std::cerr << "ERROR in \"Slicer\"." << std::endl;
-            exit(108);
-        }
-
-    }
-    catch (...)
-    {
-        std::cerr << "ERROR in \"Slicer\"." << std::endl;
-        exit(8);
-    }
-//END Slicer
-
+//END Instance
 
 
 
 //BEGIN Output
     try
     {
+
+#ifndef DONT_USE_ARRAY
         n2d::OutputExporter outputExporter(parser.outputArgs, filteredImage, dictionaryArray, dicomIO);
-//        n2d::OutputExporter outputExporter(parser.outputArgs, filteredImage, dictionary, dicomIO);
+#else // DONT_USE_ARRAY
+        n2d::OutputExporter outputExporter(parser.outputArgs, filteredImage, dictionary, dicomIO);
+#endif // DONT_USE_ARRAY
 
         if (!outputExporter.Export())
         {
             std::cerr << "ERROR in \"Output\"." << std::endl;
-            exit(109);
+            exit(13);
         }
     }
     catch (...)
     {
-        std::cerr << "ERROR in \"Output\"." << std::endl;
-        exit(9);
+        std::cerr << "Unknown ERROR in \"Output\"." << std::endl;
+        exit(113);
     }
-
-
 //END Output
 
     return EXIT_SUCCESS;

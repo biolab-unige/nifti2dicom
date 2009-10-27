@@ -19,58 +19,51 @@
 // $Id$
 
 
-#ifndef N2DINPUTFILTER_H
-#define N2DINPUTFILTER_H
+#ifndef N2DPATIENT_H
+#define N2DPATIENT_H
 
-#include "n2dDefsImage.h"
-#include "n2dDefsMetadata.h"
 #include "n2dDefsCommandLineArgsStructs.h"
+#include "n2dDefsMetadata.h"
 
 
 namespace n2d {
 
-//BEGIN class n2d::InputFilter
+//BEGIN class n2d::Patient
 /*!
- * \brief Filters the image
+ * \brief A class that handles DICOM tags related to Patient
  *
- * Also handles:
+ * The following tags are handled by this class:
  *
- * \li (0020,0020) Patient Orientation/
+ * \li (0010,0010) Patient's Name
+ * \li (0010,0020) Patient ID
+ * \li (0010,0030) Patient's Birth Date
+ * \li (0010,0040) Patient's Sex
+ * \li (0010,1010) Patient's Age
+ * \li (0010,1030) Patient's Weight
+ * \li (0010|****)
  */
-class InputFilter
+class Patient
 {
 public:
-    InputFilter(const FiltersArgs& filtersArgs, ImageType::ConstPointer inputImage, DictionaryType& dict) :
-            m_FiltersArgs(filtersArgs),
-            m_InputImage(inputImage),
+    Patient(const PatientArgs patientArgs, const DictionaryType& importedDict, DictionaryType& dict) :
+            m_PatientArgs(patientArgs),
+            m_ImportedDict(importedDict),
             m_Dict(dict)
     {
     }
+    ~Patient() {}
 
-    ~InputFilter() {}
-
-    bool Filter( void );
-
-/*!
- * \brief Get filtered image.
- *
- * \return Internal image
- * \sa m_FilteredImage
- */
-    inline DICOM3DImageType::ConstPointer getFilteredImage(void) const { return m_FilteredImage; }
-
+    bool Update( void );
 
 private:
-    const FiltersArgs& m_FiltersArgs;
-    ImageType::ConstPointer m_InputImage;
-    DICOM3DImageType::ConstPointer m_FilteredImage;
+    static void CopyPatientTags(const itk::MetaDataDictionary &fromDict, itk::MetaDataDictionary &toDict);
+
+    const PatientArgs m_PatientArgs;
+    const DictionaryType& m_ImportedDict;
     DictionaryType& m_Dict;
-
 };
-//END class n2d::InputFilter
+//END class n2d::Patient
 
-} // namespace n2d
+}
 
-
-
-#endif // N2DINPUTFILTER_H
+#endif // N2DPATIENT_H

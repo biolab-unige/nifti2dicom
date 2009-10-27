@@ -1,4 +1,4 @@
-//  This file is part of Nifti2Dicom, is an open source converter from 
+//  This file is part of Nifti2Dicom, is an open source converter from
 //  3D NIfTI images to 2D DICOM series.
 //
 //  Copyright (C) 2008,2009 Daniele E. Domenichelli
@@ -19,58 +19,44 @@
 // $Id$
 
 
-#ifndef N2DINPUTFILTER_H
-#define N2DINPUTFILTER_H
+#ifndef N2DACQUISITION_H
+#define N2DACQUISITION_H
 
-#include "n2dDefsImage.h"
-#include "n2dDefsMetadata.h"
 #include "n2dDefsCommandLineArgsStructs.h"
+#include "n2dDefsMetadata.h"
 
 
 namespace n2d {
 
-//BEGIN class n2d::InputFilter
+//BEGIN class n2d::Acquisition
 /*!
- * \brief Filters the image
+ * \brief A class that handles DICOM tags related to Acquisition
  *
- * Also handles:
+ * The following tags are handled by this class:
  *
- * \li (0020,0020) Patient Orientation/
+ * \li (0020,0012) Acquisition Number
+ * \li (0008,0022) Acquisition Date
+ * \li (0008,0032) Acquisition Time
  */
-class InputFilter
+class Acquisition
 {
 public:
-    InputFilter(const FiltersArgs& filtersArgs, ImageType::ConstPointer inputImage, DictionaryType& dict) :
-            m_FiltersArgs(filtersArgs),
-            m_InputImage(inputImage),
+    Acquisition(const AcquisitionArgs& acquisitionArgs, DictionaryType& dict) :
+            m_AcquisitionArgs(acquisitionArgs),
             m_Dict(dict)
     {
     }
 
-    ~InputFilter() {}
+    ~Acquisition() {}
 
-    bool Filter( void );
-
-/*!
- * \brief Get filtered image.
- *
- * \return Internal image
- * \sa m_FilteredImage
- */
-    inline DICOM3DImageType::ConstPointer getFilteredImage(void) const { return m_FilteredImage; }
-
+    bool Update( void );
 
 private:
-    const FiltersArgs& m_FiltersArgs;
-    ImageType::ConstPointer m_InputImage;
-    DICOM3DImageType::ConstPointer m_FilteredImage;
+    const AcquisitionArgs& m_AcquisitionArgs;
     DictionaryType& m_Dict;
-
 };
-//END class n2d::InputFilter
+//END class n2d::Acquisition
 
 } // namespace n2d
 
-
-
-#endif // N2DINPUTFILTER_H
+#endif // N2DACQUISITION_H

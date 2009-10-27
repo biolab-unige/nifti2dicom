@@ -19,42 +19,50 @@
 // $Id$
 
 
-#ifndef N2DUIDGENERATOR_H
-#define N2DUIDGENERATOR_H
+#ifndef N2DSTUDY_H
+#define N2DSTUDY_H
 
 #include "n2dDefsCommandLineArgsStructs.h"
 #include "n2dDefsMetadata.h"
-#include "n2dDefsIO.h"
 
 
 namespace n2d {
 
-//BEGIN class n2d::UIDGenerator
+//BEGIN class n2d::Study
 /*!
- * \brief [...]
+ * \brief A class that handles DICOM tags related to Study
  *
+ * The following tags are handled by this class:
+ *
+ * \li (0020|000d) Study Instance UID
+ * \li (0020|0010) Study ID
+ * \li (0008|1030) Study Description
+ * \li (0008|0020) Study Date
+ * \li (0008|0030) Study Time
  */
-class UIDGenerator
+class Study
 {
 public:
-    UIDGenerator(const UIDArgs& uidArgs, DictionaryType& dict, DICOMImageIOType::Pointer dicomIO) :
-            m_UIDArgs(uidArgs),
-            m_Dict(dict),
-            m_DicomIO(dicomIO)
+    Study(const StudyArgs& studyArgs, const DictionaryType& importedDict, DictionaryType& dict) :
+            m_StudyArgs(studyArgs),
+            m_ImportedDict(importedDict),
+            m_Dict(dict)
     {
     }
 
-    ~UIDGenerator() {}
+    ~Study() {}
 
-    bool Generate(void);
+    bool Update( void );
 
 private:
-    const UIDArgs& m_UIDArgs;
+    static void CopyStudyTags(const itk::MetaDataDictionary &fromDict, itk::MetaDataDictionary &toDict);
+
+    const StudyArgs& m_StudyArgs;
+    const DictionaryType& m_ImportedDict;
     DictionaryType& m_Dict;
-    DICOMImageIOType::Pointer m_DicomIO;
 };
-//END class n2d::UIDGenerator
+//END class n2d::Study
 
 } // namespace n2d
 
-#endif // N2DUIDGENERATOR_H
+#endif // N2DSTUDY_H

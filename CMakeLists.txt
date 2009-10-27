@@ -25,7 +25,7 @@ project(Nifti2Dicom)
 
 set(Nifti2Dicom_MAJOR_VERSION "0")
 set(Nifti2Dicom_MINOR_VERSION "2")
-set(Nifti2Dicom_PATCH_VERSION "80")
+set(Nifti2Dicom_PATCH_VERSION "91")
 
 set(Nifti2Dicom_VERSION "${Nifti2Dicom_MAJOR_VERSION}.${Nifti2Dicom_MINOR_VERSION}.${Nifti2Dicom_PATCH_VERSION}")
 
@@ -34,16 +34,24 @@ find_package(ITK)
 if(ITK_FOUND)
     include(${ITK_USE_FILE})
 else(ITK_FOUND)
-    message(FATAL_ERROR "Itk not found")
+    message(FATAL_ERROR "ITK not found")
 endif(ITK_FOUND)
-#TODO Inserire controllo libreria TCLAP (command line parsing)
+
+#TODO
+#find_package(GDCM REQUIRED)
+#if(GDCM_FOUND)
+#    include(${GDCM_USE_FILE})
+#else(GDCM_FOUND)
+#    message(FATAL_ERROR "GDCM 2 not found")
+#endif(GDCM_FOUND)
+
+#TODO Check GDCM 2 Library (DICOM reading/writing)
+#TODO Check TCLAP Library (command line parsing)
 
 
 configure_file(${CMAKE_SOURCE_DIR}/Nifti2DicomConfig.h.cmake ${CMAKE_BINARY_DIR}/Nifti2DicomConfig.h)
 
 include_directories(${CMAKE_BINARY_DIR})
-
-
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebugInfo")
   message(STATUS "DEBUG ENABLED")
@@ -51,43 +59,6 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebugI
 else()
   message(STATUS "DEBUG NOT ENABLED")
 endif()
-
-
-
-set(nifti2dicom_SOURCES src/nifti2dicom.cxx
-                        src/n2dMetaDataDictionaryTools.cxx
-                        src/n2dCommandLineParser.cxx
-                        src/n2dInputImporter.cxx
-                        src/n2dInputFilter.cxx
-                        src/n2dVitalStatisticsImporter.cxx
-                        src/n2dDicomTagsImporter.cxx
-                        src/n2dUIDGenerator.cxx
-                        src/n2dSlicer.cxx
-                        src/n2dAccessionNumberValidator.cxx
-                        src/n2dOutputExporter.cxx
-)
-
-set(nifti2dicom_NO_INSTALL_HEADERS Nifti2DicomConfig.h
-                                   src/n2dDefsCommandLineArgsStructs.h
-                                   src/n2dDefsImage.h
-                                   src/n2dDefsMetadata.h
-                                   src/n2dMetaDataDictionaryTools.h
-                                   src/n2dCommandLineParser.h
-                                   src/n2dInputImporter.h
-                                   src/n2dInputFilter.h
-                                   src/n2dVitalStatisticsImporter.h
-                                   src/n2dDicomTagsImporter.h
-                                   src/n2dUIDGenerator.h
-                                   src/n2dSlicer.h
-                                   src/n2dAccessionNumberValidator.h
-                                   src/n2dOutputExporter.h
-)
-
-
-add_executable(nifti2dicom ${nifti2dicom_SOURCES})
-target_link_libraries(nifti2dicom ITKIO ITKCommon)
-install(TARGETS nifti2dicom RUNTIME DESTINATION bin)
-
 
 # make dist target
 
@@ -101,4 +72,7 @@ set(CPACK_SOURCE_IGNORE_FILES
   "~$;/build/;/.svn/;/.kdev4/;\\\\.kdev4;${CPACK_SOURCE_IGNORE_FILES}")
 include(CPack)
 add_custom_target(dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
+
+
+add_subdirectory(src)
 

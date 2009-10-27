@@ -19,44 +19,59 @@
 // $Id$
 
 
-#ifndef N2DSLICER_H
-#define N2DSLICER_H
+#ifndef N2DINSTANCE_H
+#define N2DINSTANCE_H
 
 #include "n2dDefsCommandLineArgsStructs.h"
-#include "n2dDefsImage.h"
 #include "n2dDefsMetadata.h"
+#include "n2dDefsImage.h"
 
 namespace n2d {
 
-//BEGIN class n2d::Slicer
+
+//BEGIN class n2d::Instance
 /*!
- * \brief [...]
+ * \brief A class that handles DICOM tags related to Series
  *
+ * The following tags are handled by this class:
+ *
+ * \li (0020,0013) Instance Number
+ *
+ * Also handles:
+ *
+ * \li ITK_NumberOfDimensions
+ * \li ITK_Origin
+ * \li ITK_Spacing
+ * \li ITK_Direction
+ *
+ * These "ITK_" tags are used by itkGDCMImageIO to know 3D information of a 2D slice but maybe in the future they'll be handled by itkSeriesWriter.
+ * \note In future this class could be unuseful because handled by ITK + GDCM2 or maybe ITK will set correctly ITK_ tags.
+ * \note ITK_Direction is not supported by ITK at the moment, a patch was submitted to support it.
  */
-class Slicer
+class Instance
 {
 public:
-    Slicer(const ResliceArgs& resliceArgs, DICOM3DImageType::ConstPointer image, DictionaryType& dict, DictionaryArrayType& dictionaryArray) :
-            m_ResliceArgs(resliceArgs),
+    Instance(const InstanceArgs& instanceArgs, DICOM3DImageType::ConstPointer image, DictionaryType& dict, DictionaryArrayType& dictionaryArray) :
+            m_InstanceArgs(instanceArgs),
             m_Image(image),
             m_Dict(dict),
             m_DictionaryArray(dictionaryArray)
     {
     }
-    ~Slicer() {}
+    ~Instance() {}
 
-    bool Reslice(void);
-    
+    bool Update( void );
+
 private:
-    const ResliceArgs& m_ResliceArgs;
+    const InstanceArgs& m_InstanceArgs;
     DICOM3DImageType::ConstPointer m_Image;
     DictionaryType& m_Dict;
     DictionaryArrayType& m_DictionaryArray;
 
 
 };
-//END class n2d::Slicer
+//END class n2d::Instance
 
 } // namespace n2d
 
-#endif // N2DSLICER_H
+#endif // N2DINSTANCE_H
