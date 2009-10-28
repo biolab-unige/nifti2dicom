@@ -1,0 +1,30 @@
+--- tclap-1.1.0.orig/include/tclap/MultiSwitchArg.h
++++ tclap-1.1.0/include/tclap/MultiSwitchArg.h
+@@ -179,14 +179,14 @@
+ 		return false;
+ }
+ 
+-std::string MultiSwitchArg::shortID(const std::string& val) const
++inline std::string MultiSwitchArg::shortID(const std::string& val) const
+ {
+ 	std::string id = Arg::shortID() + " ... ";
+ 
+ 	return id;
+ }
+ 
+-std::string MultiSwitchArg::longID(const std::string& val) const
++inline std::string MultiSwitchArg::longID(const std::string& val) const
+ {
+ 	std::string id = Arg::longID() + "  (accepted multiple times)";
+ 
+--- tclap-1.1.0.orig/include/tclap/OptionalUnlabeledTracker.h
++++ tclap-1.1.0/include/tclap/OptionalUnlabeledTracker.h
+@@ -45,7 +45,7 @@
+ };
+ 
+ 
+-void OptionalUnlabeledTracker::check( bool req, const std::string& argName )
++inline void OptionalUnlabeledTracker::check( bool req, const std::string& argName )
+ {
+     if ( OptionalUnlabeledTracker::alreadyOptional() )
+         throw( SpecificationException(
