@@ -25,6 +25,11 @@
 #define Nifti2Dicom_MAJOR_VERSION ${Nifti2Dicom_MAJOR_VERSION}
 #define Nifti2Dicom_MINOR_VERSION ${Nifti2Dicom_MINOR_VERSION}
 #define Nifti2Dicom_PATCH_VERSION ${Nifti2Dicom_PATCH_VERSION}
+#define Nifti2Dicom_INTERNAL_VERSION "${Nifti2Dicom_INTERNAL_VERSION}"
 #define Nifti2Dicom_VERSION "${Nifti2Dicom_VERSION}"
+
+#define TCLAP_VERSION "${TCLAP_VERSION}"
+#include <itkVersion.h>
+#include <gdcmVersion.h>
 
 #endif // #ifndef NIFTI2DICOMCONFIG_H

@@ -21,7 +21,6 @@
 #ifndef N2DVERSION_H
 #define N2DVERSION_H
 
-#include "Nifti2DicomConfig.h"
 #include <string>
 
 namespace n2d {
@@ -29,6 +28,8 @@ namespace n2d {
 int GetMajorVersion();
 int GetMinorVersion();
 int GetPatchVersion();
+std::string GetInternalVersion();
+std::string GetNameAndInternalVersion();
 std::string GetVersion();
 std::string GetNameAndVersion();
 

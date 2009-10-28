@@ -26,10 +26,24 @@ project(Nifti2Dicom)
 set(Nifti2Dicom_MAJOR_VERSION "0")
 set(Nifti2Dicom_MINOR_VERSION "2")
 set(Nifti2Dicom_PATCH_VERSION "91")
+set(Nifti2Dicom_VERSION "0.3 Beta")
+set(Nifti2Dicom_INTERNAL_VERSION "${Nifti2Dicom_MAJOR_VERSION}.${Nifti2Dicom_MINOR_VERSION}.${Nifti2Dicom_PATCH_VERSION}")
 
-set(Nifti2Dicom_VERSION "${Nifti2Dicom_MAJOR_VERSION}.${Nifti2Dicom_MINOR_VERSION}.${Nifti2Dicom_PATCH_VERSION}")
+
+#Check pkg-config
+find_package(PkgConfig)
 
 
+#Check TCLAP Library [Templatized C++ Command Line Parser] (1.2.0)
+pkg_check_modules(TCLAP REQUIRED tclap>=1.2.0)
+if(TCLAP_FOUND)
+    include_directories(${TCLAP_INCLUDE_DIRS})
+else(TCLAP_FOUND)
+    message(FATAL_ERROR "TCLAP not found")
+endif(TCLAP_FOUND)
+
+
+# Check ITK Library [Insight ToolKit] (3.17.0)
 find_package(ITK)
 if(ITK_FOUND)
     include(${ITK_USE_FILE})
@@ -37,16 +51,15 @@ else(ITK_FOUND)
     message(FATAL_ERROR "ITK not found")
 endif(ITK_FOUND)
 
-#TODO
+
+#TODO Check GDCM Library [Grassroots DiCoM] (2.1.13)
 #find_package(GDCM REQUIRED)
+#message("GDCM_VERSION = " ${GDCM_VERSION})
 #if(GDCM_FOUND)
 #    include(${GDCM_USE_FILE})
 #else(GDCM_FOUND)
 #    message(FATAL_ERROR "GDCM 2 not found")
 #endif(GDCM_FOUND)
-
-#TODO Check GDCM 2 Library (DICOM reading/writing)
-#TODO Check TCLAP Library (command line parsing)
 
 
 configure_file(${CMAKE_SOURCE_DIR}/Nifti2DicomConfig.h.cmake ${CMAKE_BINARY_DIR}/Nifti2DicomConfig.h)

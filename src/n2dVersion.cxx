@@ -20,10 +20,8 @@
 
 
 #include "n2dVersion.h"
+#include "Nifti2DicomConfig.h"
 #include <sstream>
-#include <itkVersion.h>
-#include <gdcmVersion.h>
-#define TCLAP_VERSION "1.1.0" //TODO
 
 
 namespace n2d {
@@ -42,6 +40,18 @@ int GetMinorVersion()
 int GetPatchVersion()
 {
     return Nifti2Dicom_PATCH_VERSION;
+}
+
+std::string GetInternalVersion()
+{
+    return Nifti2Dicom_INTERNAL_VERSION;
+}
+
+std::string GetNameAndInternalVersion()
+{
+    std::ostringstream ost;
+    ost << "nifti2dicom " << Nifti2Dicom_INTERNAL_VERSION;
+    return ost.str();
 }
 
 std::string GetVersion()
