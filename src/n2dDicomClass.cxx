@@ -20,7 +20,7 @@
 
 
 #include "n2dDicomClass.h"
-#include "Nifti2DicomConfig.h"
+#include "n2dVersion.h"
 
 #ifdef DEBUG
  #include "n2dToolsMetaDataDictionary.h"
@@ -41,9 +41,9 @@ const std::string protocolnametag      ( "0018|1030" );
 //BEGIN Default values
 const std::string defaulttransfersyntaxuid ( "1.2.840.10008.1.2" );
 const std::string defaultsopclassuid       ( "1.2.840.10008.5.1.4.1.1.4" );
-const std::string defaultmodality          ( "MR"                               );
-const std::string defaultimagetype         ( "DERIVED\\SECONDARY"               );
-const std::string defaultprotocolname      ( "nifti2dicom " Nifti2Dicom_VERSION );
+const std::string defaultmodality          ( "MR" );
+const std::string defaultimagetype         ( "DERIVED\\SECONDARY" );
+const std::string defaultprotocolname      ( GetNameAndVersion() );
 //END Default values
 
 

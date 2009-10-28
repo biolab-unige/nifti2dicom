@@ -20,7 +20,7 @@
 
 
 #include "n2dCommandLineParser.h"
-#include "Nifti2DicomConfig.h"
+#include "n2dVersion.h"
 
 
 namespace n2d {
@@ -28,9 +28,17 @@ namespace n2d {
 
 bool CommandLineParser::Parse(int argc, char* argv[])
 {
+    std::ostringstream version;
+    version << GetVersion() << std::endl;
+    version << std::endl<< "Using:" << std::endl;
+    version << "\t" << "ITK    " << GetITKVersion() << std::endl;
+    version << "\t" << "GDCM   " << GetGDCMVersion() << std::endl;
+    version << "\t" << "TCLAP  " << GetTCLAPVersion() << std::endl;
+    version << std::endl << GetCopyright();
+
     try
     {
-        TCLAP::CmdLine cmd("Converts NIfTI1 images to DICOM", ' ', std::string(Nifti2Dicom_VERSION) + "\n\t\tCopyright (C) 2008,2009 Daniele E. Domenichelli, BioLab, DIST, University of Genoa, Italy");
+        TCLAP::CmdLine cmd("Converts NIfTI1 images to DICOM", ' ', version.str());
 //BEGIN Command line arguments declaration
 
     //BEGIN Accession number command line arguments

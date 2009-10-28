@@ -20,6 +20,7 @@
 
 
 set(nifti2dicom_SOURCES nifti2dicom.cxx
+                        n2dVersion.cxx
                         n2dToolsMetaDataDictionary.cxx
                         n2dToolsDate.cxx
                         n2dCommandLineParser.cxx
@@ -38,6 +39,7 @@ set(nifti2dicom_SOURCES nifti2dicom.cxx
 )
 
 set(nifti2dicom_NO_INSTALL_HEADERS ${CMAKE_BINARY_DIR}/Nifti2DicomConfig.h
+                                   n2dVersion.h
                                    n2dDefsCommandLineArgsStructs.h
                                    n2dDefsImage.h
                                    n2dDefsMetadata.h
