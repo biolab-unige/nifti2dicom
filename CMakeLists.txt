@@ -73,6 +73,21 @@ else()
   message(STATUS "DEBUG NOT ENABLED")
 endif()
 
+
+
+# Build documentation if doxygen and graphviz are found
+
+find_package(Doxygen)
+if (DOXYGEN_FOUND AND DOXYGEN_DOT_FOUND)
+    message(STATUS "To build documentation run the 'doc' target")
+    add_subdirectory(doc)
+else (DOXYGEN_FOUND AND DOXYGEN_DOT_FOUND)
+    message(STATUS "You will need both doxygen and graphviz 'dot' to build documentation")
+endif (DOXYGEN_FOUND AND DOXYGEN_DOT_FOUND)
+
+
+
+
 # make dist target
 
 set(CPACK_PACKAGE_VERSION_MAJOR ${Nifti2Dicom_MAJOR_VERSION})
