@@ -46,7 +46,7 @@ diff -u -r1.33 itkImageSeriesWriter.txx
 +          {
 +          for( unsigned int j = 0; j < inputImageDimension; j++ )
 +            {
-+            directionMatrix[i][j]  = direction2[i][j];
++            directionMatrix[j][i]  = direction2[i][j];
 +            }
 +          }
 +        EncapsulateMetaData< DoubleMatrixType >( dictionary, ITK_Direction, directionMatrix );
@@ -71,7 +71,7 @@ diff -u -r1.167 itkGDCMImageIO.cxx
 +        ExposeMetaData< DoubleMatrixType >( dict, key, directionMatrix );
 +        for(int i = 0; i<3; i++)
 +            for(int j = 0; j<3; j++)
-+                m_Direction[j][i]=directionMatrix[i][j];
++                m_Direction[i][j]=directionMatrix[i][j];
 +        }
        else
          {
@@ -87,7 +87,7 @@ diff -u -r1.167 itkGDCMImageIO.cxx
 +        ExposeMetaData< DoubleMatrixType >( dict, key, directionMatrix );
 +        for(int i = 0; i<3; i++)
 +            for(int j = 0; j<3; j++)
-+                m_Direction[j][i]=directionMatrix[i][j];
++                m_Direction[i][j]=directionMatrix[i][j];
 +        }
        else
          {

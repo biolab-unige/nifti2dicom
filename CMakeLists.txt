@@ -1,7 +1,7 @@
 #  This file is part of Nifti2Dicom, is an open source converter from 
 #  3D NIfTI images to 2D DICOM series.
 #
-#  Copyright (C) 2008,2009 Daniele E. Domenichelli
+#  Copyright (C) 2008, 2009, 2010 Daniele E. Domenichelli
 #
 #  Nifti2Dicom is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -25,8 +25,8 @@ project(Nifti2Dicom)
 
 set(Nifti2Dicom_MAJOR_VERSION "0")
 set(Nifti2Dicom_MINOR_VERSION "2")
-set(Nifti2Dicom_PATCH_VERSION "91")
-set(Nifti2Dicom_VERSION "0.3 Beta")
+set(Nifti2Dicom_PATCH_VERSION "92")
+set(Nifti2Dicom_VERSION "0.3~beta2")
 set(Nifti2Dicom_INTERNAL_VERSION "${Nifti2Dicom_MAJOR_VERSION}.${Nifti2Dicom_MINOR_VERSION}.${Nifti2Dicom_PATCH_VERSION}")
 
 
@@ -97,7 +97,7 @@ set(CPACK_SOURCE_GENERATOR "TGZ")
 set(CPACK_SOURCE_PACKAGE_FILE_NAME
   "${CMAKE_PROJECT_NAME}-${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
 set(CPACK_SOURCE_IGNORE_FILES
-  "~$;/build/;/.svn/;/.kdev4/;\\\\.kdev4;${CPACK_SOURCE_IGNORE_FILES}")
+  "~$;/build/;/.svn/;/.git/;/.kdev4/;\\\\.kdev4;${CPACK_SOURCE_IGNORE_FILES}")
 include(CPack)
 add_custom_target(dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
 
