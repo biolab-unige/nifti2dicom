@@ -84,8 +84,8 @@ bool OutputExporter::Export( void )
     seriesWriter->AddObserver(itk::AnyEvent(), observer);
 //END FIXME (see n2dOutputExporter.h)
 
-	n2d::tools::PrintDictionary(*m_DictionaryArray[1]);
-	std::cout << std::hex << m_DictionaryArray[1] << std::endl;
+//	n2d::tools::PrintDictionary(*m_DictionaryArray[1]);
+//	std::cout << std::hex << m_DictionaryArray[1] << std::endl;
 	
     try
     {
