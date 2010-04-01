@@ -102,20 +102,19 @@ protected:
 
     inline void Execute(const itk::Object *object, const itk::EventObject & event )
     {
-#if (0)
-        if ( ! itk::ProgressEvent().CheckEvent( &event ) )
-            return;
+        if ( ! itk::ProgressEvent().CheckEvent( &event ) );
+
         const SeriesWriterType* ptr = dynamic_cast<const SeriesWriterType*>(object);
         if (ptr)
         {
             std::cout << "\t" << (ptr->GetProgress())*100 << "%" << std::endl;
         }
-#endif
     }
-//END FIXME
+
 
 };
 
+//END FIXME
 
 
 }

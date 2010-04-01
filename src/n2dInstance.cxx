@@ -107,14 +107,14 @@ bool Instance::Update(void)
     //END ITK_Spacing
 
 
-    //BEGIN ITK_Direction
+    //BEGIN ITK_ZDirection
         typedef itk::Matrix< double, 3, 3 > DoubleMatrixType;
         DoubleMatrixType directionMatrix;
         for(int j = 0; j<3; j++)
             for(int k = 0; k<3; k++)
-                directionMatrix[j][k]=direction[j][k];
-         itk::EncapsulateMetaData<DoubleMatrixType>(*dictionaryRaw[i], "ITK_Direction", directionMatrix);
-    //END ITK_Direction
+                directionMatrix[k][j]=direction[j][k];
+         itk::EncapsulateMetaData<DoubleMatrixType>(*dictionaryRaw[i], "ITK_ZDirection", directionMatrix);
+    //END ITK_ZDirection
 
 //END ITK Tags
 

@@ -42,11 +42,11 @@ namespace n2d {
  * \li ITK_NumberOfDimensions
  * \li ITK_Origin
  * \li ITK_Spacing
- * \li ITK_Direction
+ * \li ITK_ZDirection
  *
  * These "ITK_" tags are used by itkGDCMImageIO to know 3D information of a 2D slice but maybe in the future they'll be handled by itkSeriesWriter.
  * \note In future this class could be unuseful because handled by ITK + GDCM2 or maybe ITK will set correctly ITK_ tags.
- * \note ITK_Direction is not supported by ITK at the moment, a patch was submitted to support it.
+ * \note ITK_ZDirection is not supported by ITK at the moment, a patch was submitted to support it.
  */
 class Instance
 {

@@ -80,8 +80,8 @@ bool OutputExporter::Export( void )
 
 
 //BEGIN FIXME (see n2dOutputExporter.h)
-    CommandUpdate::Pointer observer = CommandUpdate::New();
-    seriesWriter->AddObserver(itk::AnyEvent(), observer);
+//   CommandUpdate::Pointer observer = CommandUpdate::New();
+//   seriesWriter->AddObserver(itk::AnyEvent(), observer);
 //END FIXME (see n2dOutputExporter.h)
 
 //	n2d::tools::PrintDictionary(*m_DictionaryArray[1]);
