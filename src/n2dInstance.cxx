@@ -104,6 +104,10 @@ bool Instance::Update(void)
         for(int j = 0; j<3; j++)
             spacingArray[j]=spacing[j];
          itk::EncapsulateMetaData<DoubleArrayType>(*dictionaryRaw[i], "ITK_Spacing", spacingArray);
+    //SliceThickness 
+         value.str("");
+         value << spacingArray[2];
+         itk::EncapsulateMetaData<std::string>(*dictionaryRaw[i], "0018|0050"  , value.str());
     //END ITK_Spacing
 
 
