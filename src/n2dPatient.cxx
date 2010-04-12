@@ -37,7 +37,16 @@ const std::string patientagetag    ( "0010|1010" );
 const std::string patientweighttag ( "0010|1030" );
 //END DICOM tags
 
+//BEGIN Default values
+const std::string defaultpatientmeta   ( "meta" );
+const std::string defaultpatientid     ( "id" );
+const std::string defaultpatientdob    ( "19900101" );
+const std::string defaultpatientsex    ( "" );
+const std::string defaultpatientage    ( "" );
+const std::string defaultpatientweight ( "" );
+const std::string defaultpatientname   ( "N2D_PATIENT" );
 
+//END Default values
 
 bool Patient::Update()
 {
@@ -57,16 +66,28 @@ bool Patient::Update()
 
     if (!m_PatientArgs.patientname.empty())
         itk::EncapsulateMetaData<std::string>( m_Dict, patientnametag, m_PatientArgs.patientname);
+    else
+        itk::EncapsulateMetaData<std::string>( m_Dict, patientnametag, defaultpatientname);
     if (!m_PatientArgs.patientid.empty())
         itk::EncapsulateMetaData<std::string>( m_Dict, patientidtag, m_PatientArgs.patientid);
+    else
+        itk::EncapsulateMetaData<std::string>( m_Dict, patientidtag, defaultpatientid);
     if (!m_PatientArgs.patientdob.empty())
         itk::EncapsulateMetaData<std::string>( m_Dict, patientdobtag, m_PatientArgs.patientdob);
+    else
+        itk::EncapsulateMetaData<std::string>( m_Dict, patientdobtag, defaultpatientdob);
     if (!m_PatientArgs.patientsex.empty())
         itk::EncapsulateMetaData<std::string>( m_Dict, patientsextag, m_PatientArgs.patientsex);
+    else
+        itk::EncapsulateMetaData<std::string>( m_Dict, patientsextag, defaultpatientsex);
     if (!m_PatientArgs.patientage.empty())
         itk::EncapsulateMetaData<std::string>( m_Dict, patientagetag, m_PatientArgs.patientage);
+    else
+        itk::EncapsulateMetaData<std::string>( m_Dict, patientagetag, defaultpatientage);
     if (!m_PatientArgs.patientweight.empty())
         itk::EncapsulateMetaData<std::string>( m_Dict, patientweighttag, m_PatientArgs.patientweight);
+    else
+        itk::EncapsulateMetaData<std::string>( m_Dict, patientweighttag, defaultpatientweight);
 
 #ifdef DEBUG
     std::cout << "Patient - END:" << std::endl<< std::endl;

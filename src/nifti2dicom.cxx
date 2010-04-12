@@ -26,18 +26,18 @@ Alcune note:
     2. DTI-ft;
     3. Image Fusion;
     4. Other/postprocessing.
-  2. accessionNumberb: di default il campo deve essere compilato a mano dall'utente; se
+  2. accessionNumber: di default il campo deve essere compilato a mano dall'utente; se
      invece viene data un header di riferimento, per la copia dei dati anagrafici ALLORA
      si prevede la doppia opzione:
      1. (default) da inserire a mano;
      2. copia dall'header DICOM ma dà un warning per avvertire che ci saranno due/o più
         immagini con lo stesso Accession Number.
-  3. studyinstanceUID e seriesnumber: il filtro li completa già da solo (sono campi univoci
+  3. [FIXED] studyinstanceUID e seriesnumber: il filtro li completa già da solo (sono campi univoci
      creati a partire dalla data dell'esame, dall'ora) bisogna capire come vengono creati
      per controllare l'effettiva correttezza di tali campi.
-  4. patientName: allo stato attuale di default viene settato a "GDCM" quindi loro lo
+  4. [FIXED] patientName: allo stato attuale di default viene settato a "GDCM" quindi loro lo
      devono cambiare a mano.
-  5. alcune volte, non per tutte le immagini, viene inserito un gantrytilt anche quando
+  5. [FIXED] alcune volte, non per tutte le immagini, viene inserito un gantrytilt anche quando
      non c'è, quindi bisogna capire come funziona il calcolo del gantrytilt e verificare
      la correttezza delle informazioni relative salvate nell'header.
 */
