@@ -25,8 +25,8 @@ project(Nifti2Dicom)
 
 set(Nifti2Dicom_MAJOR_VERSION "0")
 set(Nifti2Dicom_MINOR_VERSION "2")
-set(Nifti2Dicom_PATCH_VERSION "93")
-set(Nifti2Dicom_VERSION "0.3~beta3")
+set(Nifti2Dicom_PATCH_VERSION "94")
+set(Nifti2Dicom_VERSION "0.3~beta4")
 set(Nifti2Dicom_INTERNAL_VERSION "${Nifti2Dicom_MAJOR_VERSION}.${Nifti2Dicom_MINOR_VERSION}.${Nifti2Dicom_PATCH_VERSION}")
 
 
