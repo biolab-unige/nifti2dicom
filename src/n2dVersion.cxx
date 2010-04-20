@@ -73,7 +73,7 @@ std::string GetITKVersion()
 
 std::string GetGDCMVersion()
 {
-   return GDCM_VERSION;
+    return GDCM_VERSION;
 }
 
 std::string GetTCLAPVersion()

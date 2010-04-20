@@ -36,6 +36,7 @@ namespace n2d {
  * The following tags are handled by this class:
  *
  * \li (0020,0013) Instance Number
+ * \li (0018|0050) Slice Thickness
  *
  * Also handles:
  *
