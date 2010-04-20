@@ -1,11 +1,21 @@
-Index: itkGDCMImageIO.cxx
+Index: Code/IO/itkGDCMImageIO.cxx
 ===================================================================
 RCS file: /cvsroot/Insight/Insight/Code/IO/itkGDCMImageIO.cxx,v
 retrieving revision 1.170
-diff -w -B -u -r1.170 itkGDCMImageIO.cxx
+diff -u -r1.170 itkGDCMImageIO.cxx
 --- Code/IO/itkGDCMImageIO.cxx	3 Dec 2009 14:09:13 -0000	1.170
-+++ Code/IO/itkGDCMImageIO.cxx	23 Mar 2010 15:23:58 -0000
-@@ -1418,6 +1418,15 @@
++++ Code/IO/itkGDCMImageIO.cxx	20 Apr 2010 10:12:44 -0000
+@@ -1399,6 +1399,9 @@
+         m_GlobalNumberOfDimensions = numberOfDimensions;
+         m_Origin.resize( m_GlobalNumberOfDimensions );
+         m_Spacing.resize( m_GlobalNumberOfDimensions );
++        for (unsigned int i = 0 ; i < m_GlobalNumberOfDimensions; i++)
++          m_Direction[i].resize( m_GlobalNumberOfDimensions );
++
+         }
+       else if( key == ITK_Origin )
+         {
+@@ -1418,6 +1421,15 @@
          m_Spacing[1] = spacingArray[1];
          m_Spacing[2] = spacingArray[2];
          }
@@ -21,17 +31,17 @@ diff -w -B -u -r1.170 itkGDCMImageIO.cxx
        else
          {
          itkDebugMacro(
-@@ -1940,6 +1950,9 @@
+@@ -1940,6 +1952,9 @@
          m_GlobalNumberOfDimensions = numberOfDimensions;
          m_Origin.resize( m_GlobalNumberOfDimensions );
          m_Spacing.resize( m_GlobalNumberOfDimensions );
 +        m_Direction.resize(m_GlobalNumberOfDimensions );
-+        for (int i = 0 ; i < 3 ; i++) 
-+		m_Direction[i].resize(m_GlobalNumberOfDimensions );
++        for (unsigned int i = 0 ; i < m_GlobalNumberOfDimensions; i++) 
++	  m_Direction[i].resize( m_GlobalNumberOfDimensions );
          }
        else if( key == ITK_Origin )
          {
-@@ -1959,6 +1972,16 @@
+@@ -1959,6 +1974,16 @@
          m_Spacing[1] = spacingArray[1];
          m_Spacing[2] = spacingArray[2];
          }
@@ -48,13 +58,13 @@ diff -w -B -u -r1.170 itkGDCMImageIO.cxx
        else
          {
          itkDebugMacro(
-Index: itkIOCommon.cxx
+Index: Code/IO/itkIOCommon.cxx
 ===================================================================
 RCS file: /cvsroot/Insight/Insight/Code/IO/itkIOCommon.cxx,v
 retrieving revision 1.32
-diff -w -B -u -r1.32 itkIOCommon.cxx
+diff -u -r1.32 itkIOCommon.cxx
 --- Code/IO/itkIOCommon.cxx	3 Dec 2009 14:09:13 -0000	1.32
-+++ Code/IO/itkIOCommon.cxx	23 Mar 2010 15:23:58 -0000
++++ Code/IO/itkIOCommon.cxx	20 Apr 2010 10:12:44 -0000
 @@ -33,6 +33,7 @@
  #endif
  const char *const ITK_Origin = "ITK_Origin";
@@ -63,13 +73,13 @@ diff -w -B -u -r1.32 itkIOCommon.cxx
  const char *const ITK_FileOriginator = "ITK_FileOriginator";
  const char *const ITK_OriginationDate = "ITK_OriginationDate";
  const char *const ITK_PatientID = "ITK_PatientID";
-Index: itkIOCommon.h
+Index: Code/IO/itkIOCommon.h
 ===================================================================
 RCS file: /cvsroot/Insight/Insight/Code/IO/itkIOCommon.h,v
 retrieving revision 1.30
-diff -w -B -u -r1.30 itkIOCommon.h
+diff -u -r1.30 itkIOCommon.h
 --- Code/IO/itkIOCommon.h	3 Dec 2009 14:09:14 -0000	1.30
-+++ Code/IO/itkIOCommon.h	23 Mar 2010 15:23:58 -0000
++++ Code/IO/itkIOCommon.h	20 Apr 2010 10:12:44 -0000
 @@ -110,6 +110,7 @@
  #endif
  extern const char *const ITK_Origin;
@@ -78,14 +88,14 @@ diff -w -B -u -r1.30 itkIOCommon.h
  extern const char *const ITK_FileOriginator;
  extern const char *const ITK_OriginationDate;
  extern const char *const ITK_PatientID;
-Index: itkImageSeriesWriter.txx
+Index: Code/IO/itkImageSeriesWriter.txx
 ===================================================================
 RCS file: /cvsroot/Insight/Insight/Code/IO/itkImageSeriesWriter.txx,v
 retrieving revision 1.36
-diff -w -B -u -r1.36 itkImageSeriesWriter.txx
+diff -u -r1.36 itkImageSeriesWriter.txx
 --- Code/IO/itkImageSeriesWriter.txx	3 Dec 2009 14:09:14 -0000	1.36
-+++ Code/IO/itkImageSeriesWriter.txx	23 Mar 2010 15:23:58 -0000
-@@ -362,6 +363,17 @@
++++ Code/IO/itkImageSeriesWriter.txx	20 Apr 2010 10:12:44 -0000
+@@ -362,6 +362,17 @@
          EncapsulateMetaData< DoubleArrayType >( dictionary, ITK_Spacing, spacingArray );
          EncapsulateMetaData<  unsigned int   >( dictionary, ITK_NumberOfDimensions, inputImageDimension );
  
