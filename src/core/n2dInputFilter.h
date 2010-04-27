@@ -43,7 +43,7 @@ public:
     InputFilter(const FiltersArgs& filtersArgs, ImageType::ConstPointer inputImage, PixelType inputPixelType, DictionaryType& dict) :
             m_FiltersArgs(filtersArgs),
             m_InputImage(inputImage),
-	    m_InputPixelType(inputPixelType),
+            m_InputPixelType(inputPixelType),
             m_Dict(dict)
     {
     }
@@ -52,7 +52,6 @@ public:
 
     bool Filter( void );
 
-    template<class TPixel> bool CreateFilter(void);
 
 /*!
  * \brief Get filtered image.
@@ -70,6 +69,7 @@ private:
     DICOM3DImageType::ConstPointer m_FilteredImage;
     DictionaryType& m_Dict;
 
+    template<class TPixel> bool InternalFilter(void);
 };
 //END class n2d::InputFilter
 

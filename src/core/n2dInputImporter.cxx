@@ -30,85 +30,86 @@ bool InputImporter::Import( void )
 
    if( !imageIO) 
    {
-   	std::cerr<<"No ImageIO was found Not a valid Nifti"<<std::endl;
-	return false;
+        std::cerr<<"No ImageIO was found Not a valid Nifti"<<std::endl;
+        return false;
    }
 
    imageIO->SetFileName( m_InputArgs.inputfile);
    imageIO->ReadImageInformation();
-
    m_pixelType = imageIO->GetComponentType();
-   bool ret=false;
+
    std::cout<<imageIO<<std::endl;
-   
+
+   bool ret = false;
+
    switch(m_pixelType)
    {
-   	case itk::ImageIOBase::UCHAR:
-	{	
-		ret=CreateReaderAndRead<unsigned char>();
-		break;
-	}
-   	case itk::ImageIOBase::CHAR:
-	{	
-		ret=CreateReaderAndRead<char>();
-		break;
-	}
-   	case itk::ImageIOBase::USHORT:
-	{	
-		ret=CreateReaderAndRead<unsigned short>();
-		break;
-	}
-   	case itk::ImageIOBase::SHORT:
-	{	
-		ret=CreateReaderAndRead<short>();
-		break;
-	}
-   	case itk::ImageIOBase::UINT:
-	{	
-		ret=CreateReaderAndRead<unsigned int>();
-		break;
-	}
-   	case itk::ImageIOBase::INT:
-	{	
-		ret=CreateReaderAndRead<int>();
-		break;
-	}
-   	case itk::ImageIOBase::ULONG:
-	{	
-		ret=CreateReaderAndRead<unsigned long>();
-		break;
-	}
-   	case itk::ImageIOBase::LONG:
-	{	
-		ret=CreateReaderAndRead<long>();
-		break;
-	}
-   	case itk::ImageIOBase::FLOAT:
-	{	
-		ret=CreateReaderAndRead<float>();
-		break;
-	}
-   	case itk::ImageIOBase::DOUBLE:
-	{	
-		ret=CreateReaderAndRead<double>();
-		break;
-	}
-	default:
-	{
-		std::cerr<<"Error wrong pixel type"<<std::endl;
-		return false;
-	}
-   }
-	
+        case itk::ImageIOBase::UCHAR:
+        {
+            ret = InternalRead<unsigned char>();
+            break;
+        }
+        case itk::ImageIOBase::CHAR:
+        {
+            ret = InternalRead<char>();
+            break;
+        }
+        case itk::ImageIOBase::USHORT:
+        {
+            ret = InternalRead<unsigned short>();
+            break;
+        }
+        case itk::ImageIOBase::SHORT:
+        {
+            ret = InternalRead<short>();
+            break;
+        }
+        case itk::ImageIOBase::UINT:
+        {
+            ret = InternalRead<unsigned int>();
+            break;
+        }
+        case itk::ImageIOBase::INT:
+        {
+            ret = InternalRead<int>();
+            break;
+        }
+        case itk::ImageIOBase::ULONG:
+        {
+            ret = InternalRead<unsigned long>();
+            break;
+        }
+        case itk::ImageIOBase::LONG:
+        {
+            ret = InternalRead<long>();
+            break;
+        }
+        case itk::ImageIOBase::FLOAT:
+        {
+            ret = InternalRead<float>();
+            break;
+        }
+        case itk::ImageIOBase::DOUBLE:
+        {
+            ret = InternalRead<double>();
+            break;
+        }
+        default:
+        {
+            std::cerr<<"ERROR: Unknown pixel type"<<std::endl;
+            return false;
+        }
+    }
+
    return ret;
 }
 
 
-template<class TPixel> bool InputImporter::CreateReaderAndRead( )
+template<class TPixel> bool InputImporter::InternalRead( )
 {
-    typedef itk::Image<TPixel, Dimension>        	 InputImageType;
-    typedef itk::ImageFileReader<InputImageType>	 ReaderType;
-     
+    typedef itk::Image<TPixel, Dimension>           InputImageType;
+    typedef itk::ImageFileReader<InputImageType>    ReaderType;
+
     typename ReaderType::Pointer reader = ReaderType::New();
     reader->SetFileName( m_InputArgs.inputfile );
     try

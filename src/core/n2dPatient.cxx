@@ -64,30 +64,52 @@ bool Patient::Update()
     std::cout << std::endl << "-------------------------------------------------------------------" << std::endl;
 #endif
 
+//BEGIN (0010,0010) Patient's Name
     if (!m_PatientArgs.patientname.empty())
         itk::EncapsulateMetaData<std::string>( m_Dict, patientnametag, m_PatientArgs.patientname);
     else
         itk::EncapsulateMetaData<std::string>( m_Dict, patientnametag, defaultpatientname);
+//END (0010,0010) Patient's Name
+
+
+//BEGIN (0010,0020) Patient ID
     if (!m_PatientArgs.patientid.empty())
         itk::EncapsulateMetaData<std::string>( m_Dict, patientidtag, m_PatientArgs.patientid);
     else
         itk::EncapsulateMetaData<std::string>( m_Dict, patientidtag, defaultpatientid);
+//END (0010,0020) Patient ID
+
+
+//BEGIN (0010,0030) Patient's Birth Date
     if (!m_PatientArgs.patientdob.empty())
         itk::EncapsulateMetaData<std::string>( m_Dict, patientdobtag, m_PatientArgs.patientdob);
     else
         itk::EncapsulateMetaData<std::string>( m_Dict, patientdobtag, defaultpatientdob);
+//END (0010,0030) Patient's Birth Date
+
+
+//BEGIN (0010,0040) Patient's Sex
     if (!m_PatientArgs.patientsex.empty())
         itk::EncapsulateMetaData<std::string>( m_Dict, patientsextag, m_PatientArgs.patientsex);
     else
         itk::EncapsulateMetaData<std::string>( m_Dict, patientsextag, defaultpatientsex);
+//END (0010,0040) Patient's Sex
+
+
+//BEGIN (0010,1010) Patient's Age
     if (!m_PatientArgs.patientage.empty())
         itk::EncapsulateMetaData<std::string>( m_Dict, patientagetag, m_PatientArgs.patientage);
     else
         itk::EncapsulateMetaData<std::string>( m_Dict, patientagetag, defaultpatientage);
+//END (0010,1010) Patient's Age
+
+
+//BEGIN (0010,1030) Patient's Weight
     if (!m_PatientArgs.patientweight.empty())
         itk::EncapsulateMetaData<std::string>( m_Dict, patientweighttag, m_PatientArgs.patientweight);
     else
         itk::EncapsulateMetaData<std::string>( m_Dict, patientweighttag, defaultpatientweight);
+//END (0010,1030) Patient's Weight
 
 #ifdef DEBUG
     std::cout << "Patient - END:" << std::endl<< std::endl;

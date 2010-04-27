@@ -93,7 +93,7 @@ int main(int argc, char* argv[])
 //BEGIN Common objects declaration
     n2d::CommandLineParser parser;
     n2d::ImageType::ConstPointer inputImage;
-    n2d::PixelType		 inputPixelType;
+    n2d::PixelType inputPixelType;
     n2d::DICOM3DImageType::ConstPointer filteredImage;
     n2d::DictionaryType dictionary, importedDictionary;
     n2d::DictionaryArrayType dictionaryArray;
@@ -287,7 +287,7 @@ int main(int argc, char* argv[])
             exit(10);
         }
         inputImage = inputImporter.getImportedImage();
-	inputPixelType= inputImporter.getPixelType();
+        inputPixelType = inputImporter.getPixelType();
     }
     catch (...)
     {
