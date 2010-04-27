@@ -23,6 +23,8 @@
 #define N2DDEFSIMAGE_H
 
 #include <itkImage.h>
+#include <itkImageBase.h>
+#include <itkImageIOBase.h>
 
 
 namespace n2d {
@@ -31,10 +33,10 @@ namespace n2d {
 const int Dimension = 3;
 const int DICOMDimension = 2;
 
-typedef unsigned int PixelType;
+typedef itk::ImageIOBase::IOComponentType    PixelType;	
 typedef signed short DICOMPixelType;
 
-typedef itk::Image<PixelType, Dimension> ImageType;
+typedef itk::ImageBase< Dimension> ImageType;
 typedef itk::Image<DICOMPixelType, Dimension> DICOM3DImageType;
 typedef itk::Image<DICOMPixelType, DICOMDimension> DICOMImageType;
 

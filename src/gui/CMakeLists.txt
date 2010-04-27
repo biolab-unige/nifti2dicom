@@ -1,7 +1,7 @@
 #  This file is part of Nifti2Dicom, is an open source converter from
 #  3D NIfTI images to 2D DICOM series.
 #
-#  Copyright (C) 2008, 2009, 2010 Daniele E. Domenichelli
+#  Copyright (C) 2008, 200Gabriele Arnulfoo
 #
 #  Nifti2Dicom is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -16,13 +16,16 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Nifti2Dicom.  If not, see <http://www.gnu.org/licenses/>.
 
-# $Id$
-add_subdirectory(core)
-#add_subdirectory(gui)
+# $Id: CMakeLists.txt 251 2010-03-01 15:11:05Z gabri $
 
-#set(nifti2dicom_SOURCES )
+
+set(nifti2dicom_gui_SOURCES wizard.cpp
+			    init.cpp)
+
+set(nifti2dicom_gui_NO_INSTALL_HEADERS ${CMAKE_BINARY_DIR}/Nifti2DicomConfig.h\
+					 wizard.h
+					 init.h)
+
 
 # nifti2dicom target
-#add_executable(nifti2dicom ${nifti2dicom_SOURCES})
-#target_link_libraries(nifti2dicom ITKIO ITKCommon)
-#install(TARGETS nifti2dicom RUNTIME DESTINATION bin)
+add_executable(nifti2dicom ${nifti2dicom_gui_SOURCES})

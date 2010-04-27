@@ -31,7 +31,7 @@
 #include "n2dDefsImage.h"
 
 namespace n2d {
-    typedef itk::ImageFileReader< ImageType >  ReaderType;
+    //typedef itk::ImageFileReader< ImageType >  ReaderType;
     typedef itk::ImageFileReader< DICOMImageType > DICOMReaderType;
     typedef itk::GDCMImageIO DICOMImageIOType;
     typedef itk::NumericSeriesFileNames NameGeneratorType;

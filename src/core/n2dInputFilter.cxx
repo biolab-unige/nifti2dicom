@@ -40,36 +40,34 @@ const std::string patientorientationtag ( "0020|0020" );
 const std::string defaultpatientorientation ( "L\\R" );
 //END Default values
 
-
-bool InputFilter::Filter( void )
+template<class TPixel> bool InputFilter::CreateFilter(void)
 {
-
-#ifdef DEBUG
-    std::cout << "InputFilter - BEGIN" << std::endl;
-    std::cout << "InputFilter::m_InputImage directions:" << std::endl;
-    std::cout << m_InputImage->GetDirection() << std::endl;
-#endif // DEBUG
-
-
 //BEGIN Typedefs
-    typedef itk::OrientImageFilter<ImageType,ImageType> OrienterType;
-    typedef itk::RescaleIntensityImageFilter< ImageType, DICOM3DImageType > RescaleType;
-    typedef itk::CastImageFilter < ImageType, DICOM3DImageType > CastType;
+    typedef itk::Image<TPixel, Dimension>      InternalImageType;
+    typedef itk::OrientImageFilter<InternalImageType,InternalImageType> OrienterType;
+    typedef itk::RescaleIntensityImageFilter<InternalImageType, DICOM3DImageType > RescaleType;
+    typedef itk::CastImageFilter < InternalImageType, DICOM3DImageType > CastType;
 //END Typedefs
 
 //BEGIN declarations
-    OrienterType::Pointer orienter;
-    RescaleType::Pointer rescaleFilter;
-    CastType::Pointer cast;
+    typename OrienterType::Pointer orienter;
+    typename RescaleType::Pointer rescaleFilter;
+    typename CastType::Pointer cast;
 //END declarations
 
-
+    typename InternalImageType::ConstPointer internalImage;
+    internalImage = dynamic_cast< const InternalImageType* >(m_InputImage.GetPointer());
+    if(!internalImage)
+    {
+	std::cerr<<"Error Null Pointer In Filter"<<std::endl;
+        return false;
+    } 
 //BEGIN Orienting image
 #ifndef NO_REORIENT
     orienter = OrienterType::New();
     orienter->UseImageDirectionOn();
     orienter->SetDesiredCoordinateOrientation(itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_RAI); //Orient to RAI
-    orienter->SetInput(m_InputImage);
+    orienter->SetInput(internalImage);
 
     try
     {
@@ -155,6 +153,79 @@ bool InputFilter::Filter( void )
         m_FilteredImage = cast->GetOutput();
     //END Cast
     }
+return true;
+
+}
+
+bool InputFilter::Filter( void )
+{
+    
+#ifdef DEBUG
+    std::cout << "InputFilter - BEGIN" << std::endl;
+    std::cout << "InputFilter::m_InputImage directions:" << std::endl;
+    std::cout << m_InputImage->GetDirection() << std::endl;
+#endif // DEBUG
+   bool ret=false;
+   std::cout<<m_InputPixelType<<std::endl;
+ 
+   switch(m_InputPixelType)
+   {
+   	case itk::ImageIOBase::UCHAR:
+	{	
+		ret=CreateFilter<unsigned char>();
+		break;
+	}
+   	case itk::ImageIOBase::CHAR:
+	{	
+		ret=CreateFilter<char>();
+		break;
+	}
+   	case itk::ImageIOBase::USHORT:
+	{	
+		ret=CreateFilter<unsigned short>();
+		break;
+	}
+   	case itk::ImageIOBase::SHORT:
+	{	
+		ret=CreateFilter<short>();
+		break;
+	}
+   	case itk::ImageIOBase::UINT:
+	{	
+		ret=CreateFilter<unsigned int>();
+		break;
+	}
+   	case itk::ImageIOBase::INT:
+	{	
+		ret=CreateFilter<int>();
+		break;
+	}
+   	case itk::ImageIOBase::ULONG:
+	{	
+		ret=CreateFilter<unsigned long>();
+		break;
+	}
+   	case itk::ImageIOBase::LONG:
+	{	
+		ret=CreateFilter<long>();
+		break;
+	}
+   	case itk::ImageIOBase::FLOAT:
+	{	
+		ret=CreateFilter<float>();
+		break;
+	}
+   	case itk::ImageIOBase::DOUBLE:
+	{	
+		ret=CreateFilter<double>();
+		break;
+	}
+	default:
+	{
+		std::cerr<<"Error wrong pixel type"<<std::endl;
+		return false;
+	}
+   }
 
 
 #ifdef DEBUG
@@ -164,7 +235,7 @@ bool InputFilter::Filter( void )
 #endif // DEBUG
 
 
-    return true;
+    return ret;
 }
 
 

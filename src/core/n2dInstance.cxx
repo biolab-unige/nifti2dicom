@@ -27,8 +27,6 @@
 namespace n2d {
 //BEGIN DICOM tags
 const std::string instancenumbertag ( "0020|0013" );
-const std::string slicethicknesstag ( "0018|0050" );
-
 //END DICOM tags
 
 
@@ -80,14 +78,6 @@ bool Instance::Update(void)
 
 
 
-    //BEGIN (0018,0050) Slice Thickness
-    value.str("");
-    value << spacing[2];
-    itk::EncapsulateMetaData<std::string>(*dictionaryRaw[i], slicethicknesstag  , value.str());
-    //END (0018,0050) Slice Thickness
-
-
-
 //WARNING In futuro questa parte potrebbe essere inutile
 //BEGIN ITK Tags
 
@@ -113,7 +103,11 @@ bool Instance::Update(void)
         DoubleArrayType spacingArray(3);
         for(int j = 0; j<3; j++)
             spacingArray[j]=spacing[j];
-        itk::EncapsulateMetaData<DoubleArrayType>(*dictionaryRaw[i], "ITK_Spacing", spacingArray);
+         itk::EncapsulateMetaData<DoubleArrayType>(*dictionaryRaw[i], "ITK_Spacing", spacingArray);
+    //SliceThickness 
+         value.str("");
+         value << spacingArray[2];
+         itk::EncapsulateMetaData<std::string>(*dictionaryRaw[i], "0018|0050"  , value.str());
     //END ITK_Spacing
 
 

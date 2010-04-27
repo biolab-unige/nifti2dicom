@@ -38,6 +38,7 @@ namespace n2d {
  */
 class InputImporter
 {
+	
 public:
     InputImporter(const InputArgs& inputArgs) :
             m_InputArgs(inputArgs)
@@ -51,7 +52,7 @@ public:
  *
  * \return Internal DICOM tags dictionary.
  */
-    inline n2d::DictionaryType& getMetaDataDictionary( void ) const { return reader->GetMetaDataDictionary(); }
+    inline n2d::DictionaryType& getMetaDataDictionary( void ) const { return *m_dictionary; }
 
 /*!
  * \brief Import a 3D image image.
@@ -61,18 +62,25 @@ public:
  */
     bool Import( void );
 
+
+    template<class TPixel> bool CreateReaderAndRead( );
+
 /*!
  * \brief Get imported image.
  *
  * \return Imported image
  */
     inline n2d::ImageType::Pointer getImportedImage( void ) const { return m_ImportedImage; }
+    
+    inline n2d::PixelType getPixelType(void) const{return m_pixelType; }
 
 
 private:
-    const InputArgs& m_InputArgs; //!< Input Arguments. 
-    ImageType::Pointer m_ImportedImage; //!< Imported image.
-    ReaderType::Pointer reader; //!< Internal reader.
+    const InputArgs&		 		m_InputArgs; //!< Input Arguments. 
+    n2d::ImageType::Pointer 		 	m_ImportedImage; //!< Imported image.
+    n2d::PixelType 				m_pixelType ;
+    n2d::DictionaryType*			m_dictionary;
+   // typedef typename ReaderType::Pointer 	reader; //!< Internal reader.
 };
 //END class n2d::InputImporter
 

@@ -40,9 +40,10 @@ namespace n2d {
 class InputFilter
 {
 public:
-    InputFilter(const FiltersArgs& filtersArgs, ImageType::ConstPointer inputImage, DictionaryType& dict) :
+    InputFilter(const FiltersArgs& filtersArgs, ImageType::ConstPointer inputImage, PixelType inputPixelType, DictionaryType& dict) :
             m_FiltersArgs(filtersArgs),
             m_InputImage(inputImage),
+	    m_InputPixelType(inputPixelType),
             m_Dict(dict)
     {
     }
@@ -50,6 +51,8 @@ public:
     ~InputFilter() {}
 
     bool Filter( void );
+
+    template<class TPixel> bool CreateFilter(void);
 
 /*!
  * \brief Get filtered image.
@@ -63,6 +66,7 @@ public:
 private:
     const FiltersArgs& m_FiltersArgs;
     ImageType::ConstPointer m_InputImage;
+    PixelType m_InputPixelType;
     DICOM3DImageType::ConstPointer m_FilteredImage;
     DictionaryType& m_Dict;
 
