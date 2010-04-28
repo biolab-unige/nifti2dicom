@@ -1,7 +1,7 @@
 #  This file is part of Nifti2Dicom, is an open source converter from
 #  3D NIfTI images to 2D DICOM series.
 #
-#  Copyright (C) 2008, 200Gabriele Arnulfoo
+#  Copyright (C) 2008, 2009 Gabriele Arnulfo
 #
 #  Nifti2Dicom is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -28,4 +28,4 @@ set(nifti2dicom_gui_NO_INSTALL_HEADERS ${CMAKE_BINARY_DIR}/Nifti2DicomConfig.h\
 
 
 # nifti2dicom target
-add_executable(nifti2dicom ${nifti2dicom_gui_SOURCES})
+add_executable(noodle ${nifti2dicom_gui_SOURCES} ${QT_LIBRARIES})
