@@ -16,13 +16,21 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Nifti2Dicom.  If not, see <http://www.gnu.org/licenses/>.
 
-# $Id$
+# $Id: CMakeLists.txt 251 2010-03-01 15:11:05Z gabri $
 add_subdirectory(core)
-#add_subdirectory(gui)
+if(N2D_BUILD_GUI)
+#Search for installed Qt4 
+  FIND_PACKAGE(QT4 REQUIRED)
+  IF(QT_FOUND)
+    INCLUDE(${QT_USE_FILE})
+  ELSE(QT_FOUND)
+    MESSAGE(FATAL ERROR "  Qt4 not found")
+  ENDIF(QT_FOUND)
 
-#set(nifti2dicom_SOURCES )
+  find_package(VTK REQUIRED)
+   if(VTK_FOUND)
+    include(${VTK_USE_FILE})
+   endif(VTK_FOUND)
+   add_subdirectory(gui)
 
-# nifti2dicom target
-#add_executable(nifti2dicom ${nifti2dicom_SOURCES})
-#target_link_libraries(nifti2dicom ITKIO ITKCommon)
-#install(TARGETS nifti2dicom RUNTIME DESTINATION bin)
+endif(N2D_BUILD_GUI)

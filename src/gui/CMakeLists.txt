@@ -1,7 +1,7 @@
 #  This file is part of Nifti2Dicom, is an open source converter from
 #  3D NIfTI images to 2D DICOM series.
 #
-#  Copyright (C) 2008, 2009 Gabriele Arnulfo
+#  Copyright (C) 2008, 2009, 2010 Gabriele Arnulfo
 #
 #  Nifti2Dicom is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -20,12 +20,26 @@
 
 
 set(nifti2dicom_gui_SOURCES wizard.cpp
-			    init.cpp)
+			    init.cpp
+			    customize.cpp
+			    finalize.cpp
+			    qnifti2dicom.cpp)
 
-set(nifti2dicom_gui_NO_INSTALL_HEADERS ${CMAKE_BINARY_DIR}/Nifti2DicomConfig.h\
-					 wizard.h
-					 init.h)
+set(nifti2dicom_gui_NO_INSTALL_HEADERS ${CMAKE_BINARY_DIR}/Nifti2DicomConfig.h
+					 wizard.h 
+					 init.h
+					 customize.h
+					 finalize.h)
 
+set(nifti2dicom_gui_MOC_HDR wizard.h init.h customize.h finalize.h)
+set(nifti2dicom_gui_UIS init.ui) # customize.ui finalize.ui)
+
+QT4_WRAP_UI(nifti2dicom_gui_UIS_HDR ${nifti2dicom_gui_UIS})
+QT4_WRAP_CPP(nifti2dicom_gui_MOC_SRCS ${nifti2dicom_gui_MOC_HDR})
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 # nifti2dicom target
-add_executable(noodle ${nifti2dicom_gui_SOURCES} ${QT_LIBRARIES})
+add_executable(qnifti2dicom ${nifti2dicom_gui_SOURCES} ${nifti2dicom_SOURCES} ${nifti2dicom_gui_MOC_SRCS} ${nifti2dicom_gui_UIS_HDR})
+target_link_libraries(qnifti2dicom ITKIO ITKCommon ${QT_LIBRARIES} QVTK vtkGraphics vtkHybrid vtkImaging vtkFiltering vtkCommon vtkRendering vtkIO ITKBasicFilters)
+
+install(TARGETS qnifti2dicom RUNTIME DESTINATION bin)
