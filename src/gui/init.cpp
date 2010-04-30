@@ -1,12 +1,9 @@
 #include "init.h"
 #include <QtGui/QFileDialog>
 #include <QtGui/QTableWidgetItem>
-#include "itkCommand.h"
 #include "itkImage.h"
 #include "itkVTKImageExport.h"
 #include "itkVTKImageImport.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
 #include "vtkImageImport.h"
 #include "vtkImageExport.h"
 #include "vtkRenderer.h"
@@ -17,6 +14,9 @@
 #include "QVTKWidget.h"
 #include "ui_init.h"
 
+#include "../core/n2dInputImporter.h"
+#include "wizard.h"
+
 namespace n2d{
 namespace gui{
 
@@ -24,8 +24,8 @@ init::init(QWidget *parent) :
     QWizardPage(parent),
     ui(new Ui::init)
 {
+	m_parent = dynamic_cast<n2d::gui::Wizard* >(parent);
     ui->setupUi(this);
-
     this->setTitle("First Step");
     this->setSubTitle("required input filename and optional dicom reference header");
     imageviewer      = vtkImageViewer::New();
@@ -42,12 +42,9 @@ init::init(QWidget *parent) :
 
     renderPreview->show();
 
-    vtkImporter = vtkImageImport::New();
-    reader      = ReaderType::New();
-    itkExporter = ExportFilterType::New();
-    dicomReader = DICOMReaderType::New();
-    dicomImageIO= DICOMImageIOType::New();
-
+    
+    m_vtkImporter   		   = vtkImageImport::New();
+	m_inputArgs				   = new n2d::InputArgs();
 
     QStringList labels;
     labels << tr("Tag") << tr("Value");
@@ -60,28 +57,25 @@ init::init(QWidget *parent) :
 init::~init()
 {
     delete ui;
-
-    vtkImporter->Delete();
+	m_vtkImporter->Delete();
     imageviewer->Delete();
     renderInteractor->Delete();
 
 }
-
-bool init::loadInImage()
+template<class TPixel>
+bool init::showImage(n2d::ImageType::Pointer in)
 {
+    typedef  itk::Image<TPixel, n2d::Dimension>			InternalImageType;
+    typedef  itk::VTKImageExport< InternalImageType >   ExportFilterType;
+	
+    typename ExportFilterType::Pointer itkExporter = ExportFilterType::New();
+    typename InternalImageType::Pointer image 	   = 
+					dynamic_cast<InternalImageType* >(in.GetPointer());
+    
+    itkExporter->SetInput( image );
+    ConnectPipelines(itkExporter, m_vtkImporter);
 
-    m_inFname = QFileDialog::getOpenFileName(this,"","/Users/biolab/test3/resources");
-    if(m_inFname.isEmpty()) return false;
-
-    //Here we could use inputImporter maybe//
-
-    reader->SetFileName(m_inFname.toStdString() );
-    reader->Update();
-
-    itkExporter->SetInput( reader->GetOutput() );
-    ConnectPipelines(itkExporter, vtkImporter);
-
-    imageviewer->SetInput(vtkImporter->GetOutput());
+    imageviewer->SetInput(m_vtkImporter->GetOutput());
     imageviewer->GetRenderer()->ResetCamera();
     imageviewer->GetActor2D()->SetPosition( -70, 20);
     renderPreview->GetRenderWindow()->Render();
@@ -89,17 +83,112 @@ bool init::loadInImage()
     return true;
 }
 
+
+bool init::loadInImage()
+{
+	//This should instantiate all the needed objects and classes 
+	//to import image and metadataDictionary
+	m_inFname = QFileDialog::getOpenFileName(this,"","");
+	if(m_inFname.isEmpty()) return false;
+	std::cout<<m_inFname.toStdString()<<std::endl;
+
+	m_inputArgs->inputfile = m_inFname.toStdString();
+	m_parent->storeInputArgs(*m_inputArgs);
+	m_inputImporter  = new n2d::InputImporter(*m_inputArgs);
+
+	try
+	{
+		m_inputImporter->Import();
+	}
+	catch(...)
+	{
+		std::cerr<<"Error while importing the image"<<std::endl;
+		return false;
+	}
+
+	m_parent->setInputImporter(m_inputImporter);
+	n2d::PixelType  m_pixelType = m_inputImporter->getPixelType();
+    bool ret=false;
+
+    switch(m_pixelType)
+    {
+        case itk::ImageIOBase::UCHAR:
+        {
+            ret=showImage<unsigned char>(m_inputImporter->getImportedImage());
+            break;
+        }
+        case itk::ImageIOBase::CHAR:
+        {
+            ret=showImage<char>(m_inputImporter->getImportedImage());
+            break;
+        }
+        case itk::ImageIOBase::USHORT:
+        {
+            ret=showImage<unsigned short>(m_inputImporter->getImportedImage());
+            break;
+        }
+        case itk::ImageIOBase::SHORT:
+        {
+            ret=showImage<short>(m_inputImporter->getImportedImage());
+            break;
+        }
+        case itk::ImageIOBase::UINT:
+        {
+            ret=showImage<unsigned int>(m_inputImporter->getImportedImage());
+            break;
+        }
+        case itk::ImageIOBase::INT:
+        {
+            ret=showImage<int>(m_inputImporter->getImportedImage());
+            break;
+        }
+        case itk::ImageIOBase::ULONG:
+        {
+            ret=showImage<unsigned long>(m_inputImporter->getImportedImage());
+            break;
+        }
+        case itk::ImageIOBase::LONG:
+        {
+            ret=showImage<long>(m_inputImporter->getImportedImage());
+            break;
+        }
+        case itk::ImageIOBase::FLOAT:
+        {
+            ret=showImage<float>(m_inputImporter->getImportedImage());
+            break;
+        }
+        case itk::ImageIOBase::DOUBLE:
+        {
+            ret=showImage<double>(m_inputImporter->getImportedImage());
+            break;
+        }
+        default:
+        {
+            std::cerr<<"ERROR: Unknown pixel type"<<std::endl;
+            return false;
+        }
+   }
+
+
+	return true;
+
+}
+
 bool init::OnSliderChange()
 {
+	std::cout<<"cazzo"<<std::endl;
     imageviewer->SetZSlice(ui->horizontalSlider->value());
+	std::cout<<"cazzo"<<std::endl;
     renderPreview->GetRenderWindow()->Render();
+	std::cout<<"cazzo"<<std::endl;
     return true;
 }
 
 
 bool init::loadIndcmHDR()
 {
-    m_dcmRefHDRFname = QFileDialog::getOpenFileName(this,"","/opt/n2d/nifti2dicom/resources");
+/*
+    m_dcmRefHDRFname = QFileDialog::getOpenFileName(this,"","/Users/biolab/test3/resources");
     if(m_dcmRefHDRFname.isEmpty()) return false;
 
     dicomReader->SetImageIO( dicomImageIO );
@@ -119,8 +208,7 @@ bool init::loadIndcmHDR()
     {
         int row = ui->headerEntries->rowCount();
         itk::MetaDataObjectBase::Pointer entry = itr->second;
-        MetaDataStringType::Pointer entryvalue = 
-		dynamic_cast<MetaDataStringType* >(entry.GetPointer());
+        MetaDataStringType::Pointer entryvalue = dynamic_cast<MetaDataStringType* >(entry.GetPointer());
         if(entryvalue)
         {
                 std::string tagkey  = itr->first;
@@ -140,9 +228,7 @@ bool init::loadIndcmHDR()
         }
         ++itr;
 
-    }
-
-//Here we should set up all the dicom-related structs//
+    }*/
     return true;
 }
 

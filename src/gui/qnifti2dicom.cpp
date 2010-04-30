@@ -1,6 +1,7 @@
 #include <iostream>
 #include <QtGui/QApplication>
 #include <QtGui/QWizard>
+#include <QtGui/QMainWindow>
 #include "init.h"
 #include "customize.h"
 #include "finalize.h"
@@ -9,8 +10,9 @@
 int main(int argc, char* argv[])
 {
         QApplication app(argc,argv);
+
         n2d::gui::Wizard* wiz   = new n2d::gui::Wizard(0);
-        n2d::gui::init* page1     = new n2d::gui::init(wiz);
+        n2d::gui::init* page1   = new n2d::gui::init(wiz);
         //custom* page2   = new custom(wiz);
         //finalize* page3 = new finalize(wiz);
 

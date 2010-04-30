@@ -1,4 +1,6 @@
 #include "wizard.h"
+#include "../core/n2dInputImporter.h"
+#include "../core/n2dHeaderImporter.h"
 namespace n2d{
 namespace gui{
 

@@ -4,7 +4,14 @@
 #include <QtGui/QWizard>
 #include "../core/n2dDefsCommandLineArgsStructs.h"
 
+//////////////////////////////////////
+// FIXME CONTROL FOR NULL POINTERS  //
+//////////////////////////////////////
 namespace n2d{
+
+class InputImporter;
+class HeaderImporter;
+
 namespace gui{
 
 class Wizard : public QWizard
@@ -13,48 +20,59 @@ class Wizard : public QWizard
 public:
     Wizard(QWizard* parent=0);
 
-    inline const AccessionNumberArgs& getaccessionNumberArgs()const{return m_accessionNumberArgs;}
-    inline const DicomHeaderArgs&     getdicomHeaderArgs()const{return m_dicomHeaderArgs;}
-    inline const DicomClassArgs&      getdicomClassArgs()const{return m_dicomClassArgs;}
-    inline const OtherDicomTagsArgs&  getotherDicomTagsArgs()const{return m_otherDicomTagsArgs;}
-    inline const PatientArgs&         getpatientArgs()const{return m_patientArgs;}
-    inline const StudyArgs&           getstudyArgs()const{return m_studyArgs;}
-    inline const SeriesArgs&          getseriesArgs()const{return m_seriesArgs;}
-    inline const AcquisitionArgs&     getacquisitionArgs()const{return m_acquisitionArgs;}
-    inline const InputArgs&           getinputArgs()const{return m_inputArgs;}
-    inline const FiltersArgs&         getfiltersArgs()const{return m_filtersArgs;}
-    inline const InstanceArgs&        getinstanceArgs()const{return m_instanceArgs;}
-    inline const OutputArgs&          getoutputArgs()const{return m_outputArgs;}
-    
+    inline const n2d::AccessionNumberArgs& getaccessionNumberArgs()const{return m_accessionNumberArgs;}
+    inline const n2d::DicomHeaderArgs&     getdicomHeaderArgs()const{return m_dicomHeaderArgs;}
+    inline const n2d::DicomClassArgs&      getdicomClassArgs()const{return m_dicomClassArgs;}
+    inline const n2d::OtherDicomTagsArgs&  getotherDicomTagsArgs()const{return m_otherDicomTagsArgs;}
+    inline const n2d::PatientArgs&         getpatientArgs()const{return m_patientArgs;}
+    inline const n2d::StudyArgs&           getstudyArgs()const{return m_studyArgs;}
+    inline const n2d::SeriesArgs&          getseriesArgs()const{return m_seriesArgs;}
+    inline const n2d::AcquisitionArgs&     getacquisitionArgs()const{return m_acquisitionArgs;}
+    inline const n2d::InputArgs&           getinputArgs()const{return m_inputArgs;}
+    inline const n2d::FiltersArgs&         getfiltersArgs()const{return m_filtersArgs;}
+    inline const n2d::InstanceArgs&        getinstanceArgs()const{return m_instanceArgs;}
+    inline const n2d::OutputArgs&          getoutputArgs()const{return m_outputArgs;}
+
+	inline const n2d::InputImporter* 	   getInputImporter()const{return m_inputImporter;}
+   	inline void							   setInputImporter(n2d::InputImporter* a){m_inputImporter = a;} 
 
 public slots:
-   inline void storeAccessionNumberArgs(AccessionNumberArgs& a){m_accessionNumberArgs = a;}
-   inline void storeDicomHeaderArgs(DicomHeaderArgs& a){m_dicomHeaderArgs = a;}
-   inline void storeDicomClassArgs(DicomClassArgs& a){m_dicomClassArgs = a;}
-   inline void storeOtherDicomTagsArgs(OtherDicomTagsArgs& a){m_otherDicomTagsArgs = a;}
-   inline void storePatientArgs(PatientArgs& a){m_patientArgs = a;}
-   inline void storeStudyArgs(StudyArgs& a){m_studyArgs = a;}
-   inline void storeSeriesArgs(SeriesArgs& a){m_seriesArgs = a;}
-   inline void storeAcquisitionArgs(AcquisitionArgs& a){m_acquisitionArgs = a;}
-   inline void storeInputArgs(InputArgs& a){m_inputArgs = a;}
-   inline void storeFiltersArgs(FiltersArgs& a){m_filtersArgs = a;}
-   inline void storeInstanceArgs(InstanceArgs& a){m_instanceArgs = a;}
-   inline void storeOutputArgs(OutputArgs& a){m_outputArgs = a;}
+   inline void storeAccessionNumberArgs(n2d::AccessionNumberArgs& a){m_accessionNumberArgs = a;}
+   inline void storeDicomHeaderArgs(n2d::DicomHeaderArgs& a){m_dicomHeaderArgs = a;}
+   inline void storeDicomClassArgs(n2d::DicomClassArgs& a){m_dicomClassArgs = a;}
+   inline void storeOtherDicomTagsArgs(n2d::OtherDicomTagsArgs& a){m_otherDicomTagsArgs = a;}
+   inline void storePatientArgs(n2d::PatientArgs& a){m_patientArgs = a;}
+   inline void storeStudyArgs(n2d::StudyArgs& a){m_studyArgs = a;}
+   inline void storeSeriesArgs(n2d::SeriesArgs& a){m_seriesArgs = a;}
+   inline void storeAcquisitionArgs(n2d::AcquisitionArgs& a){m_acquisitionArgs = a;}
+   inline void storeInputArgs(n2d::InputArgs& a){m_inputArgs = a;}
+   inline void storeFiltersArgs(n2d::FiltersArgs& a){m_filtersArgs = a;}
+   inline void storeInstanceArgs(n2d::InstanceArgs& a){m_instanceArgs = a;}
+   inline void storeOutputArgs(n2d::OutputArgs& a){m_outputArgs = a;}
+
+
 
 private:
+	//BEGIN Common Structures
+    n2d::AccessionNumberArgs	m_accessionNumberArgs;
+    n2d::DicomHeaderArgs		m_dicomHeaderArgs;
+    n2d::DicomClassArgs			m_dicomClassArgs;
+    n2d::OtherDicomTagsArgs 	m_otherDicomTagsArgs;
+    n2d::PatientArgs        	m_patientArgs;
+    n2d::StudyArgs           	m_studyArgs;
+    n2d::SeriesArgs          	m_seriesArgs;
+    n2d::AcquisitionArgs     	m_acquisitionArgs;
+    n2d::InputArgs           	m_inputArgs;
+    n2d::FiltersArgs         	m_filtersArgs;
+    n2d::InstanceArgs        	m_instanceArgs;
+    n2d::OutputArgs          	m_outputArgs;
+	//END Structures 
 
-    AccessionNumberArgs m_accessionNumberArgs;
-    DicomHeaderArgs     m_dicomHeaderArgs;
-    DicomClassArgs      m_dicomClassArgs;
-    OtherDicomTagsArgs  m_otherDicomTagsArgs;
-    PatientArgs         m_patientArgs;
-    StudyArgs           m_studyArgs;
-    SeriesArgs          m_seriesArgs;
-    AcquisitionArgs     m_acquisitionArgs;
-    InputArgs           m_inputArgs;
-    FiltersArgs         m_filtersArgs;
-    InstanceArgs        m_instanceArgs;
-    OutputArgs          m_outputArgs;
+	//BEGIN n2dClasses
+	n2d::InputImporter*			m_inputImporter;
+	n2d::HeaderImporter* 		m_HeaderImporter;
+	//END n2dClasses
+
 };
 
 }//namespace gui

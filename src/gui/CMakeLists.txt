@@ -18,13 +18,51 @@
 
 # $Id: CMakeLists.txt 251 2010-03-01 15:11:05Z gabri $
 
-
 set(nifti2dicom_gui_SOURCES wizard.cpp
 			    init.cpp
 			    customize.cpp
 			    finalize.cpp
-			    qnifti2dicom.cpp)
+				qnifti2dicom.cpp)
 
+set(nifti2dicom_SOURCES ../core/n2dVersion.cxx
+                        ../core/n2dToolsMetaDataDictionary.cxx
+                        ../core/n2dToolsDate.cxx
+                        ../core/n2dCommandLineParser.cxx
+                        ../core/n2dAccessionNumberValidator.cxx
+                        ../core/n2dHeaderImporter.cxx
+                        ../core/n2dDicomClass.cxx
+                        ../core/n2dOtherDicomTags.cxx
+                        ../core/n2dPatient.cxx
+                        ../core/n2dStudy.cxx
+                        ../core/n2dSeries.cxx
+                        ../core/n2dAcquisition.cxx
+                        ../core/n2dInputImporter.cxx
+                        ../core/n2dInputFilter.cxx
+                        ../core/n2dInstance.cxx
+                        ../core/n2dOutputExporter.cxx
+)
+
+set(nifti2dicom_NO_INSTALL_HEADERS ${CMAKE_BINARY_DIR}/Nifti2DicomConfig.h
+                                   ../core/n2dVersion.h
+                                   ../core/n2dDefsCommandLineArgsStructs.h
+                                   ../core/n2dDefsImage.h
+                                   ../core/n2dDefsMetadata.h
+                                   ../core/n2dToolsMetaDataDictionary.h
+                                   ../core/n2dToolsDate.h
+                                   ../core/n2dCommandLineParser.h
+                                   ../core/n2dAccessionNumberValidator.h
+                                   ../core/n2dHeaderImporter.h
+                                   ../core/n2dDicomClass.h
+                                   ../core/n2dOtherDicomTags.h
+                                   ../core/n2dPatient.h
+                                   ../core/n2dStudy.h
+                                   ../core/n2dSeries.h
+                                   ../core/n2dAcquisition.h
+                                   ../core/n2dInputImporter.h
+                                   ../core/n2dInputFilter.h
+                                   ../core/n2dInstance.h
+                                   ../core/n2dOutputExporter.h
+)
 set(nifti2dicom_gui_NO_INSTALL_HEADERS ${CMAKE_BINARY_DIR}/Nifti2DicomConfig.h
 					 wizard.h 
 					 init.h
@@ -33,10 +71,10 @@ set(nifti2dicom_gui_NO_INSTALL_HEADERS ${CMAKE_BINARY_DIR}/Nifti2DicomConfig.h
 
 set(nifti2dicom_gui_MOC_HDR wizard.h init.h customize.h finalize.h)
 set(nifti2dicom_gui_UIS init.ui) # customize.ui finalize.ui)
-
 QT4_WRAP_UI(nifti2dicom_gui_UIS_HDR ${nifti2dicom_gui_UIS})
 QT4_WRAP_CPP(nifti2dicom_gui_MOC_SRCS ${nifti2dicom_gui_MOC_HDR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
 
 # nifti2dicom target
 add_executable(qnifti2dicom ${nifti2dicom_gui_SOURCES} ${nifti2dicom_SOURCES} ${nifti2dicom_gui_MOC_SRCS} ${nifti2dicom_gui_UIS_HDR})

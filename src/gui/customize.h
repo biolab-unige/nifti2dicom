@@ -13,7 +13,7 @@ class customize : public QWizardPage
    Q_OBJECT
    
    public:
-     customize(QWidget parent=0);
+     customize(QWidget* parent=0):QWizardPage(parent){};
 
 };
 }

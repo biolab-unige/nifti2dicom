@@ -6,34 +6,33 @@
 #include <QString>
 #include "vtkRenderer.h"
 #include "vtkRenderWindow.h"
-#include "itkCommand.h"
-#include "n2dDefsIO.h"
-#include "n2dDefsImageIO.h"
-
 #include "QVTKWidget.h"
 #include "itkVTKImageExport.h"
 #include "itkVTKImageImport.h"
-#include "itkCurvatureFlowImageFilter.h"
 #include "vtkImageViewer.h"
-#include "vtkImageData.h"
-#include "vtkImageImport.h"
-#include "vtkImageExport.h"
-
 #include "vtkRenderer.h"
 #include "vtkRenderWindow.h"
 #include "vtkRenderWindowInteractor.h"
 #include "vtkInteractorStyleImage.h"
 
+#include "../core/n2dDefsImage.h"
+#include "../core/n2dDefsIO.h"
+
 
 namespace Ui {
     class init;
 }
+class vtkImageImport;
+
 namespace n2d{
+
+class InputImporter;
+struct InputArgs;
 namespace gui{
 
-class n2d::InputImporter;
+class Wizard;
 
-class init : public QWizardPage, public n2d::InputImporter {
+class init : public QWizardPage {
     Q_OBJECT
 public:
     init(QWidget *parent = 0);
@@ -51,22 +50,22 @@ private:
     vtkRenderer* 				renderer;
     vtkRenderWindow* 			renderWin;
     vtkRenderWindowInteractor*	renderInteractor;
+	vtkImageImport*				m_vtkImporter;
+	n2d::InputImporter*			m_inputImporter;
+    Wizard*						m_parent;
 
-    typedef itk::VTKImageExport< ImageType > 		ExportFilterType;
-    typedef itk::MetaDataObject< std::string> 		MetaDataStringType;
-
-    vtkImageImport* 			vtkImporter;
-    ExportFilterType::Pointer 	itkExporter;
-
+    n2d::InputArgs* 			m_inputArgs;
 
     template <typename ITK_Exporter, typename VTK_Importer>
     void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer);
+
+    template<class TPixel>bool showImage(n2d::ImageType::Pointer );
 
 private slots:
     bool loadInImage();
     bool loadIndcmHDR();
     bool OnSliderChange();
 };
-}
-}
+}//namespace gui
+}//namespace n2d
 #endif // INIT_H
