@@ -4,6 +4,7 @@
 #include "itkImage.h"
 #include "itkVTKImageExport.h"
 #include "itkVTKImageImport.h"
+#include "itkImageToVTKImageFilter.h"
 #include "vtkImageImport.h"
 #include "vtkImageExport.h"
 #include "vtkRenderer.h"
@@ -15,6 +16,7 @@
 #include "ui_init.h"
 
 #include "../core/n2dInputImporter.h"
+#include "../core/n2dHeaderImporter.h"
 #include "wizard.h"
 
 namespace n2d{
@@ -38,13 +40,11 @@ init::init(QWidget *parent) :
     renderPreview->resize(500,600);
     imageviewer->GetRenderer()->SetBackground(0,0,0);
 
-    renderPreview->GetRenderWindow()->Render();
-
     renderPreview->show();
 
-    
-    m_vtkImporter   		   = vtkImageImport::New();
-	m_inputArgs				   = new n2d::InputArgs();
+    m_vtkImporter			= vtkImageImport::New();
+    m_inputArgs				= new n2d::InputArgs();
+	m_dicomHeaderArgs		= new n2d::DicomHeaderArgs();
 
     QStringList labels;
     labels << tr("Tag") << tr("Value");
@@ -66,20 +66,21 @@ template<class TPixel>
 bool init::showImage(n2d::ImageType::Pointer in)
 {
     typedef  itk::Image<TPixel, n2d::Dimension>			InternalImageType;
-    typedef  itk::VTKImageExport< InternalImageType >   ExportFilterType;
-	
-    typename ExportFilterType::Pointer itkExporter = ExportFilterType::New();
-    typename InternalImageType::Pointer image 	   = 
-					dynamic_cast<InternalImageType* >(in.GetPointer());
-    
-    itkExporter->SetInput( image );
-    ConnectPipelines(itkExporter, m_vtkImporter);
+	typedef  itk::ImageToVTKImageFilter<InternalImageType> ConnectorType;
 
-    imageviewer->SetInput(m_vtkImporter->GetOutput());
+    typename InternalImageType::Pointer image 	   = 
+		dynamic_cast<InternalImageType* >(m_inputImporter->getImportedImage().GetPointer());
+
+	typename ConnectorType::Pointer connector = ConnectorType::New();
+	
+	connector->SetInput( image );
+
+    imageviewer->SetInput(connector->GetOutput());
     imageviewer->GetRenderer()->ResetCamera();
     imageviewer->GetActor2D()->SetPosition( -70, 20);
     renderPreview->GetRenderWindow()->Render();
-
+	//This is required otherwise RefCount goes to zero and connector'd be destroyed//
+	m_connector = connector.GetPointer();
     return true;
 }
 
@@ -90,7 +91,6 @@ bool init::loadInImage()
 	//to import image and metadataDictionary
 	m_inFname = QFileDialog::getOpenFileName(this,"","");
 	if(m_inFname.isEmpty()) return false;
-	std::cout<<m_inFname.toStdString()<<std::endl;
 
 	m_inputArgs->inputfile = m_inFname.toStdString();
 	m_parent->storeInputArgs(*m_inputArgs);
@@ -169,40 +169,37 @@ bool init::loadInImage()
         }
    }
 
-
 	return true;
 
 }
 
 bool init::OnSliderChange()
 {
-	std::cout<<"cazzo"<<std::endl;
     imageviewer->SetZSlice(ui->horizontalSlider->value());
-	std::cout<<"cazzo"<<std::endl;
-    renderPreview->GetRenderWindow()->Render();
-	std::cout<<"cazzo"<<std::endl;
+	renderPreview->GetRenderWindow()->Render();
     return true;
 }
 
 
 bool init::loadIndcmHDR()
 {
-/*
+
     m_dcmRefHDRFname = QFileDialog::getOpenFileName(this,"","/Users/biolab/test3/resources");
     if(m_dcmRefHDRFname.isEmpty()) return false;
+	m_dicomHeaderArgs->dicomheaderfile = m_dcmRefHDRFname.toStdString();
+	m_headerImporter	= new n2d::HeaderImporter(*m_dicomHeaderArgs , m_dictionary);
 
-    dicomReader->SetImageIO( dicomImageIO );
-    dicomReader->SetFileName( m_dcmRefHDRFname.toStdString());
+	m_parent->setDicomHeaderImporter(m_headerImporter);
+
     try{
-        dicomReader->Update();
+        m_headerImporter->Import();
     }catch(...){
-        std::cerr<<"casino"<<std::endl;
+        std::cerr<<"Error While Reading Header Information"<<std::endl;
         exit(100);
     }
 
-    dictionary = dicomReader->GetMetaDataDictionary();
-    DictionaryType::ConstIterator itr = dictionary.Begin();
-    DictionaryType::ConstIterator end = dictionary.End();
+    n2d::DictionaryType::ConstIterator itr = m_dictionary.Begin();
+    n2d::DictionaryType::ConstIterator end = m_dictionary.End();
 
     while(itr != end)
     {
@@ -228,7 +225,7 @@ bool init::loadIndcmHDR()
         }
         ++itr;
 
-    }*/
+    }
     return true;
 }
 

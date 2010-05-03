@@ -35,6 +35,7 @@ public:
 
 	inline const n2d::InputImporter* 	   getInputImporter()const{return m_inputImporter;}
    	inline void							   setInputImporter(n2d::InputImporter* a){m_inputImporter = a;} 
+	inline void 						   setDicomHeaderImporter(n2d::HeaderImporter* a){m_HeaderImporter = a;}
 
 public slots:
    inline void storeAccessionNumberArgs(n2d::AccessionNumberArgs& a){m_accessionNumberArgs = a;}

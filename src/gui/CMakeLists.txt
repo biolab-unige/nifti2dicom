@@ -22,7 +22,9 @@ set(nifti2dicom_gui_SOURCES wizard.cpp
 			    init.cpp
 			    customize.cpp
 			    finalize.cpp
-				qnifti2dicom.cpp)
+				itkImageToVTKImageFilter.txx
+				qnifti2dicom.cpp
+				)
 
 set(nifti2dicom_SOURCES ../core/n2dVersion.cxx
                         ../core/n2dToolsMetaDataDictionary.cxx
@@ -78,6 +80,6 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 # nifti2dicom target
 add_executable(qnifti2dicom ${nifti2dicom_gui_SOURCES} ${nifti2dicom_SOURCES} ${nifti2dicom_gui_MOC_SRCS} ${nifti2dicom_gui_UIS_HDR})
-target_link_libraries(qnifti2dicom ITKIO ITKCommon ${QT_LIBRARIES} QVTK vtkGraphics vtkHybrid vtkImaging vtkFiltering vtkCommon vtkRendering vtkIO ITKBasicFilters)
+target_link_libraries(qnifti2dicom ITKBasicFilters ITKIO ITKCommon ${QT_LIBRARIES} QVTK vtkGraphics vtkHybrid vtkImaging vtkFiltering vtkCommon vtkRendering vtkIO )
 
 install(TARGETS qnifti2dicom RUNTIME DESTINATION bin)

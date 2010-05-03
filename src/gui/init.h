@@ -17,17 +17,23 @@
 
 #include "../core/n2dDefsImage.h"
 #include "../core/n2dDefsIO.h"
+#include "../core/n2dDefsMetaData.h"
 
 
 namespace Ui {
     class init;
 }
 class vtkImageImport;
+class itk::ProcessObject;
 
 namespace n2d{
 
 class InputImporter;
+class HeaderImporter;
+
 struct InputArgs;
+struct DicomHeaderArgs;	
+
 namespace gui{
 
 class Wizard;
@@ -42,19 +48,25 @@ protected:
     void changeEvent(QEvent *e);
 
 private:
-    Ui::init 					*ui;
-    QString	 					m_inFname;
-    QString 	 				m_dcmRefHDRFname;
-    QVTKWidget*  				renderPreview;
-    vtkImageViewer* 			imageviewer;
-    vtkRenderer* 				renderer;
-    vtkRenderWindow* 			renderWin;
-    vtkRenderWindowInteractor*	renderInteractor;
-	vtkImageImport*				m_vtkImporter;
-	n2d::InputImporter*			m_inputImporter;
-    Wizard*						m_parent;
+    Ui::init 						*ui;
+    QString	 						m_inFname;
+    QString 	 					m_dcmRefHDRFname;
+    QVTKWidget*  					renderPreview;
+    vtkImageViewer* 				imageviewer;
+    vtkRenderer* 					renderer;
+    vtkRenderWindow* 				renderWin;
+    vtkRenderWindowInteractor*		renderInteractor;
+	vtkImageImport*					m_vtkImporter;
+	n2d::InputImporter*				m_inputImporter;
+	n2d::HeaderImporter*			m_headerImporter;
+    Wizard*							m_parent;
+	n2d::ImageType::Pointer     	m_localImage;
+    itk::ProcessObject::Pointer		m_connector;
+	n2d::DictionaryType 			m_dictionary;
+
 
     n2d::InputArgs* 			m_inputArgs;
+	n2d::DicomHeaderArgs*		m_dicomHeaderArgs;
 
     template <typename ITK_Exporter, typename VTK_Importer>
     void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer);
