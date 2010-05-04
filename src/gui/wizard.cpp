@@ -7,7 +7,7 @@ namespace gui{
 Wizard::Wizard(QWizard* parent):QWizard(parent)
 {
     setWindowTitle(tr("QNifti2Dicom"));
-    this->setGeometry(10,10,1024,768);
+    this->setGeometry(10,10,800,600);
     	
 }
 

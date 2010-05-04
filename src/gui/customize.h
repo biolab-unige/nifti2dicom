@@ -2,20 +2,37 @@
 #define CUSTOMIZE_H
 
 #include <QtGui/QWizardPage>
+#include "../core/n2dDefsMetaData.h"
+
+class QWidget;
+class QTableWidget;
+class QTableWidgetItem;
 
 namespace n2d{
 namespace gui{
 
-class QWidget;
+class Wizard;
 
 class customize : public QWizardPage
 {
    Q_OBJECT
-   
-   public:
-     customize(QWidget* parent=0):QWizardPage(parent){};
+
+	public:
+    	customize(QWidget* parent=0);
+
+	private slots:
+		bool OnItemChange(QTableWidgetItem* );
+	private:
+
+		Wizard* 			m_parent;
+		QTableWidget* 		m_dicomTable;
+		n2d::DictionaryType	m_dictionary;
+
+		virtual void initializePage();
+		virtual bool validatePage();
+
 
 };
-}
-}
+}//namespace gui
+}//namespace n2d
 #endif

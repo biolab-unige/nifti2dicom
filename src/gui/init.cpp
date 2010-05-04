@@ -17,6 +17,12 @@
 
 #include "../core/n2dInputImporter.h"
 #include "../core/n2dHeaderImporter.h"
+#include "../core/n2dDicomClass.h"
+#include "../core/n2dOtherDicomTags.h"
+#include "../core/n2dPatient.h"
+#include "../core/n2dStudy.h"
+#include "../core/n2dSeries.h"
+#include "../core/n2dAcquisition.h"
 #include "wizard.h"
 
 namespace n2d{
@@ -52,6 +58,8 @@ init::init(QWidget *parent) :
     ui->headerEntries->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
     ui->headerEntries->setEnabled(false);
 
+	
+
 }
 
 init::~init()
@@ -81,6 +89,8 @@ bool init::showImage(n2d::ImageType::Pointer in)
     renderPreview->GetRenderWindow()->Render();
 	//This is required otherwise RefCount goes to zero and connector'd be destroyed//
 	m_connector = connector.GetPointer();
+
+
     return true;
 }
 
@@ -169,7 +179,7 @@ bool init::loadInImage()
         }
    }
 
-	return true;
+	return ret;
 
 }
 
@@ -184,12 +194,13 @@ bool init::OnSliderChange()
 bool init::loadIndcmHDR()
 {
 
-    m_dcmRefHDRFname = QFileDialog::getOpenFileName(this,"","/Users/biolab/test3/resources");
+    m_dcmRefHDRFname = QFileDialog::getOpenFileName(this,"","");
     if(m_dcmRefHDRFname.isEmpty()) return false;
 	m_dicomHeaderArgs->dicomheaderfile = m_dcmRefHDRFname.toStdString();
-	m_headerImporter	= new n2d::HeaderImporter(*m_dicomHeaderArgs , m_dictionary);
+	m_headerImporter	= new n2d::HeaderImporter(*m_dicomHeaderArgs , m_importedDictionary);
 
 	m_parent->setDicomHeaderImporter(m_headerImporter);
+	m_parent->storeDicomHeaderArgs(*m_dicomHeaderArgs);
 
     try{
         m_headerImporter->Import();
@@ -198,15 +209,21 @@ bool init::loadIndcmHDR()
         exit(100);
     }
 
-    n2d::DictionaryType::ConstIterator itr = m_dictionary.Begin();
-    n2d::DictionaryType::ConstIterator end = m_dictionary.End();
+	m_parent->setImportedDictionary(m_importedDictionary);
+    n2d::DictionaryType::ConstIterator itr = m_importedDictionary.Begin();
+    n2d::DictionaryType::ConstIterator end = m_importedDictionary.End();
+
+    QTableWidgetItem* tagkeyitem  ; 
+	QTableWidgetItem* tagvalueitem; 
 
     while(itr != end)
     {
         int row = ui->headerEntries->rowCount();
         itk::MetaDataObjectBase::Pointer entry = itr->second;
-        MetaDataStringType::Pointer entryvalue = dynamic_cast<MetaDataStringType* >(entry.GetPointer());
-        if(entryvalue)
+        MetaDataStringType::Pointer entryvalue = 
+			dynamic_cast<MetaDataStringType* >(entry.GetPointer());
+
+		if(entryvalue)
         {
                 std::string tagkey  = itr->first;
                 if(!tagkey.compare(0,4,"0010"))
@@ -215,17 +232,21 @@ bool init::loadIndcmHDR()
                     QString item1(tagkey.c_str());
                     QString item2(tagvalue.c_str());
 
-                    QTableWidgetItem* tagkeyitem   = new QTableWidgetItem(item1);
-                    QTableWidgetItem* tagvalueitem = new QTableWidgetItem(item2);
+                    tagkeyitem   = new QTableWidgetItem(item1);
+                    tagvalueitem = new QTableWidgetItem(item2);
 
                     ui->headerEntries->insertRow(row);
                     ui->headerEntries->setItem(row,0,tagkeyitem);
                     ui->headerEntries->setItem(row,1,tagvalueitem);
+
                 }
         }
         ++itr;
 
     }
+
+    delete tagkeyitem;
+	delete tagvalueitem;
     return true;
 }
 
@@ -242,23 +263,141 @@ void init::changeEvent(QEvent *e)
     }
 }
 
+bool init::validatePage()
+{	
+	n2d::DictionaryType dictionary = m_parent->getDictionary();
 
-template <typename ITK_Exporter, typename VTK_Importer>
-void init::ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
-{
-  importer->SetUpdateInformationCallback(exporter->GetUpdateInformationCallback());
-  importer->SetPipelineModifiedCallback(exporter->GetPipelineModifiedCallback());
-  importer->SetWholeExtentCallback(exporter->GetWholeExtentCallback());
-  importer->SetSpacingCallback(exporter->GetSpacingCallback());
-  importer->SetOriginCallback(exporter->GetOriginCallback());
-  importer->SetScalarTypeCallback(exporter->GetScalarTypeCallback());
-  importer->SetNumberOfComponentsCallback(exporter->GetNumberOfComponentsCallback());
-  importer->SetPropagateUpdateExtentCallback(exporter->GetPropagateUpdateExtentCallback());
-  importer->SetUpdateDataCallback(exporter->GetUpdateDataCallback());
-  importer->SetDataExtentCallback(exporter->GetDataExtentCallback());
-  importer->SetBufferPointerCallback(exporter->GetBufferPointerCallback());
-  importer->SetCallbackUserData(exporter->GetCallbackUserData());
+	n2d::DicomClassArgs 	dicomClassArgs;
+	n2d::AcquisitionArgs 	acquisitionArgs;
+	n2d::OtherDicomTagsArgs otherDicomTagsArgs;
+	n2d::SeriesArgs			seriesArgs;
+	n2d::StudyArgs			studyArgs;
+	n2d::PatientArgs		patientArgs;
+
+//BEGIN DICOM Class
+    try
+    {
+        n2d::DicomClass dicomClass(dicomClassArgs, m_importedDictionary, dictionary);
+        if (!dicomClass.Update())
+        {
+            std::cerr << "ERROR in \"DICOM Class\"." << std::endl;
+			return false;
+        }
+    }
+    catch (...)
+    {
+        std::cerr << "Unknown ERROR in \"DICOM Class\"." << std::endl;
+        return false;
+    }
+//END DICOM Class
+
+
+
+//BEGIN Other DICOM Tags
+    try
+    {
+        n2d::OtherDicomTags otherDicomTags(otherDicomTagsArgs, dictionary);
+        if (!otherDicomTags.Update())
+        {
+            std::cerr << "ERROR in \"Other DICOM Tags\"." << std::endl;
+			return false;
+        }
+    }
+    catch (...)
+    {
+        std::cerr << "Unknown ERROR in \"Other DICOM Tags\"." << std::endl;
+			return false;
+    }
+//END Other DICOM Tags
+
+
+
+//BEGIN Patient
+    try
+    {
+        n2d::Patient patient(patientArgs, m_importedDictionary, dictionary);
+        if (!patient.Update())
+        {
+            std::cerr << "ERROR in \"Patient\"." << std::endl;
+			return false;
+        }
+    }
+    catch (...)
+    {
+        std::cerr << "Unknown ERROR in \"Patient\"." << std::endl;
+			return false;
+    }
+//END Patient
+	
+
+//BEGIN Study
+    try
+    {
+        n2d::Study study(studyArgs, m_importedDictionary, dictionary);
+        if (!study.Update())
+        {
+            std::cerr << "ERROR in \"Study\"." << std::endl;
+			return false;
+        }
+    }
+    catch (...)
+    {
+        std::cerr << "Unknown ERROR in \"Study\"." << std::endl;
+			return false;
+    }
+//END Study
+
+
+
+//BEGIN Series
+    try
+    {
+        n2d::Series series(seriesArgs, m_importedDictionary, dictionary);
+        if (!series.Update())
+        {
+            std::cerr << "ERROR in \"Series\"." << std::endl;
+			return false;
+        }
+    }
+    catch (...)
+    {
+        std::cerr << "Unknown ERROR in \"Series\"." << std::endl;
+			return false;
+    }
+//END Series
+
+
+
+//BEGIN Acquisition
+    try
+    {
+        n2d::Acquisition acquisition(acquisitionArgs, dictionary);
+        if (!acquisition.Update())
+        {
+            std::cerr << "ERROR in \"Acquisition\"." << std::endl;
+			return false;
+        }
+    }
+    catch (...)
+    {
+        std::cerr << "Unknown ERROR in \"Acquisition\"." << std::endl;
+			return false;
+    }
+//END Acquisition
+
+
+	m_parent->setDictionary(dictionary);
+	m_parent->storeDicomClassArgs(dicomClassArgs);
+	m_parent->storeAcquisitionArgs(acquisitionArgs);
+	m_parent->storeOtherDicomTagsArgs(otherDicomTagsArgs);
+	m_parent->storeSeriesArgs(seriesArgs);
+	m_parent->storeStudyArgs(studyArgs);
+	m_parent->storePatientArgs(patientArgs);
+
+	return true;
+
 }
+
 
 }//namespace gui
 }//namespace n2d

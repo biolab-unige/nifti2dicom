@@ -62,21 +62,21 @@ private:
     Wizard*							m_parent;
 	n2d::ImageType::Pointer     	m_localImage;
     itk::ProcessObject::Pointer		m_connector;
-	n2d::DictionaryType 			m_dictionary;
+	n2d::DictionaryType 			m_importedDictionary;
 
 
     n2d::InputArgs* 			m_inputArgs;
 	n2d::DicomHeaderArgs*		m_dicomHeaderArgs;
 
-    template <typename ITK_Exporter, typename VTK_Importer>
-    void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer);
 
     template<class TPixel>bool showImage(n2d::ImageType::Pointer );
+	
 
 private slots:
     bool loadInImage();
     bool loadIndcmHDR();
     bool OnSliderChange();
+	virtual bool validatePage();
 };
 }//namespace gui
 }//namespace n2d

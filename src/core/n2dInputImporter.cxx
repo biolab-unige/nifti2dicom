@@ -38,10 +38,7 @@ bool InputImporter::Import( void )
    imageIO->ReadImageInformation();
    m_pixelType = imageIO->GetComponentType();
 
-   std::cout<<imageIO<<std::endl;
-
    bool ret = false;
-
    switch(m_pixelType)
    {
         case itk::ImageIOBase::UCHAR:
