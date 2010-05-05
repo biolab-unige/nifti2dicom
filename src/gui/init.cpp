@@ -1,19 +1,21 @@
-#include "init.h"
 #include <QtGui/QFileDialog>
 #include <QtGui/QTableWidgetItem>
+#include <QtGui/QGridLayout>
+#include <QtGui/QLineEdit>
+#include <QtGui/QCheckBox>
+#include <QtGui/QLabel>
+#include <QtGui/QPushButton>
+#include <QtGui/QTableWidget>
+#include <QtGui/QTableWidgetItem>
+#include <QtGui/QHeaderView>
+#include <QtGui/QSizePolicy>
 #include "itkImage.h"
-#include "itkVTKImageExport.h"
-#include "itkVTKImageImport.h"
 #include "itkImageToVTKImageFilter.h"
-#include "vtkImageImport.h"
-#include "vtkImageExport.h"
 #include "vtkRenderer.h"
+#include "vtkActor2d.h"
 #include "vtkRenderWindow.h"
-#include "vtkRenderWindowInteractor.h"
-#include "vtkInteractorStyleImage.h"
-#include "vtkActor2D.h"
+#include "vtkImageMapper.h"
 #include "QVTKWidget.h"
-#include "ui_init.h"
 
 #include "../core/n2dInputImporter.h"
 #include "../core/n2dHeaderImporter.h"
@@ -24,29 +26,56 @@
 #include "../core/n2dSeries.h"
 #include "../core/n2dAcquisition.h"
 #include "wizard.h"
+#include "init.h"
 
 namespace n2d{
 namespace gui{
 
 init::init(QWidget *parent) :
     QWizardPage(parent),
-    ui(new Ui::init)
+	m_renderPreview(NULL),
+	m_renderer(NULL)
 {
 	m_parent = dynamic_cast<n2d::gui::Wizard* >(parent);
-    ui->setupUi(this);
     this->setTitle("First Step");
     this->setSubTitle("required input filename and optional dicom reference header");
-    imageviewer      = vtkImageViewer::New();
-    renderInteractor = vtkRenderWindowInteractor::New();
 
-    imageviewer->SetupInteractor(renderInteractor);
-    renderPreview = new QVTKWidget(ui->proxyRender);
-    renderPreview->SetRenderWindow(imageviewer->GetRenderWindow());
-    imageviewer->GetRenderWindow()->SetSize(500,600);
-    renderPreview->resize(500,600);
-    imageviewer->GetRenderer()->SetBackground(0,0,0);
+	QGridLayout *layout 		= new QGridLayout();
+	QPushButton *openImage 		= new QPushButton("Open Image");
+	QPushButton *openHeader		= new QPushButton("Open Header");
+	m_headerEntries 			= new QTableWidget(0,2);
+	m_horizontalSlider			= new QSlider(Qt::Horizontal);
 
-    renderPreview->show();
+
+    QSizePolicy policy( QSizePolicy::MinimumExpanding, 
+						QSizePolicy::MinimumExpanding, 
+						QSizePolicy::DefaultType );
+    policy.setHeightForWidth(true);
+	
+
+    m_renderPreview = new QVTKWidget();
+	m_renderPreview->setGeometry(0,0,200,200);
+
+	m_renderPreview->setSizePolicy(policy);
+	m_renderPreview->updateGeometry();
+
+	layout->addWidget(openImage, 0,0);
+	layout->addWidget(openHeader, 0,1);
+	layout->addWidget(m_renderPreview,1,0);
+	layout->addWidget(m_headerEntries,1,1);
+	layout->addWidget(m_horizontalSlider,2,0);
+
+	
+    m_imageviewer      	= vtkImageViewer::New();
+	m_renderer			= m_imageviewer->GetRenderer();
+	m_renderWin			= m_imageviewer->GetRenderWindow();
+
+	m_renderWin->SetSize(300,300);
+	m_imageviewer->SetSize(300,300);
+    m_renderPreview->SetRenderWindow(m_renderWin);
+    m_renderer->SetBackground(1,0,0);
+
+    m_renderPreview->show();
 
     m_vtkImporter			= vtkImageImport::New();
     m_inputArgs				= new n2d::InputArgs();
@@ -54,20 +83,28 @@ init::init(QWidget *parent) :
 
     QStringList labels;
     labels << tr("Tag") << tr("Value");
-    ui->headerEntries->setHorizontalHeaderLabels(labels);
-    ui->headerEntries->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
-    ui->headerEntries->setEnabled(false);
+    m_headerEntries->setHorizontalHeaderLabels(labels);
+    m_headerEntries->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
+    m_headerEntries->setEnabled(false);
 
+
+	m_dictionary = m_parent->getDictionary();
+	m_importedDictionary = m_parent->getImportedDictionary();
+
+	setLayout(layout);
 	
+	std::cout<<__PRETTY_FUNCTION__<<m_dictionary<<std::endl;
+	std::cout<<__PRETTY_FUNCTION__<<m_importedDictionary<<std::endl;
 
+	connect(openImage, SIGNAL(clicked()),this,SLOT(loadInImage()));
+	connect(openHeader, SIGNAL(clicked()),this,SLOT(loadIndcmHDR()));
+	connect(m_horizontalSlider, SIGNAL(valueChanged(int )),this,SLOT(OnSliderChange(int )));
 }
 
 init::~init()
 {
-    delete ui;
 	m_vtkImporter->Delete();
-    imageviewer->Delete();
-    renderInteractor->Delete();
+    m_imageviewer->Delete();
 
 }
 template<class TPixel>
@@ -83,14 +120,19 @@ bool init::showImage(n2d::ImageType::Pointer in)
 	
 	connector->SetInput( image );
 
-    imageviewer->SetInput(connector->GetOutput());
-    imageviewer->GetRenderer()->ResetCamera();
-    imageviewer->GetActor2D()->SetPosition( -70, 20);
-    renderPreview->GetRenderWindow()->Render();
+    m_imageviewer->SetInput(connector->GetOutput());
 	//This is required otherwise RefCount goes to zero and connector'd be destroyed//
 	m_connector = connector.GetPointer();
+	
+	m_imageviewer->GetActor2D()->SetWidth(200);
+	m_imageviewer->GetActor2D()->SetHeight(200);
+    m_renderer->ResetCamera();
+	m_renderPreview->update();
 
-
+	std::cout<<m_renderer->GetSize()[0]<<std::endl;
+	std::cout<<m_renderer->GetSize()[1]<<std::endl;
+	std::cout<<m_renderer->GetCenter()[0]<<std::endl;
+	std::cout<<m_renderer->GetCenter()[1]<<std::endl;
     return true;
 }
 
@@ -183,10 +225,10 @@ bool init::loadInImage()
 
 }
 
-bool init::OnSliderChange()
+bool init::OnSliderChange(int z)
 {
-    imageviewer->SetZSlice(ui->horizontalSlider->value());
-	renderPreview->GetRenderWindow()->Render();
+    m_imageviewer->SetZSlice(z);
+	m_renderPreview->GetRenderWindow()->Render();
     return true;
 }
 
@@ -197,7 +239,7 @@ bool init::loadIndcmHDR()
     m_dcmRefHDRFname = QFileDialog::getOpenFileName(this,"","");
     if(m_dcmRefHDRFname.isEmpty()) return false;
 	m_dicomHeaderArgs->dicomheaderfile = m_dcmRefHDRFname.toStdString();
-	m_headerImporter	= new n2d::HeaderImporter(*m_dicomHeaderArgs , m_importedDictionary);
+	m_headerImporter	= new n2d::HeaderImporter(*m_dicomHeaderArgs , *m_importedDictionary);
 
 	m_parent->setDicomHeaderImporter(m_headerImporter);
 	m_parent->storeDicomHeaderArgs(*m_dicomHeaderArgs);
@@ -209,16 +251,15 @@ bool init::loadIndcmHDR()
         exit(100);
     }
 
-	m_parent->setImportedDictionary(m_importedDictionary);
-    n2d::DictionaryType::ConstIterator itr = m_importedDictionary.Begin();
-    n2d::DictionaryType::ConstIterator end = m_importedDictionary.End();
+    n2d::DictionaryType::ConstIterator itr = m_importedDictionary->Begin();
+    n2d::DictionaryType::ConstIterator end = m_importedDictionary->End();
 
     QTableWidgetItem* tagkeyitem  ; 
 	QTableWidgetItem* tagvalueitem; 
 
     while(itr != end)
     {
-        int row = ui->headerEntries->rowCount();
+        int row = m_headerEntries->rowCount();
         itk::MetaDataObjectBase::Pointer entry = itr->second;
         MetaDataStringType::Pointer entryvalue = 
 			dynamic_cast<MetaDataStringType* >(entry.GetPointer());
@@ -235,9 +276,9 @@ bool init::loadIndcmHDR()
                     tagkeyitem   = new QTableWidgetItem(item1);
                     tagvalueitem = new QTableWidgetItem(item2);
 
-                    ui->headerEntries->insertRow(row);
-                    ui->headerEntries->setItem(row,0,tagkeyitem);
-                    ui->headerEntries->setItem(row,1,tagvalueitem);
+                    m_headerEntries->insertRow(row);
+                    m_headerEntries->setItem(row,0,tagkeyitem);
+                    m_headerEntries->setItem(row,1,tagvalueitem);
 
                 }
         }
@@ -250,22 +291,12 @@ bool init::loadIndcmHDR()
     return true;
 }
 
-void init::changeEvent(QEvent *e)
-{
-
-    QWidget::changeEvent(e);
-    switch (e->type()) {
-    case QEvent::LanguageChange:
-        ui->retranslateUi(this);
-        break;
-    default:
-        break;
-    }
-}
-
 bool init::validatePage()
 {	
-	n2d::DictionaryType dictionary = m_parent->getDictionary();
+
+
+	std::cout<<__PRETTY_FUNCTION__<<m_dictionary<<std::endl;
+	std::cout<<__PRETTY_FUNCTION__<<m_importedDictionary<<std::endl;
 
 	n2d::DicomClassArgs 	dicomClassArgs;
 	n2d::AcquisitionArgs 	acquisitionArgs;
@@ -277,7 +308,7 @@ bool init::validatePage()
 //BEGIN DICOM Class
     try
     {
-        n2d::DicomClass dicomClass(dicomClassArgs, m_importedDictionary, dictionary);
+        n2d::DicomClass dicomClass(dicomClassArgs, *m_importedDictionary, *m_dictionary);
         if (!dicomClass.Update())
         {
             std::cerr << "ERROR in \"DICOM Class\"." << std::endl;
@@ -296,7 +327,7 @@ bool init::validatePage()
 //BEGIN Other DICOM Tags
     try
     {
-        n2d::OtherDicomTags otherDicomTags(otherDicomTagsArgs, dictionary);
+        n2d::OtherDicomTags otherDicomTags(otherDicomTagsArgs, *m_dictionary);
         if (!otherDicomTags.Update())
         {
             std::cerr << "ERROR in \"Other DICOM Tags\"." << std::endl;
@@ -315,7 +346,7 @@ bool init::validatePage()
 //BEGIN Patient
     try
     {
-        n2d::Patient patient(patientArgs, m_importedDictionary, dictionary);
+        n2d::Patient patient(patientArgs, *m_importedDictionary, *m_dictionary);
         if (!patient.Update())
         {
             std::cerr << "ERROR in \"Patient\"." << std::endl;
@@ -333,7 +364,7 @@ bool init::validatePage()
 //BEGIN Study
     try
     {
-        n2d::Study study(studyArgs, m_importedDictionary, dictionary);
+        n2d::Study study(studyArgs, *m_importedDictionary, *m_dictionary);
         if (!study.Update())
         {
             std::cerr << "ERROR in \"Study\"." << std::endl;
@@ -352,7 +383,7 @@ bool init::validatePage()
 //BEGIN Series
     try
     {
-        n2d::Series series(seriesArgs, m_importedDictionary, dictionary);
+        n2d::Series series(seriesArgs, *m_importedDictionary, *m_dictionary);
         if (!series.Update())
         {
             std::cerr << "ERROR in \"Series\"." << std::endl;
@@ -371,7 +402,7 @@ bool init::validatePage()
 //BEGIN Acquisition
     try
     {
-        n2d::Acquisition acquisition(acquisitionArgs, dictionary);
+        n2d::Acquisition acquisition(acquisitionArgs, *m_dictionary);
         if (!acquisition.Update())
         {
             std::cerr << "ERROR in \"Acquisition\"." << std::endl;
@@ -385,8 +416,6 @@ bool init::validatePage()
     }
 //END Acquisition
 
-
-	m_parent->setDictionary(dictionary);
 	m_parent->storeDicomClassArgs(dicomClassArgs);
 	m_parent->storeAcquisitionArgs(acquisitionArgs);
 	m_parent->storeOtherDicomTagsArgs(otherDicomTagsArgs);
@@ -398,6 +427,18 @@ bool init::validatePage()
 
 }
 
+void init::resizeEvent ( QResizeEvent * event )
+{
+	QWizardPage::resizeEvent(event);
+	if(m_renderer!=NULL && m_renderPreview!=NULL)
+	{
+		m_imageviewer->SetSize(100,100);
+		m_renderWin->SetSize(100,100);
+		m_renderer->ResetCamera();
+		m_renderPreview->update();
+	}
+
+}
 
 }//namespace gui
 }//namespace n2d

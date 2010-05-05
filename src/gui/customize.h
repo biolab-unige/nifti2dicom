@@ -24,9 +24,9 @@ class customize : public QWizardPage
 		bool OnItemChange(QTableWidgetItem* );
 	private:
 
-		Wizard* 			m_parent;
-		QTableWidget* 		m_dicomTable;
-		n2d::DictionaryType	m_dictionary;
+		Wizard* 				m_parent;
+		QTableWidget* 			m_dicomTable;
+		n2d::DictionaryType*	m_dictionary;
 
 		virtual void initializePage();
 		virtual bool validatePage();

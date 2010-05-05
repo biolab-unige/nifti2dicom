@@ -72,8 +72,7 @@ set(nifti2dicom_gui_NO_INSTALL_HEADERS ${CMAKE_BINARY_DIR}/Nifti2DicomConfig.h
 					 finalize.h)
 
 set(nifti2dicom_gui_MOC_HDR wizard.h init.h customize.h finalize.h)
-set(nifti2dicom_gui_UIS init.ui) # customize.ui finalize.ui)
-QT4_WRAP_UI(nifti2dicom_gui_UIS_HDR ${nifti2dicom_gui_UIS})
+
 QT4_WRAP_CPP(nifti2dicom_gui_MOC_SRCS ${nifti2dicom_gui_MOC_HDR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 

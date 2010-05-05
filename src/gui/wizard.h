@@ -34,14 +34,13 @@ public:
     inline const n2d::InstanceArgs&        getinstanceArgs()const{return m_instanceArgs;}
     inline const n2d::OutputArgs&          getoutputArgs()const{return m_outputArgs;}
 
-	inline n2d::DictionaryType&			   getImportedDictionary(){return m_importedDictionary;}
-	inline n2d::DictionaryType&			   getDictionary(){return m_dictionary;}
+	inline n2d::DictionaryType*			   getImportedDictionary(){return &m_importedDictionary;}
+	inline n2d::DictionaryType*			   getDictionary(){return &m_dictionary;}
 
 	inline const n2d::InputImporter* 	   getInputImporter()const{return m_inputImporter;}
    	inline void							   setInputImporter(n2d::InputImporter* a){m_inputImporter = a;} 
 	inline void 						   setDicomHeaderImporter(n2d::HeaderImporter* a){m_HeaderImporter = a;}
 	inline void 						   setImportedDictionary(n2d::DictionaryType& b){m_importedDictionary = b;}
-	inline void 						   setDictionary(n2d::DictionaryType& b){m_dictionary = b;}
 
 public slots:
    inline void storeAccessionNumberArgs(n2d::AccessionNumberArgs& a){m_accessionNumberArgs = a;}
