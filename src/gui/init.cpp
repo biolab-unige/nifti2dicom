@@ -73,7 +73,8 @@ init::init(QWidget *parent) :
 	m_renderWin->SetSize(300,300);
 	m_imageviewer->SetSize(300,300);
     m_renderPreview->SetRenderWindow(m_renderWin);
-    m_renderer->SetBackground(1,0,0);
+    m_renderer->SetBackground(0,0,0);
+	m_imageviewer->GetActor2D()->SetPosition(-50, -50);
 
     m_renderPreview->show();
 
