@@ -24,6 +24,7 @@ class vtkImageImport;
 class itk::ProcessObject;
 class QTableWidget;
 class QSlider;
+class QFont;
 
 namespace n2d{
 
@@ -61,6 +62,7 @@ private:
 	n2d::DictionaryType*			m_dictionary;
 	QTableWidget*					m_headerEntries;
 	QSlider*						m_horizontalSlider;
+	QFont*							m_font;
 
     n2d::InputArgs* 				m_inputArgs;
 	n2d::DicomHeaderArgs*			m_dicomHeaderArgs;
@@ -73,7 +75,8 @@ private slots:
     bool loadInImage();
     bool loadIndcmHDR();
     bool OnSliderChange(int );
-	virtual bool validatePage();
+	bool validatePage();
+	bool isComplete() const;
 };
 }//namespace gui
 }//namespace n2d

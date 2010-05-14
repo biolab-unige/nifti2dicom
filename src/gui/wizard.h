@@ -56,6 +56,9 @@ public slots:
    inline void storeInstanceArgs(n2d::InstanceArgs& a){m_instanceArgs = a;}
    inline void storeOutputArgs(n2d::OutputArgs& a){m_outputArgs = a;}
 
+private slots:
+	void showHelp();
+
 
 
 private:

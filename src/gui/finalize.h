@@ -46,6 +46,7 @@ class finalize: public QWizardPage
 
 		void initializePage();
 		bool validatePage();
+		bool isComplete() const;
 
 	private slots:
 		void OnAccessionNumberChange( );

@@ -25,7 +25,9 @@ finalize::finalize(QWidget* parent):QWizardPage(parent)
 {
 	m_parent	 = dynamic_cast<n2d::gui::Wizard* >(parent);
 	m_dictionary = m_parent->getDictionary();
-
+    
+    this->setTitle("Last Step");
+    this->setSubTitle("Review the final header, fill the output directory and the accession number");
 	//Styling grid layout
 	QGridLayout *baselayout			= new QGridLayout();
 	QGridLayout *rightlayout		= new QGridLayout();
@@ -34,20 +36,18 @@ finalize::finalize(QWidget* parent):QWizardPage(parent)
 	m_accessionNumberLine			= new QLineEdit();
 	QLabel *label1					= new QLabel("Output directory");
 	QLabel *label2					= new QLabel("Accession Number");
-	QPushButton	*goButton			= new QPushButton("Go");
 	m_rescaleBox					= new QCheckBox("Rescale");
 	m_headerTable					= new QTableWidget(0,2);
+	m_digits 						= 4;
 
 	m_headerTable->setColumnWidth(0,100);
 	m_headerTable->setColumnWidth(1,200);
 
-	m_digits 								= 4;
 	
 	QStringList labels;
     labels << tr("Tag") << tr("Value");
     m_headerTable->setHorizontalHeaderLabels(labels);
     m_headerTable->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
-    m_headerTable->setEnabled(false);
 
 	rightlayout->addWidget(m_outDirLine,0,1);
 	rightlayout->addWidget(label1,0,0);
@@ -55,7 +55,6 @@ finalize::finalize(QWidget* parent):QWizardPage(parent)
 	rightlayout->addWidget(label2,1,0);
 	rightlayout->addWidget(m_rescaleBox,2,0);
 
-	leftlayout->addWidget(goButton,0,0);
 	leftlayout->addWidget(m_headerTable,1,0);
 	
 	baselayout->addLayout(leftlayout,0,1);
@@ -64,6 +63,8 @@ finalize::finalize(QWidget* parent):QWizardPage(parent)
 
 	connect(m_accessionNumberLine,SIGNAL(editingFinished()),this, SLOT(OnAccessionNumberChange()));
 	connect(m_outDirLine,SIGNAL(editingFinished()),this, SLOT(OnOutputDirectoryChange()));
+
+	registerField("gino* ", m_accessionNumberLine);
 	
 	std::cout<<__PRETTY_FUNCTION__<<m_dictionary<<std::endl;
 }
@@ -95,6 +96,9 @@ void finalize::initializePage()
 				QTableWidgetItem* tagvalueitem = 
 					new QTableWidgetItem(item2);
 
+				tagkeyitem->setFont(QFont("Verdana",10));
+				tagvalueitem->setFont(QFont("Verdana",10));
+
                 m_headerTable->insertRow(row);
                 m_headerTable->setItem(row,0,tagkeyitem);
                 m_headerTable->setItem(row,1,tagvalueitem);
@@ -108,11 +112,15 @@ void finalize::initializePage()
 void finalize::OnAccessionNumberChange()
 {
 	m_accessionNumber = m_accessionNumberLine->text().toStdString();
+	std::cout<<__PRETTY_FUNCTION__<<m_accessionNumber<<std::endl;
+	completeChanged();
 }
 
 void finalize::OnOutputDirectoryChange()
 {
 	m_outputDirectory = m_outDirLine->text().toStdString(); 
+	std::cout<<__PRETTY_FUNCTION__<<m_accessionNumber<<std::endl;
+	completeChanged();
 }
 
 
@@ -138,7 +146,6 @@ bool finalize::validatePage()
 	std::cout<<m_accessionNumber<<std::endl;
 
 
-	//std::cout<<__PRETTY_FUNCTION__<<m_image<<std::endl;
 	std::cout<<__PRETTY_FUNCTION__<<m_dictionary<<std::endl;
 
 
@@ -218,6 +225,15 @@ bool finalize::validatePage()
 //END Output
 
 	return true;
+}
+
+bool finalize::isComplete() const 
+{
+	if(m_accessionNumber.empty() || 
+		m_outputDirectory.empty())
+		return false;
+	else 
+		return true;
 }
 
 }//namespace gui

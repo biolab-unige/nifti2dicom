@@ -9,6 +9,9 @@
 #include <QtGui/QTableWidgetItem>
 #include <QtGui/QHeaderView>
 #include <QtGui/QSizePolicy>
+#include <QtCore/QSize>
+#include <QtGui/QFont>
+
 #include "itkImage.h"
 #include "itkImageToVTKImageFilter.h"
 #include "vtkRenderer.h"
@@ -34,29 +37,25 @@ namespace gui{
 init::init(QWidget *parent) :
     QWizardPage(parent),
 	m_renderPreview(NULL),
-	m_renderer(NULL)
+	m_renderer(NULL),
+	m_dictionary(NULL)
 {
 	m_parent = dynamic_cast<n2d::gui::Wizard* >(parent);
     this->setTitle("First Step");
-    this->setSubTitle("required input filename and optional dicom reference header");
+    this->setSubTitle("Required input: Nifti filename and optional dicom reference header");
 
 	QGridLayout *layout 		= new QGridLayout();
-	QPushButton *openImage 		= new QPushButton("Open Image");
-	QPushButton *openHeader		= new QPushButton("Open Header");
+	QPushButton *openImage 		= new QPushButton("Open Nifti Image");
+	QPushButton *openHeader		= new QPushButton("Open Dicom Header");
 	m_headerEntries 			= new QTableWidget(0,2);
 	m_horizontalSlider			= new QSlider(Qt::Horizontal);
 
+//	QFont* m_font				= new QFont("Arial",8);
 
-    QSizePolicy policy( QSizePolicy::MinimumExpanding, 
-						QSizePolicy::MinimumExpanding, 
-						QSizePolicy::DefaultType );
-    policy.setHeightForWidth(true);
-	
 
     m_renderPreview = new QVTKWidget();
-	m_renderPreview->setGeometry(0,0,200,200);
+	m_renderPreview->setMinimumSize(400,400);
 
-	m_renderPreview->setSizePolicy(policy);
 	m_renderPreview->updateGeometry();
 
 	layout->addWidget(openImage, 0,0);
@@ -70,11 +69,8 @@ init::init(QWidget *parent) :
 	m_renderer			= m_imageviewer->GetRenderer();
 	m_renderWin			= m_imageviewer->GetRenderWindow();
 
-	m_renderWin->SetSize(300,300);
-	m_imageviewer->SetSize(300,300);
     m_renderPreview->SetRenderWindow(m_renderWin);
-    m_renderer->SetBackground(0,0,0);
-	m_imageviewer->GetActor2D()->SetPosition(-50, -50);
+    m_renderer->SetBackground(1,1,1);
 
     m_renderPreview->show();
 
@@ -87,10 +83,6 @@ init::init(QWidget *parent) :
     m_headerEntries->setHorizontalHeaderLabels(labels);
     m_headerEntries->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
     m_headerEntries->setEnabled(false);
-
-
-	m_dictionary = m_parent->getDictionary();
-	m_importedDictionary = m_parent->getImportedDictionary();
 
 	setLayout(layout);
 	
@@ -125,23 +117,23 @@ bool init::showImage(n2d::ImageType::Pointer in)
 	//This is required otherwise RefCount goes to zero and connector'd be destroyed//
 	m_connector = connector.GetPointer();
 	
-	m_imageviewer->GetActor2D()->SetWidth(200);
-	m_imageviewer->GetActor2D()->SetHeight(200);
-    m_renderer->ResetCamera();
+ 	m_renderer->ResetCamera();
+	m_renderer->ResetCameraClippingRange();
 	m_renderPreview->update();
 
-	std::cout<<m_renderer->GetSize()[0]<<std::endl;
-	std::cout<<m_renderer->GetSize()[1]<<std::endl;
-	std::cout<<m_renderer->GetCenter()[0]<<std::endl;
-	std::cout<<m_renderer->GetCenter()[1]<<std::endl;
+	std::cout<<m_renderer->GetSize()[0]<<" "<<m_renderer->GetSize()[1]<<std::endl;
+	std::cout<<m_renderWin->GetSize()[0]<<" "<<m_renderWin->GetSize()[1]<<std::endl;
+	std::cout<<m_imageviewer->GetSize()[0]<<" "<<m_imageviewer->GetSize()[1]<<std::endl;
+	QSize p = m_renderPreview->size();
+	std::cout<<p.width()<<" "<<p.height()<<std::endl;
+
+
     return true;
 }
 
 
 bool init::loadInImage()
 {
-	//This should instantiate all the needed objects and classes 
-	//to import image and metadataDictionary
 	m_inFname = QFileDialog::getOpenFileName(this,"","");
 	if(m_inFname.isEmpty()) return false;
 
@@ -222,6 +214,10 @@ bool init::loadInImage()
         }
    }
 
+	m_dictionary = m_parent->getDictionary();
+	m_importedDictionary = m_parent->getImportedDictionary();
+	completeChanged();
+
 	return ret;
 
 }
@@ -236,6 +232,7 @@ bool init::OnSliderChange(int z)
 
 bool init::loadIndcmHDR()
 {
+
 
     m_dcmRefHDRFname = QFileDialog::getOpenFileName(this,"","");
     if(m_dcmRefHDRFname.isEmpty()) return false;
@@ -256,7 +253,8 @@ bool init::loadIndcmHDR()
     n2d::DictionaryType::ConstIterator end = m_importedDictionary->End();
 
     QTableWidgetItem* tagkeyitem  ; 
-	QTableWidgetItem* tagvalueitem; 
+	QTableWidgetItem* tagvalueitem;
+
 
     while(itr != end)
     {
@@ -276,6 +274,9 @@ bool init::loadIndcmHDR()
 
                     tagkeyitem   = new QTableWidgetItem(item1);
                     tagvalueitem = new QTableWidgetItem(item2);
+
+					tagkeyitem->setFont(QFont("Verdana",10));
+					tagvalueitem->setFont(QFont("Verdana",10));
 
                     m_headerEntries->insertRow(row);
                     m_headerEntries->setItem(row,0,tagkeyitem);
@@ -436,9 +437,19 @@ void init::resizeEvent ( QResizeEvent * event )
 		m_imageviewer->SetSize(100,100);
 		m_renderWin->SetSize(100,100);
 		m_renderer->ResetCamera();
+		m_renderer->ResetCameraClippingRange();
 		m_renderPreview->update();
 	}
 
+}
+bool init::isComplete() const
+{
+	if(m_dictionary == NULL)
+		return false;
+	else 
+	{
+		return true;
+	}
 }
 
 }//namespace gui

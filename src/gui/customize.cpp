@@ -2,6 +2,7 @@
 #include <QtGui/QTableWidgetItem>
 #include <QtGui/QWidget>
 #include <QtGui/QHeaderView>
+#include <QtGui/QVBoxLayout>
 
 #include "../core/n2dDefsMetaData.h"
 #include "../core/n2dToolsMetaDataDictionary.h"
@@ -16,18 +17,26 @@ customize::customize(QWidget* parent):QWizardPage(parent)
 {
 	m_parent	 = dynamic_cast<n2d::gui::Wizard* >(parent);
 	
+    this->setTitle("Second Step");
+    this->setSubTitle("Customize dicom header field clicking on proper "
+						"row and the type the desired value");
+
 	QStringList labels;
+	QVBoxLayout* layout = new QVBoxLayout();
+
+
 	m_dicomTable = new QTableWidget(0,2,this);
 	m_dicomTable->setColumnWidth(0,100);
 	m_dicomTable->setColumnWidth(1,450);
-    m_dicomTable->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
-	
-	m_dicomTable->setGeometry(0, 0, 600, 500);
 
     labels << tr("Tag") << tr("Value");
     m_dicomTable->setHorizontalHeaderLabels(labels);
 	m_dictionary = m_parent->getDictionary();
 
+	layout->addWidget(m_dicomTable);
+
+	setLayout(layout);
+	
 	std::cout<<__PRETTY_FUNCTION__<<m_dictionary<<std::endl;
 	
 }
