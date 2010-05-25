@@ -50,8 +50,6 @@ bool InputFilter::Filter( void )
     std::cout << m_InputImage->GetDirection() << std::endl;
 #endif // DEBUG
 
-    std::cout<<m_InputPixelType<<std::endl;
-
     bool ret=false;
 
     switch(m_InputPixelType)
