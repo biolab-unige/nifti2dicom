@@ -7,13 +7,13 @@
 #include <QtGui/QTableWidgetItem>
 #include <QtGui/QHeaderView>
 
-#include "../core/n2dInputFilter.h"
-#include "../core/n2dInstance.h"
-#include "../core/n2dOutputExporter.h"
-#include "../core/n2dInputImporter.h"
-#include "../core/n2dDefsImage.h"
-#include "../core/n2dAccessionNumberValidator.h"
-#include "../core/n2dDefsCommandLineArgsStructs.h"
+#include <n2dInputFilter.h>
+#include <n2dInstance.h>
+#include <n2dOutputExporter.h>
+#include <n2dInputImporter.h>
+#include <n2dDefsImage.h>
+#include <n2dAccessionNumberValidator.h>
+#include <n2dDefsCommandLineArgsStructs.h>
 
 #include "finalize.h"
 #include "wizard.h"

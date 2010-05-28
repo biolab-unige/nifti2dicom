@@ -20,7 +20,7 @@
 add_subdirectory(core)
 if(N2D_BUILD_GUI)
 #Search for installed Qt4 
-  FIND_PACKAGE(QT4 REQUIRED)
+  FIND_PACKAGE(Qt4 REQUIRED)
   IF(QT_FOUND)
     INCLUDE(${QT_USE_FILE})
   ELSE(QT_FOUND)

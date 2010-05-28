@@ -1,8 +1,8 @@
 #include <QtGui/QAbstractButton>
 #include <QtGui/QMessageBox>
 #include "wizard.h"
-#include "../core/n2dInputImporter.h"
-#include "../core/n2dHeaderImporter.h"
+#include <n2dInputImporter.h>
+#include <n2dHeaderImporter.h>
 namespace n2d{
 namespace gui{
 

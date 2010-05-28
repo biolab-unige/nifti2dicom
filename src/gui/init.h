@@ -15,9 +15,9 @@
 #include "vtkRenderWindowInteractor.h"
 #include "vtkInteractorStyleImage.h"
 
-#include "../core/n2dDefsImage.h"
-#include "../core/n2dDefsIO.h"
-#include "../core/n2dDefsMetaData.h"
+#include <n2dDefsImage.h>
+#include <n2dDefsIO.h>
+#include <n2dDefsMetadata.h>
 
 
 class vtkImageImport;

@@ -2,7 +2,7 @@
 #define CUSTOMIZE_H
 
 #include <QtGui/QWizardPage>
-#include "../core/n2dDefsMetaData.h"
+#include <n2dDefsMetadata.h>
 
 class QWidget;
 class QTableWidget;

@@ -23,14 +23,14 @@ cmake_minimum_required(VERSION 2.6.2)
 project(Nifti2Dicom)
 
 set(Nifti2Dicom_MAJOR_VERSION "0")
-set(Nifti2Dicom_MINOR_VERSION "2")
-set(Nifti2Dicom_PATCH_VERSION "94")
-set(Nifti2Dicom_VERSION "0.3~beta4")
+set(Nifti2Dicom_MINOR_VERSION "3")
+set(Nifti2Dicom_PATCH_VERSION "0")
+set(Nifti2Dicom_VERSION "0.3")
 set(Nifti2Dicom_INTERNAL_VERSION "${Nifti2Dicom_MAJOR_VERSION}.${Nifti2Dicom_MINOR_VERSION}.${Nifti2Dicom_PATCH_VERSION}")
+
 
 #Check pkg-config
 find_package(PkgConfig)
-
 
 #Check TCLAP Library [Templatized C++ Command Line Parser] (1.2.0)
 pkg_check_modules(TCLAP REQUIRED tclap>=1.2.0)

@@ -44,27 +44,8 @@ set(nifti2dicom_SOURCES ../core/n2dVersion.cxx
                         ../core/n2dOutputExporter.cxx
 )
 
-set(nifti2dicom_NO_INSTALL_HEADERS ${CMAKE_BINARY_DIR}/Nifti2DicomConfig.h
-                                   ../core/n2dVersion.h
-                                   ../core/n2dDefsCommandLineArgsStructs.h
-                                   ../core/n2dDefsImage.h
-                                   ../core/n2dDefsMetadata.h
-                                   ../core/n2dToolsMetaDataDictionary.h
-                                   ../core/n2dToolsDate.h
-                                   ../core/n2dCommandLineParser.h
-                                   ../core/n2dAccessionNumberValidator.h
-                                   ../core/n2dHeaderImporter.h
-                                   ../core/n2dDicomClass.h
-                                   ../core/n2dOtherDicomTags.h
-                                   ../core/n2dPatient.h
-                                   ../core/n2dStudy.h
-                                   ../core/n2dSeries.h
-                                   ../core/n2dAcquisition.h
-                                   ../core/n2dInputImporter.h
-                                   ../core/n2dInputFilter.h
-                                   ../core/n2dInstance.h
-                                   ../core/n2dOutputExporter.h
-)
+
+
 set(nifti2dicom_gui_NO_INSTALL_HEADERS ${CMAKE_BINARY_DIR}/Nifti2DicomConfig.h
 					 wizard.h 
 					 init.h
@@ -75,10 +56,11 @@ set(nifti2dicom_gui_MOC_HDR wizard.h init.h customize.h finalize.h)
 
 QT4_WRAP_CPP(nifti2dicom_gui_MOC_SRCS ${nifti2dicom_gui_MOC_HDR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../core)
 
 
 # nifti2dicom target
-add_executable(qnifti2dicom ${nifti2dicom_gui_SOURCES} ${nifti2dicom_SOURCES} ${nifti2dicom_gui_MOC_SRCS} ${nifti2dicom_gui_UIS_HDR})
+add_executable(qnifti2dicom ${nifti2dicom_gui_SOURCES} ${nifti2dicom_SOURCES} ${nifti2dicom_gui_MOC_SRCS} ${nifti2dicom_gui_UIS_HDR}) 
 target_link_libraries(qnifti2dicom ITKBasicFilters ITKIO ITKCommon ${QT_LIBRARIES} QVTK vtkGraphics vtkHybrid vtkImaging vtkFiltering vtkCommon vtkRendering vtkIO )
 
 install(TARGETS qnifti2dicom RUNTIME DESTINATION bin)

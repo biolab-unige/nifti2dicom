@@ -2,8 +2,8 @@
 #define WIZARD_H
 
 #include <QtGui/QWizard>
-#include "../core/n2dDefsCommandLineArgsStructs.h"
-#include "../core/n2dDefsMetaData.h"
+#include <n2dDefsCommandLineArgsStructs.h>
+#include <n2dDefsMetadata.h>
 
 //////////////////////////////////////
 // FIXME CONTROL FOR NULL POINTERS  //

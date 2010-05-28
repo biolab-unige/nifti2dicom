@@ -2,9 +2,9 @@
 #define FINALIZE_H
 
 #include <QtGui/QWizardPage>
-#include "../core/n2dDefsMetaData.h"
-#include "../core/n2dDefsImage.h"
-#include "../core/n2dDefsIO.h"
+#include <n2dDefsMetadata.h>
+#include <n2dDefsImage.h>
+#include <n2dDefsIO.h>
 
 class QWidget;
 class QTableWidget;

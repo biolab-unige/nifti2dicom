@@ -4,8 +4,13 @@
 #include <QtGui/QHeaderView>
 #include <QtGui/QVBoxLayout>
 
-#include "../core/n2dDefsMetaData.h"
-#include "../core/n2dToolsMetaDataDictionary.h"
+#include <gdcmDict.h>
+#include <gdcmGlobal.h>
+#include <gdcmDicts.h>
+
+
+#include <n2dDefsMetadata.h>
+#include <n2dToolsMetaDataDictionary.h>
 
 #include "customize.h"
 #include "wizard.h"
@@ -25,11 +30,12 @@ customize::customize(QWidget* parent):QWizardPage(parent)
 	QVBoxLayout* layout = new QVBoxLayout();
 
 
-	m_dicomTable = new QTableWidget(0,2,this);
+	m_dicomTable = new QTableWidget(0,3,this);
 	m_dicomTable->setColumnWidth(0,100);
-	m_dicomTable->setColumnWidth(1,450);
+	m_dicomTable->setColumnWidth(1,350);
+	m_dicomTable->setColumnWidth(2,100);
 
-    labels << tr("Tag") << tr("Value");
+    labels << tr("Tag") << tr("Value") <<tr("Desc");
     m_dicomTable->setHorizontalHeaderLabels(labels);
 	m_dictionary = m_parent->getDictionary();
 
@@ -46,6 +52,13 @@ void customize::initializePage()
 
     n2d::DictionaryType::ConstIterator itr = m_dictionary->Begin();
     n2d::DictionaryType::ConstIterator end = m_dictionary->End();
+
+
+
+    const gdcm::Global& g = gdcm::Global::GetInstance();
+    const gdcm::Dicts &dicts = g.GetDicts();
+    const gdcm::Dict &pub = dicts.GetPublicDict(); // Part 6
+
 	
     while(itr != end)
     {
@@ -59,17 +72,31 @@ void customize::initializePage()
                 std::string tagkey  = itr->first;
                 std::string tagvalue= 
 						entryvalue->GetMetaDataObjectValue();
+				int a = 0;
+                int b = 0;
+
+                sscanf(tagkey.substr(0,4).c_str(), "%x", &a);
+                sscanf(tagkey.substr(5,4).c_str(), "%x", &b);
+
+                gdcm::Tag t(a,b);
+                const gdcm::DictEntry &entry1 = pub.GetDictEntry(t);
+
+
                 QString item1(tagkey.c_str());
                 QString item2(tagvalue.c_str());
+                QString item3(entry1.GetName());
 
     			QTableWidgetItem* tagkeyitem = 
 					new QTableWidgetItem(item1,Qt::ItemIsEditable); 
 				QTableWidgetItem* tagvalueitem = 
 					new QTableWidgetItem(item2,Qt::ItemIsEditable);
+    			QTableWidgetItem* desc = 
+					new QTableWidgetItem(item3);
 
                 m_dicomTable->insertRow(row);
                 m_dicomTable->setItem(row,0,tagkeyitem);
                 m_dicomTable->setItem(row,1,tagvalueitem);
+                m_dicomTable->setItem(row,2,desc);
 
         }
         ++itr;

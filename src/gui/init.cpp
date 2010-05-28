@@ -15,19 +15,24 @@
 #include "itkImage.h"
 #include "itkImageToVTKImageFilter.h"
 #include "vtkRenderer.h"
-#include "vtkActor2d.h"
+#include "vtkActor2D.h"
 #include "vtkRenderWindow.h"
 #include "vtkImageMapper.h"
 #include "QVTKWidget.h"
 
-#include "../core/n2dInputImporter.h"
-#include "../core/n2dHeaderImporter.h"
-#include "../core/n2dDicomClass.h"
-#include "../core/n2dOtherDicomTags.h"
-#include "../core/n2dPatient.h"
-#include "../core/n2dStudy.h"
-#include "../core/n2dSeries.h"
-#include "../core/n2dAcquisition.h"
+#include <gdcmDict.h>
+#include <gdcmGlobal.h>
+#include <gdcmDicts.h>
+
+#include <n2dInputImporter.h>
+#include <n2dHeaderImporter.h>
+#include <n2dDicomClass.h>
+#include <n2dOtherDicomTags.h>
+#include <n2dPatient.h>
+#include <n2dStudy.h>
+#include <n2dSeries.h>
+#include <n2dAcquisition.h>
+
 #include "wizard.h"
 #include "init.h"
 
@@ -47,7 +52,7 @@ init::init(QWidget *parent) :
 	QGridLayout *layout 		= new QGridLayout();
 	QPushButton *openImage 		= new QPushButton("Open Nifti Image");
 	QPushButton *openHeader		= new QPushButton("Open Dicom Header");
-	m_headerEntries 			= new QTableWidget(0,2);
+	m_headerEntries 			= new QTableWidget(0,3);
 	m_horizontalSlider			= new QSlider(Qt::Horizontal);
 
 //	QFont* m_font				= new QFont("Arial",8);
@@ -79,10 +84,14 @@ init::init(QWidget *parent) :
 	m_dicomHeaderArgs		= new n2d::DicomHeaderArgs();
 
     QStringList labels;
-    labels << tr("Tag") << tr("Value");
+    labels << tr("Tag") << tr("Value") << tr("Desc");
     m_headerEntries->setHorizontalHeaderLabels(labels);
     m_headerEntries->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
     m_headerEntries->setEnabled(false);
+    m_headerEntries->setColumnWidth(0,100);
+    m_headerEntries->setColumnWidth(1,350);
+    m_headerEntries->setColumnWidth(2,100);
+    
 
 	setLayout(layout);
 	
@@ -121,11 +130,11 @@ bool init::showImage(n2d::ImageType::Pointer in)
 	m_renderer->ResetCameraClippingRange();
 	m_renderPreview->update();
 
-	std::cout<<m_renderer->GetSize()[0]<<" "<<m_renderer->GetSize()[1]<<std::endl;
-	std::cout<<m_renderWin->GetSize()[0]<<" "<<m_renderWin->GetSize()[1]<<std::endl;
-	std::cout<<m_imageviewer->GetSize()[0]<<" "<<m_imageviewer->GetSize()[1]<<std::endl;
+	std::cout<<"renderer size"<<m_renderer->GetSize()[0]<<" "<<m_renderer->GetSize()[1]<<std::endl;
+	std::cout<<"render window size"<<m_renderWin->GetSize()[0]<<" "<<m_renderWin->GetSize()[1]<<std::endl;
+	std::cout<<"image viewer size"<<m_imageviewer->GetSize()[0]<<" "<<m_imageviewer->GetSize()[1]<<std::endl;
 	QSize p = m_renderPreview->size();
-	std::cout<<p.width()<<" "<<p.height()<<std::endl;
+	std::cout<<"Qt render Preview size"<<p.width()<<" "<<p.height()<<std::endl;
 
 
     return true;
@@ -254,7 +263,12 @@ bool init::loadIndcmHDR()
 
     QTableWidgetItem* tagkeyitem  ; 
 	QTableWidgetItem* tagvalueitem;
+	QTableWidgetItem* desc;
 
+
+	const gdcm::Global& g = gdcm::Global::GetInstance();
+	const gdcm::Dicts &dicts = g.GetDicts();
+	const gdcm::Dict &pub = dicts.GetPublicDict(); // Part 6
 
     while(itr != end)
     {
@@ -263,24 +277,37 @@ bool init::loadIndcmHDR()
         MetaDataStringType::Pointer entryvalue = 
 			dynamic_cast<MetaDataStringType* >(entry.GetPointer());
 
-		if(entryvalue)
+	if(entryvalue)
         {
                 std::string tagkey  = itr->first;
                 if(!tagkey.compare(0,4,"0010"))
                 {
                     std::string tagvalue= entryvalue->GetMetaDataObjectValue();
+					int a = 0;
+					int b = 0;
+
+					sscanf(tagkey.substr(0,4).c_str(), "%x", &a); 
+					sscanf(tagkey.substr(5,4).c_str(), "%x", &b); 
+
+					gdcm::Tag t(a,b);
+					const gdcm::DictEntry &entry1 = pub.GetDictEntry(t);
+
                     QString item1(tagkey.c_str());
                     QString item2(tagvalue.c_str());
+		    		QString item3(entry1.GetName());
 
                     tagkeyitem   = new QTableWidgetItem(item1);
                     tagvalueitem = new QTableWidgetItem(item2);
+                    desc         = new QTableWidgetItem(item3);
 
 					tagkeyitem->setFont(QFont("Verdana",10));
 					tagvalueitem->setFont(QFont("Verdana",10));
+					desc->setFont(QFont("Verdana",10));
 
                     m_headerEntries->insertRow(row);
                     m_headerEntries->setItem(row,0,tagkeyitem);
                     m_headerEntries->setItem(row,1,tagvalueitem);
+                    m_headerEntries->setItem(row,2,desc);
 
                 }
         }
