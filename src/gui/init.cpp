@@ -136,6 +136,9 @@ bool init::showImage(n2d::ImageType::Pointer in)
 	QSize p = m_renderPreview->size();
 	std::cout<<"Qt render Preview size"<<p.width()<<" "<<p.height()<<std::endl;
 
+	std::cout<<m_imageviewer->GetPosition()[0]<<" "<<m_imageviewer->GetPosition()[1]<<std::endl;
+	m_imageviewer->SetPosition(0,0);
+
 
     return true;
 }
@@ -333,6 +336,10 @@ bool init::validatePage()
 	n2d::SeriesArgs			seriesArgs;
 	n2d::StudyArgs			studyArgs;
 	n2d::PatientArgs		patientArgs;
+
+
+	seriesArgs.useoriginalseries      = false;
+	studyArgs.donotuseoriginalstudy   = false;
 
 //BEGIN DICOM Class
     try

@@ -1,5 +1,7 @@
 #include <QtGui/QAbstractButton>
 #include <QtGui/QMessageBox>
+#include <QtGui/QPixmap>
+
 #include "wizard.h"
 #include <n2dInputImporter.h>
 #include <n2dHeaderImporter.h>
@@ -12,6 +14,7 @@ Wizard::Wizard(QWizard* parent):QWizard(parent)
     this->setGeometry(10,10,1000,600);
 
 	setOption(QWizard::HaveHelpButton,true);
+	setPixmap(QWizard::BackgroundPixmap, QPixmap(":/images/background.png"));
 
 	connect(button(QWizard::HelpButton),SIGNAL(clicked())
 			,this,SLOT(showHelp()));

@@ -30,10 +30,11 @@ customize::customize(QWidget* parent):QWizardPage(parent)
 	QVBoxLayout* layout = new QVBoxLayout();
 
 
-	m_dicomTable = new QTableWidget(0,3,this);
+	m_dicomTable = new QTableWidget(0,3);
+    m_dicomTable->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
 	m_dicomTable->setColumnWidth(0,100);
-	m_dicomTable->setColumnWidth(1,350);
-	m_dicomTable->setColumnWidth(2,100);
+	m_dicomTable->setColumnWidth(1,300);
+	m_dicomTable->setColumnWidth(2,200);
 
     labels << tr("Tag") << tr("Value") <<tr("Desc");
     m_dicomTable->setHorizontalHeaderLabels(labels);
