@@ -23,16 +23,12 @@ IF( APPLE )
 	set( PROGNAME qnifti2dicom )
 	set( MACOSX_BUNDLE_NAME qnifti2dicom)
     SET( MACOSX_BUNDLE_ICON_FILE Brain.icns )
-    SET( MACOSX_BUNDLE_SHORT_VERSION_STRING 0.2-beta3 )
-    SET( MACOSX_BUNDLE_VERSION 0.2-beta3 )
-    SET( MACOSX_BUNDLE_LONG_VERSION_STRING Version 0.2-beta3 )
-	
+    SET( MACOSX_BUNDLE_SHORT_VERSION_STRING ${Nifti2Dicom_VERSION} )
+    SET( MACOSX_BUNDLE_VERSION ${Nifti2Dicom_VERSION})
+    SET( MACOSX_BUNDLE_LONG_VERSION_STRING Version ${Nifti2Dicom_INTERNAL_VERSION} )
     SET( CMAKE_OSX_ARCHITECTURES i386 ) #Comment out if not universal binary
 ELSE( APPLE )
 ENDIF( APPLE )
-
-
-
 
 set(nifti2dicom_gui_SOURCES wizard.cpp
 			    init.cpp
@@ -77,16 +73,18 @@ QT4_ADD_RESOURCES(nifti2dicom_gui_QRC_SRCS ${nifti2dicom_gui_QRC_RCC})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../core)
 
-set( CONTENTS_DIR ${CMAKE_CURRENT_BINARY_DIR}/${PROGNAME}.app/Contents)
 
 IF( APPLE )
     ADD_EXECUTABLE( ${PROGNAME} MACOSX_BUNDLE ${nifti2dicom_gui_SOURCES} 
 											  ${nifti2dicom_SOURCES} 
 											  ${nifti2dicom_gui_MOC_SRCS} 
 											  ${nifti2dicom_gui_UIS_HDR} 
-											  ${nifti2dicom_gui_QRC_SRCS})  
+											  ${nifti2dicom_gui_QRC_SRCS}) 
+
+    set( CONTENTS_DIR ${CMAKE_CURRENT_BINARY_DIR}/${PROGNAME}.app/Contents)
 
 	ADD_CUSTOM_COMMAND( TARGET ${PROGNAME} POST_BUILD
+	  #COMMAND mkdir ARGS ${CMAKE_CURRENT_BINARY_DIR}/${PROGNAME}.app/Contents
       COMMAND mkdir ARGS ${CONTENTS_DIR}/Frameworks
 	  COMMAND mkdir ARGS ${CONTENTS_DIR}/Resources
       COMMAND cp ARGS /Users/gabri/icons/${MACOSX_BUNDLE_ICON_FILE} ${CONTENTS_DIR}/Resources/

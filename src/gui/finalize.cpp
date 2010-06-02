@@ -61,10 +61,12 @@ finalize::finalize(QWidget* parent):QWizardPage(parent)
 	baselayout->addLayout(rightlayout,0,0);
 	setLayout(baselayout);
 
-	connect(m_accessionNumberLine,SIGNAL(editingFinished()),this, SLOT(OnAccessionNumberChange()));
-	connect(m_outDirLine,SIGNAL(editingFinished()),this, SLOT(OnOutputDirectoryChange()));
+	connect(m_accessionNumberLine,SIGNAL(textChanged(const QString & )),this, 
+				SLOT(OnAccessionNumberChange(const QString &)));
+	connect(m_outDirLine,SIGNAL(textChanged(const QString & )),this, 
+				SLOT(OnOutputDirectoryChange(const QString & )));
 
-	registerField("gino* ", m_accessionNumberLine);
+	//registerField("gino* ", m_accessionNumberLine);
 	
 	std::cout<<__PRETTY_FUNCTION__<<m_dictionary<<std::endl;
 }
@@ -109,17 +111,15 @@ void finalize::initializePage()
     }
 }
 
-void finalize::OnAccessionNumberChange()
+void finalize::OnAccessionNumberChange(const QString& in)
 {
-	m_accessionNumber = m_accessionNumberLine->text().toStdString();
-	std::cout<<__PRETTY_FUNCTION__<<m_accessionNumber<<std::endl;
+	m_accessionNumber =in.toStdString();
 	completeChanged();
 }
 
-void finalize::OnOutputDirectoryChange()
+void finalize::OnOutputDirectoryChange(const QString& in)
 {
-	m_outputDirectory = m_outDirLine->text().toStdString(); 
-	std::cout<<__PRETTY_FUNCTION__<<m_accessionNumber<<std::endl;
+	m_outputDirectory = in.toStdString(); 
 	completeChanged();
 }
 
@@ -143,7 +143,6 @@ bool finalize::validatePage()
 	outputArgs.digits						= m_digits;
 	accessionNumberArgs.accessionnumber		= m_accessionNumber;
 
-	std::cout<<m_accessionNumber<<std::endl;
 
 
 	std::cout<<__PRETTY_FUNCTION__<<m_dictionary<<std::endl;

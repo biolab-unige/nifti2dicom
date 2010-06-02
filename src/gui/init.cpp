@@ -340,6 +340,7 @@ bool init::validatePage()
 
 	seriesArgs.useoriginalseries      = false;
 	studyArgs.donotuseoriginalstudy   = false;
+	studyArgs.studydescription 	      = "qnifti2dicom";
 
 //BEGIN DICOM Class
     try

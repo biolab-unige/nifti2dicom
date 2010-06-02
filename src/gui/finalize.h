@@ -49,8 +49,8 @@ class finalize: public QWizardPage
 		bool isComplete() const;
 
 	private slots:
-		void OnAccessionNumberChange( );
-		void OnOutputDirectoryChange( );
+		void OnAccessionNumberChange(const QString & );
+		void OnOutputDirectoryChange(const QString &);
 		
 };
 
