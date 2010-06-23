@@ -15,9 +15,14 @@
 #include "itkImage.h"
 #include "itkImageToVTKImageFilter.h"
 #include "vtkRenderer.h"
+#include "vtkImageShiftScale.h"
 #include "vtkActor2D.h"
 #include "vtkRenderWindow.h"
 #include "vtkImageMapper.h"
+#include "vtkLookupTable.h"
+#include "vtkImageMapToWindowLevelColors.h"
+#include "vtkKWImageIO.h"
+#include "vtkKWImage.h"
 #include "QVTKWidget.h"
 
 #include <gdcmDict.h>
@@ -54,14 +59,7 @@ init::init(QWidget *parent) :
 	QPushButton *openHeader		= new QPushButton("Open Dicom Header");
 	m_headerEntries 			= new QTableWidget(0,3);
 	m_horizontalSlider			= new QSlider(Qt::Horizontal);
-
-//	QFont* m_font				= new QFont("Arial",8);
-
-
-    m_renderPreview = new QVTKWidget();
-	m_renderPreview->setMinimumSize(400,400);
-
-	m_renderPreview->updateGeometry();
+    m_renderPreview 			= new QVTKWidget();
 
 	layout->addWidget(openImage, 0,0);
 	layout->addWidget(openHeader, 0,1);
@@ -70,14 +68,19 @@ init::init(QWidget *parent) :
 	layout->addWidget(m_horizontalSlider,2,0);
 
 	
-    m_imageviewer      	= vtkImageViewer::New();
+    m_imageviewer      	= vtkImageViewer2::New();
 	m_renderer			= m_imageviewer->GetRenderer();
 	m_renderWin			= m_imageviewer->GetRenderWindow();
 
-    m_renderPreview->SetRenderWindow(m_renderWin);
-    m_renderer->SetBackground(1,1,1);
 
-    m_renderPreview->show();
+	//BEGIN Test vtkKWImage//
+		m_reader 		= vtkKWImageIO::New();
+		m_localVTKImage = vtkKWImage::New();
+	    m_importedDictionary = m_parent->getImportedDictionary();
+		m_dictionary = m_parent->getDictionary();
+	//END
+
+    m_renderPreview->SetRenderWindow(m_renderWin);
 
     m_vtkImporter			= vtkImageImport::New();
     m_inputArgs				= new n2d::InputArgs();
@@ -94,8 +97,7 @@ init::init(QWidget *parent) :
     
 
 	setLayout(layout);
-	
-	std::cout<<__PRETTY_FUNCTION__<<m_dictionary<<std::endl;
+	std::cout<<__PRETTY_FUNCTION__<<"dictionary ("<<m_dictionary<<")"<<std::endl;
 	std::cout<<__PRETTY_FUNCTION__<<m_importedDictionary<<std::endl;
 
 	connect(openImage, SIGNAL(clicked()),this,SLOT(loadInImage()));
@@ -107,45 +109,91 @@ init::~init()
 {
 	m_vtkImporter->Delete();
     m_imageviewer->Delete();
+	m_reader->Delete();
+	m_localVTKImage->Delete();
 
 }
 template<class TPixel>
 bool init::showImage(n2d::ImageType::Pointer in)
 {
+
+	std::cout<<__PRETTY_FUNCTION__<<std::endl;
     typedef  itk::Image<TPixel, n2d::Dimension>			InternalImageType;
 	typedef  itk::ImageToVTKImageFilter<InternalImageType> ConnectorType;
+
 
     typename InternalImageType::Pointer image 	   = 
 		dynamic_cast<InternalImageType* >(m_inputImporter->getImportedImage().GetPointer());
 
 	typename ConnectorType::Pointer connector = ConnectorType::New();
-	
-	connector->SetInput( image );
 
-    m_imageviewer->SetInput(connector->GetOutput());
+	connector->SetInput(image);
+    double range[2];
+    connector->GetOutput()->GetScalarRange(range);
+    vtkLookupTable* lookupTable = vtkLookupTable::New();
+    lookupTable->SetValueRange(0.0,1.0);
+    lookupTable->SetSaturationRange(0.0,0.0);
+    lookupTable->SetRampToLinear();
+    lookupTable->SetRange(range);
+    lookupTable->Build();
+    m_imageviewer->GetWindowLevel()->SetLookupTable(lookupTable);
+    m_imageviewer->GetWindowLevel()->SetInput(connector->GetOutput());
+
+    //m_imageviewer->SetInputConnection(shiftscalefilter->GetOutputPort());
 	//This is required otherwise RefCount goes to zero and connector'd be destroyed//
 	m_connector = connector.GetPointer();
 	
  	m_renderer->ResetCamera();
-	m_renderer->ResetCameraClippingRange();
 	m_renderPreview->update();
 
-	std::cout<<"renderer size"<<m_renderer->GetSize()[0]<<" "<<m_renderer->GetSize()[1]<<std::endl;
-	std::cout<<"render window size"<<m_renderWin->GetSize()[0]<<" "<<m_renderWin->GetSize()[1]<<std::endl;
-	std::cout<<"image viewer size"<<m_imageviewer->GetSize()[0]<<" "<<m_imageviewer->GetSize()[1]<<std::endl;
-	QSize p = m_renderPreview->size();
-	std::cout<<"Qt render Preview size"<<p.width()<<" "<<p.height()<<std::endl;
-
-	std::cout<<m_imageviewer->GetPosition()[0]<<" "<<m_imageviewer->GetPosition()[1]<<std::endl;
-	m_imageviewer->SetPosition(0,0);
 
 
     return true;
 }
 
-
 bool init::loadInImage()
 {
+
+   m_inFname = QFileDialog::getOpenFileName(this,"",".");
+    if(m_inFname.isEmpty()) return false;
+
+    m_reader->SetFileName(m_inFname.toStdString() );
+    try{
+        m_reader->ReadImage();
+    }catch(...){
+        std::cerr<<"error"<<std::endl;
+        return false;
+    }
+    double range[2];
+    m_localVTKImage = m_reader->HarvestReadImage();
+    m_localVTKImage->GetVTKImage()->GetScalarRange(range);
+    std::cout<<range[0]<<" "<<range[1]<<std::endl;
+    vtkLookupTable* lookupTable = vtkLookupTable::New();
+    lookupTable->SetValueRange(0.0,1.0);
+    lookupTable->SetSaturationRange(0.0,0.0);
+    lookupTable->SetRampToLinear();
+    lookupTable->SetRange(range);
+    lookupTable->Build();
+    m_imageviewer->GetWindowLevel()->SetLookupTable(lookupTable);
+    m_imageviewer->GetWindowLevel()->SetInput(m_localVTKImage->GetVTKImage());
+
+    m_imageviewer->GetRenderer()->ResetCamera();
+    m_renderPreview->GetRenderWindow()->Render();
+	m_parent->setImportedImage(m_localVTKImage);
+
+	completeChanged();
+    return true;
+
+}
+
+
+
+
+/*
+bool init::loadInImage()
+{
+
+	std::cout<<__PRETTY_FUNCTION__<<std::endl;
 	m_inFname = QFileDialog::getOpenFileName(this,"","");
 	if(m_inFname.isEmpty()) return false;
 
@@ -226,18 +274,17 @@ bool init::loadInImage()
         }
    }
 
-	m_dictionary = m_parent->getDictionary();
 	m_importedDictionary = m_parent->getImportedDictionary();
-	completeChanged();
 
 	return ret;
 
 }
-
+*/
 bool init::OnSliderChange(int z)
 {
-    m_imageviewer->SetZSlice(z);
-	m_renderPreview->GetRenderWindow()->Render();
+	std::cout<<__PRETTY_FUNCTION__<<std::endl;
+    m_imageviewer->SetSlice(z);
+	m_renderPreview->update();
     return true;
 }
 
@@ -245,7 +292,7 @@ bool init::OnSliderChange(int z)
 bool init::loadIndcmHDR()
 {
 
-
+	std::cout<<__PRETTY_FUNCTION__<<std::endl;
     m_dcmRefHDRFname = QFileDialog::getOpenFileName(this,"","");
     if(m_dcmRefHDRFname.isEmpty()) return false;
 	m_dicomHeaderArgs->dicomheaderfile = m_dcmRefHDRFname.toStdString();
@@ -267,7 +314,6 @@ bool init::loadIndcmHDR()
     QTableWidgetItem* tagkeyitem  ; 
 	QTableWidgetItem* tagvalueitem;
 	QTableWidgetItem* desc;
-
 
 	const gdcm::Global& g = gdcm::Global::GetInstance();
 	const gdcm::Dicts &dicts = g.GetDicts();
@@ -326,6 +372,7 @@ bool init::loadIndcmHDR()
 bool init::validatePage()
 {	
 
+	std::cout<<__PRETTY_FUNCTION__<<std::endl;
 
 	std::cout<<__PRETTY_FUNCTION__<<m_dictionary<<std::endl;
 	std::cout<<__PRETTY_FUNCTION__<<m_importedDictionary<<std::endl;
@@ -464,22 +511,11 @@ bool init::validatePage()
 
 }
 
-void init::resizeEvent ( QResizeEvent * event )
-{
-	QWizardPage::resizeEvent(event);
-	if(m_renderer!=NULL && m_renderPreview!=NULL)
-	{
-		m_imageviewer->SetSize(100,100);
-		m_renderWin->SetSize(100,100);
-		m_renderer->ResetCamera();
-		m_renderer->ResetCameraClippingRange();
-		m_renderPreview->update();
-	}
 
-}
 bool init::isComplete() const
 {
-	if(m_dictionary == NULL)
+  std::cout<<__PRETTY_FUNCTION__<<std::endl;
+	if(m_localVTKImage == NULL)
 		return false;
 	else 
 	{

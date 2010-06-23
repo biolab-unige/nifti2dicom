@@ -70,6 +70,7 @@ public:
     inline n2d::ImageType::Pointer getImportedImage( void ) const { return m_ImportedImage; }
 
 
+
 /*!
 * \brief Get imported image pixel type.
 *
@@ -82,7 +83,7 @@ private:
     const InputArgs&         m_InputArgs; //!< Input Arguments.
     n2d::ImageType::Pointer  m_ImportedImage; //!< Imported image.
     n2d::PixelType           m_pixelType; //!< Imported image pixel type.
-    n2d::DictionaryType*     m_dictionary; //!< DICOM tags dictionary.
+    n2d::DictionaryType*     m_dictionary; //!< Nifti tags dictionary.
 
 
     template<class TPixel> bool InternalRead();

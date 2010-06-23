@@ -5,13 +5,15 @@
 #include <n2dDefsCommandLineArgsStructs.h>
 #include <n2dDefsMetadata.h>
 
+#include "vtkKWImage.h"
 //////////////////////////////////////
 // FIXME CONTROL FOR NULL POINTERS  //
 //////////////////////////////////////
+
 namespace n2d{
 
-class InputImporter;
 class HeaderImporter;
+
 
 namespace gui{
 
@@ -20,6 +22,7 @@ class Wizard : public QWizard
         Q_OBJECT
 public:
     Wizard(QWizard* parent=0);
+	virtual ~Wizard();
 
     inline const n2d::AccessionNumberArgs& getaccessionNumberArgs()const{return m_accessionNumberArgs;}
     inline const n2d::DicomHeaderArgs&     getdicomHeaderArgs()const{return m_dicomHeaderArgs;}
@@ -36,9 +39,9 @@ public:
 
 	inline n2d::DictionaryType*			   getImportedDictionary(){return &m_importedDictionary;}
 	inline n2d::DictionaryType*			   getDictionary(){return &m_dictionary;}
-
-	inline const n2d::InputImporter* 	   getInputImporter()const{return m_inputImporter;}
-   	inline void							   setInputImporter(n2d::InputImporter* a){m_inputImporter = a;} 
+	inline void 						   setImportedImage( vtkKWImage* in) {m_importedImage = in;}
+	inline n2d::PixelType  				   getImportedPixelType()const{return m_importedImage->GetITKScalarPixelType();}
+	inline n2d::ImageType::ConstPointer    getImportedImage()const{return m_importedImage->GetITKImageBase();}
 	inline void 						   setDicomHeaderImporter(n2d::HeaderImporter* a){m_HeaderImporter = a;}
 	inline void 						   setImportedDictionary(n2d::DictionaryType& b){m_importedDictionary = b;}
 
@@ -76,9 +79,13 @@ private:
     n2d::InstanceArgs        	m_instanceArgs;
     n2d::OutputArgs          	m_outputArgs;
 	//END Structures 
+	
+	//BEGIN Common object
+	vtkKWImage*					m_importedImage;
+	//END Common Object
 
 	//BEGIN n2dClasses
-	n2d::InputImporter*			m_inputImporter;
+	//n2d::InputImporter*			m_inputImporter;
 	n2d::HeaderImporter* 		m_HeaderImporter;
 	//END n2dClasses
 

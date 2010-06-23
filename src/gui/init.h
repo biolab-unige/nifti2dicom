@@ -9,7 +9,7 @@
 #include "QVTKWidget.h"
 #include "itkVTKImageExport.h"
 #include "itkVTKImageImport.h"
-#include "vtkImageViewer.h"
+#include "vtkImageViewer2.h"
 #include "vtkRenderer.h"
 #include "vtkRenderWindow.h"
 #include "vtkRenderWindowInteractor.h"
@@ -25,6 +25,8 @@ class itk::ProcessObject;
 class QTableWidget;
 class QSlider;
 class QFont;
+class vtkKWImageIO;
+class vtkKWImage;
 
 namespace n2d{
 
@@ -49,11 +51,13 @@ private:
     QString	 						m_inFname;
     QString 	 					m_dcmRefHDRFname;
     QVTKWidget*  					m_renderPreview;
-    vtkImageViewer* 				m_imageviewer;
+    vtkImageViewer2* 				m_imageviewer;
     vtkRenderer* 					m_renderer;
     vtkRenderWindow* 				m_renderWin;
 	vtkImageImport*					m_vtkImporter;
 	n2d::InputImporter*				m_inputImporter;
+	vtkKWImageIO*					m_reader;
+	vtkKWImage*						m_localVTKImage;
 	n2d::HeaderImporter*			m_headerImporter;
     Wizard*							m_parent;
 	n2d::ImageType::Pointer     	m_localImage;
@@ -69,7 +73,6 @@ private:
 
     template<class TPixel>bool showImage(n2d::ImageType::Pointer );
 protected:
-	void resizeEvent ( QResizeEvent * event );
 
 private slots:
     bool loadInImage();

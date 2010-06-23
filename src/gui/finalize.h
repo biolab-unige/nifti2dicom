@@ -51,6 +51,7 @@ class finalize: public QWizardPage
 	private slots:
 		void OnAccessionNumberChange(const QString & );
 		void OnOutputDirectoryChange(const QString &);
+		void OnBrowseClick();
 		
 };
 

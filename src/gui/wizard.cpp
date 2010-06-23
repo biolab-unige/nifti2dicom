@@ -2,6 +2,7 @@
 #include <QtGui/QMessageBox>
 #include <QtGui/QPixmap>
 
+
 #include "wizard.h"
 #include <n2dInputImporter.h>
 #include <n2dHeaderImporter.h>
@@ -19,10 +20,16 @@ Wizard::Wizard(QWizard* parent):QWizard(parent)
 	connect(button(QWizard::HelpButton),SIGNAL(clicked())
 			,this,SLOT(showHelp()));
 
+	m_importedImage = vtkKWImage::New();
+
 	std::cout<<__PRETTY_FUNCTION__<<
 		&m_dictionary<<std::endl;
 }
 
+Wizard::~Wizard()
+{
+	m_importedImage->Delete();
+}
 
 void Wizard::showHelp()
 {

@@ -44,7 +44,7 @@ customize::customize(QWidget* parent):QWizardPage(parent)
 
 	setLayout(layout);
 	
-	std::cout<<__PRETTY_FUNCTION__<<m_dictionary<<std::endl;
+	std::cout<<__PRETTY_FUNCTION__<<"dictionary ("<<m_dictionary<<")"<<std::endl;
 	
 }
 
@@ -110,11 +110,13 @@ void customize::initializePage()
 
 bool customize::OnItemChange(QTableWidgetItem* item)
 {
+	std::cout<<item->row()<<std::endl;
 	std::string value = item->data(0).toString().toStdString();
-	QTableWidgetItem* itemTag = m_dicomTable->itemAt(item->row(),0);
+	QTableWidgetItem* itemTag = m_dicomTable->item(item->row(),0);
 	std::string tag = itemTag->data(0).toString().toStdString();
 
 	itk::EncapsulateMetaData<std::string>(*m_dictionary, tag, value);
+	std::cout<<"["<<tag<<"] - "<<value<<std::endl;
 	return true;
 }
 

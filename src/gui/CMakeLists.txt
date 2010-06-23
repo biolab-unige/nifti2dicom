@@ -36,6 +36,8 @@ set(nifti2dicom_gui_SOURCES wizard.cpp
 			    finalize.cpp
 				itkImageToVTKImageFilter.txx
 				qnifti2dicom.cpp
+				vtkKWImageIO.cxx
+				vtkKWImage.cxx
 				)
 
 set(nifti2dicom_SOURCES ../core/n2dVersion.cxx

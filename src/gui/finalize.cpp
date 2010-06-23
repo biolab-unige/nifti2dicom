@@ -1,4 +1,5 @@
 #include <QtGui/QGridLayout>
+#include <QtGui/QFileDialog>
 #include <QtGui/QLineEdit>
 #include <QtGui/QCheckBox>
 #include <QtGui/QLabel>
@@ -32,6 +33,7 @@ finalize::finalize(QWidget* parent):QWizardPage(parent)
 	QGridLayout *baselayout			= new QGridLayout();
 	QGridLayout *rightlayout		= new QGridLayout();
 	QGridLayout *leftlayout			= new QGridLayout();
+	QGridLayout *browselayout		= new QGridLayout();
 	m_outDirLine 					= new QLineEdit();
 	m_accessionNumberLine			= new QLineEdit();
 	QLabel *label1					= new QLabel("Output directory");
@@ -39,6 +41,7 @@ finalize::finalize(QWidget* parent):QWizardPage(parent)
 	m_rescaleBox					= new QCheckBox("Rescale");
 	m_headerTable					= new QTableWidget(0,2);
 	m_digits 						= 4;
+	QPushButton *browseFile			= new QPushButton("Browse");
 
 	m_headerTable->setColumnWidth(0,100);
 	m_headerTable->setColumnWidth(1,200);
@@ -48,8 +51,10 @@ finalize::finalize(QWidget* parent):QWizardPage(parent)
     labels << tr("Tag") << tr("Value");
     m_headerTable->setHorizontalHeaderLabels(labels);
     m_headerTable->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
-
-	rightlayout->addWidget(m_outDirLine,0,1);
+	browselayout->addWidget(m_outDirLine,0,1);
+	browselayout->addWidget(browseFile,0,0);
+	
+	rightlayout->addLayout(browselayout,0,1);
 	rightlayout->addWidget(label1,0,0);
 	rightlayout->addWidget(m_accessionNumberLine,1,1);
 	rightlayout->addWidget(label2,1,0);
@@ -65,16 +70,16 @@ finalize::finalize(QWidget* parent):QWizardPage(parent)
 				SLOT(OnAccessionNumberChange(const QString &)));
 	connect(m_outDirLine,SIGNAL(textChanged(const QString & )),this, 
 				SLOT(OnOutputDirectoryChange(const QString & )));
+	connect(browseFile,SIGNAL(clicked()),this,SLOT(OnBrowseClick()));
 
-	//registerField("gino* ", m_accessionNumberLine);
 	
-	std::cout<<__PRETTY_FUNCTION__<<m_dictionary<<std::endl;
+	std::cout<<__PRETTY_FUNCTION__<<"dictionary ("<<m_dictionary<<")"<<std::endl;
 }
 
 void finalize::initializePage()
 {
 
-	m_image = m_parent->getInputImporter()->getImportedImage();
+	m_image = m_parent->getImportedImage();
 	n2d::DictionaryType::ConstIterator itr = m_dictionary->Begin();
     n2d::DictionaryType::ConstIterator end = m_dictionary->End();
 	
@@ -127,8 +132,11 @@ void finalize::OnOutputDirectoryChange(const QString& in)
 bool finalize::validatePage()
 {
 
-	n2d::PixelType inputPixelType 			= m_parent->getInputImporter()->getPixelType();
+	n2d::PixelType inputPixelType 			= m_parent->getImportedPixelType();
     n2d::DICOMImageIOType::Pointer dicomIO	= n2d::DICOMImageIOType::New();
+
+    dicomIO->KeepOriginalUIDOn(); // Preserve the original DICOM UID of the input files
+    dicomIO->UseCompressionOff();
     n2d::DICOM3DImageType::ConstPointer 	filteredImage;
 	n2d::FiltersArgs 						filtersArgs;
 	n2d::InstanceArgs 						instanceArgs;
@@ -145,7 +153,7 @@ bool finalize::validatePage()
 
 
 
-	std::cout<<__PRETTY_FUNCTION__<<m_dictionary<<std::endl;
+	std::cout<<__PRETTY_FUNCTION__<<"dictionary ("<<m_dictionary<<")"<<std::endl;
 
 
 //BEGIN DICOM accession number validation
@@ -203,7 +211,6 @@ bool finalize::validatePage()
 //END Instance
 
 
-	std::cout<<std::setw(20)<<m_accessionNumber<<outputArgs.outputdirectory<<std::endl;
 
 //BEGIN Output
     try
@@ -233,6 +240,13 @@ bool finalize::isComplete() const
 		return false;
 	else 
 		return true;
+}
+void finalize::OnBrowseClick()
+{
+	QString ciccio =QFileDialog::getExistingDirectory(this,"","") ;
+	m_outDirLine->insert(ciccio);
+	
+
 }
 
 }//namespace gui
