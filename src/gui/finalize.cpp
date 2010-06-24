@@ -16,6 +16,9 @@
 #include <n2dAccessionNumberValidator.h>
 #include <n2dDefsCommandLineArgsStructs.h>
 
+#include <QtTest/QSignalSpy>
+
+
 #include "finalize.h"
 #include "wizard.h"
 
@@ -24,33 +27,37 @@ namespace gui	{
 
 finalize::finalize(QWidget* parent):QWizardPage(parent)
 {
-	m_parent	 = dynamic_cast<n2d::gui::Wizard* >(parent);
-	m_dictionary = m_parent->getDictionary();
+  	std::cout<<__PRETTY_FUNCTION__<<std::endl;
+
+	m_parent	= dynamic_cast<n2d::gui::Wizard* >(parent);
+	m_dictionary 	= m_parent->getDictionary();
     
-    this->setTitle("Last Step");
-    this->setSubTitle("Review the final header, fill the output directory and the accession number");
+	this->setTitle("Last Step");
+	this->setSubTitle("Review the final header, fill the output directory and the accession number");
 	//Styling grid layout
 	QGridLayout *baselayout			= new QGridLayout();
 	QGridLayout *rightlayout		= new QGridLayout();
 	QGridLayout *leftlayout			= new QGridLayout();
 	QGridLayout *browselayout		= new QGridLayout();
-	m_outDirLine 					= new QLineEdit();
+	m_outDirLine 				= new QLineEdit();
 	m_accessionNumberLine			= new QLineEdit();
-	QLabel *label1					= new QLabel("Output directory");
-	QLabel *label2					= new QLabel("Accession Number");
-	m_rescaleBox					= new QCheckBox("Rescale");
-	m_headerTable					= new QTableWidget(0,2);
-	m_digits 						= 4;
+	QLabel *label1				= new QLabel("Output directory");
+	QLabel *label2				= new QLabel("Accession Number");
+	m_rescaleBox				= new QCheckBox("Rescale");
+	m_headerTable				= new QTableWidget(0,2);
 	QPushButton *browseFile			= new QPushButton("Browse");
+	
+	m_digits 				= 4;
+
 
 	m_headerTable->setColumnWidth(0,100);
 	m_headerTable->setColumnWidth(1,200);
 
 	
 	QStringList labels;
-    labels << tr("Tag") << tr("Value");
-    m_headerTable->setHorizontalHeaderLabels(labels);
-    m_headerTable->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
+	labels << tr("Tag") << tr("Value");
+	m_headerTable->setHorizontalHeaderLabels(labels);
+	m_headerTable->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
 	browselayout->addWidget(m_outDirLine,0,1);
 	browselayout->addWidget(browseFile,0,0);
 	
@@ -70,17 +77,18 @@ finalize::finalize(QWidget* parent):QWizardPage(parent)
 				SLOT(OnAccessionNumberChange(const QString &)));
 	connect(m_outDirLine,SIGNAL(textChanged(const QString & )),this, 
 				SLOT(OnOutputDirectoryChange(const QString & )));
-	connect(browseFile,SIGNAL(clicked()),this,SLOT(OnBrowseClick()));
-
+	connect(browseFile,SIGNAL(clicked()),this,SLOT(OnBrowseClick()));	
 	
-	std::cout<<__PRETTY_FUNCTION__<<"dictionary ("<<m_dictionary<<")"<<std::endl;
+	QSignalSpy* m_spy = m_parent->getSpy();
+	
+	std::cout<<m_spy->count()<<std::endl;
 }
 
 void finalize::initializePage()
 {
 
-	m_image = m_parent->getImportedImage();
-	n2d::DictionaryType::ConstIterator itr = m_dictionary->Begin();
+    m_image = m_parent->getImportedImage();
+    n2d::DictionaryType::ConstIterator itr = m_dictionary->Begin();
     n2d::DictionaryType::ConstIterator end = m_dictionary->End();
 	
     while(itr != end)
@@ -90,21 +98,21 @@ void finalize::initializePage()
         MetaDataStringType::Pointer entryvalue = 
 			dynamic_cast<MetaDataStringType* >(entry.GetPointer());
 
-		if(entryvalue)
+	if(entryvalue)
         {
                 std::string tagkey  = itr->first;
                 std::string tagvalue= 
-						entryvalue->GetMetaDataObjectValue();
+			entryvalue->GetMetaDataObjectValue();
                 QString item1(tagkey.c_str());
                 QString item2(tagvalue.c_str());
 
-    			QTableWidgetItem* tagkeyitem = 
-					new QTableWidgetItem(item1); 
-				QTableWidgetItem* tagvalueitem = 
-					new QTableWidgetItem(item2);
+    		QTableWidgetItem* tagkeyitem = 
+			new QTableWidgetItem(item1); 
+		QTableWidgetItem* tagvalueitem = 
+			new QTableWidgetItem(item2);
 
-				tagkeyitem->setFont(QFont("Verdana",10));
-				tagvalueitem->setFont(QFont("Verdana",10));
+		tagkeyitem->setFont(QFont("Verdana",10));
+		tagvalueitem->setFont(QFont("Verdana",10));
 
                 m_headerTable->insertRow(row);
                 m_headerTable->setItem(row,0,tagkeyitem);
@@ -127,33 +135,35 @@ void finalize::OnOutputDirectoryChange(const QString& in)
 	m_outputDirectory = in.toStdString(); 
 	completeChanged();
 }
-
+finalize::~finalize()
+{
+    std::cout<<"Called ~finalize"<<std::endl;
+}
 
 bool finalize::validatePage()
 {
 
-	n2d::PixelType inputPixelType 			= m_parent->getImportedPixelType();
+    n2d::PixelType inputPixelType 		= m_parent->getImportedPixelType();
     n2d::DICOMImageIOType::Pointer dicomIO	= n2d::DICOMImageIOType::New();
 
     dicomIO->KeepOriginalUIDOn(); // Preserve the original DICOM UID of the input files
     dicomIO->UseCompressionOff();
     n2d::DICOM3DImageType::ConstPointer 	filteredImage;
-	n2d::FiltersArgs 						filtersArgs;
-	n2d::InstanceArgs 						instanceArgs;
-	n2d::OutputArgs							outputArgs;
-	n2d::AccessionNumberArgs				accessionNumberArgs;
+    n2d::FiltersArgs 				filtersArgs;
+    n2d::InstanceArgs 				instanceArgs;
+    n2d::OutputArgs				outputArgs;
+    n2d::AccessionNumberArgs			accessionNumberArgs;
 
 
-	filtersArgs.rescale 					= m_rescaleBox->checkState();
-	outputArgs.outputdirectory				= m_outputDirectory;
-	outputArgs.suffix						= ".dcm";//m_suffix;
-	outputArgs.prefix						= "N2D"; //m_prefix;
-	outputArgs.digits						= m_digits;
-	accessionNumberArgs.accessionnumber		= m_accessionNumber;
+    filtersArgs.rescale 			= m_rescaleBox->checkState();
+    outputArgs.outputdirectory			= m_outputDirectory;
+    outputArgs.suffix				= ".dcm";//m_suffix;
+    outputArgs.prefix				= "N2D"; //m_prefix;
+    outputArgs.digits				= m_digits;
+    accessionNumberArgs.accessionnumber		= m_accessionNumber;
 
 
 
-	std::cout<<__PRETTY_FUNCTION__<<"dictionary ("<<m_dictionary<<")"<<std::endl;
 
 
 //BEGIN DICOM accession number validation
@@ -227,7 +237,7 @@ bool finalize::validatePage()
     {
         std::cerr << "Unknown ERROR in \"Output\"." << std::endl;
 		return false;
-	}
+    }
 //END Output
 
 	return true;
@@ -241,11 +251,12 @@ bool finalize::isComplete() const
 	else 
 		return true;
 }
+
 void finalize::OnBrowseClick()
 {
-	QString ciccio =QFileDialog::getExistingDirectory(this,"","") ;
-	m_outDirLine->insert(ciccio);
-	
+	m_outDirLine->clear();
+	QString outDir =QFileDialog::getExistingDirectory(this,"","") ;
+	m_outDirLine->insert(outDir);
 
 }
 

@@ -11,24 +11,22 @@ namespace gui{
 
 Wizard::Wizard(QWizard* parent):QWizard(parent)
 {
+  	std::cout<<__PRETTY_FUNCTION__<<std::endl;
+
     setWindowTitle(tr("QNifti2Dicom"));
     this->setGeometry(10,10,1000,600);
 
-	setOption(QWizard::HaveHelpButton,true);
-	setPixmap(QWizard::BackgroundPixmap, QPixmap(":/images/background.png"));
+    setOption(QWizard::HaveHelpButton,true);
+    setPixmap(QWizard::BackgroundPixmap, QPixmap(":/images/background.png"));
 
-	connect(button(QWizard::HelpButton),SIGNAL(clicked())
+    connect(button(QWizard::HelpButton),SIGNAL(clicked())
 			,this,SLOT(showHelp()));
 
-	m_importedImage = vtkKWImage::New();
-
-	std::cout<<__PRETTY_FUNCTION__<<
-		&m_dictionary<<std::endl;
 }
 
 Wizard::~Wizard()
 {
-	m_importedImage->Delete();
+   std::cout<<"Called ~Wizard"<<std::endl;
 }
 
 void Wizard::showHelp()

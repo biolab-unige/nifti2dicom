@@ -18,18 +18,19 @@ class customize : public QWizardPage
    Q_OBJECT
 
 	public:
-    	customize(QWidget* parent=0);
+	      customize(QWidget* parent=0);
+	      ~customize();
 
 	private slots:
-		bool OnItemChange(QTableWidgetItem* );
+	      bool OnItemChange(QTableWidgetItem* );
 	private:
 
-		Wizard* 				m_parent;
-		QTableWidget* 			m_dicomTable;
-		n2d::DictionaryType*	m_dictionary;
+	      Wizard* 			m_parent;
+	      QTableWidget* 		m_dicomTable;
+	      n2d::DictionaryType*	m_dictionary;
 
-		virtual void initializePage();
-		virtual bool validatePage();
+	      virtual void initializePage();
+	      virtual bool validatePage();
 
 
 };

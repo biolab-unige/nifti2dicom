@@ -13,16 +13,14 @@
 #include <QtGui/QFont>
 
 #include "itkImage.h"
-#include "itkImageToVTKImageFilter.h"
 #include "vtkRenderer.h"
-#include "vtkImageShiftScale.h"
 #include "vtkActor2D.h"
 #include "vtkRenderWindow.h"
-#include "vtkImageMapper.h"
 #include "vtkLookupTable.h"
 #include "vtkImageMapToWindowLevelColors.h"
 #include "vtkKWImageIO.h"
 #include "vtkKWImage.h"
+#include "vtkImageData.h"
 #include "QVTKWidget.h"
 
 #include <gdcmDict.h>
@@ -38,6 +36,11 @@
 #include <n2dSeries.h>
 #include <n2dAcquisition.h>
 
+#include <QtTest/QSignalSpy>
+
+
+
+
 #include "wizard.h"
 #include "init.h"
 
@@ -50,16 +53,19 @@ init::init(QWidget *parent) :
 	m_renderer(NULL),
 	m_dictionary(NULL)
 {
+  
+	std::cout<<__PRETTY_FUNCTION__<<std::endl;
 	m_parent = dynamic_cast<n2d::gui::Wizard* >(parent);
-    this->setTitle("First Step");
-    this->setSubTitle("Required input: Nifti filename and optional dicom reference header");
+	this->setTitle("First Step");
+	this->setSubTitle("Required input: Nifti filename and optional dicom reference header");
 
 	QGridLayout *layout 		= new QGridLayout();
 	QPushButton *openImage 		= new QPushButton("Open Nifti Image");
 	QPushButton *openHeader		= new QPushButton("Open Dicom Header");
-	m_headerEntries 			= new QTableWidget(0,3);
-	m_horizontalSlider			= new QSlider(Qt::Horizontal);
-    m_renderPreview 			= new QVTKWidget();
+	m_headerEntries 		= new QTableWidget(0,3);
+	m_horizontalSlider		= new QSlider(Qt::Horizontal);
+	m_renderPreview 		= new QVTKWidget();
+	
 
 	layout->addWidget(openImage, 0,0);
 	layout->addWidget(openHeader, 0,1);
@@ -68,93 +74,62 @@ init::init(QWidget *parent) :
 	layout->addWidget(m_horizontalSlider,2,0);
 
 	
-    m_imageviewer      	= vtkImageViewer2::New();
+	m_imageviewer      		= vtkImageViewer2::New();
 	m_renderer			= m_imageviewer->GetRenderer();
 	m_renderWin			= m_imageviewer->GetRenderWindow();
 
 
 	//BEGIN Test vtkKWImage//
-		m_reader 		= vtkKWImageIO::New();
-		m_localVTKImage = vtkKWImage::New();
-	    m_importedDictionary = m_parent->getImportedDictionary();
-		m_dictionary = m_parent->getDictionary();
+	  m_reader 			= vtkKWImageIO::New();
+	  m_localVTKImage 		= vtkKWImage::New();
+	  m_importedDictionary 		= m_parent->getImportedDictionary();
+	  m_dictionary 			= m_parent->getDictionary();
 	//END
 
-    m_renderPreview->SetRenderWindow(m_renderWin);
+	m_renderPreview->SetRenderWindow(m_renderWin);
 
-    m_vtkImporter			= vtkImageImport::New();
-    m_inputArgs				= new n2d::InputArgs();
+	m_inputArgs			= new n2d::InputArgs();
 	m_dicomHeaderArgs		= new n2d::DicomHeaderArgs();
 
-    QStringList labels;
-    labels << tr("Tag") << tr("Value") << tr("Desc");
-    m_headerEntries->setHorizontalHeaderLabels(labels);
-    m_headerEntries->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
-    m_headerEntries->setEnabled(false);
-    m_headerEntries->setColumnWidth(0,100);
-    m_headerEntries->setColumnWidth(1,350);
-    m_headerEntries->setColumnWidth(2,100);
+	QStringList labels;
+	labels << tr("Tag") << tr("Value") << tr("Desc");
+	m_headerEntries->setHorizontalHeaderLabels(labels);
+	m_headerEntries->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
+	m_headerEntries->setEnabled(false);
+	m_headerEntries->setColumnWidth(0,100);
+	m_headerEntries->setColumnWidth(1,350);
+	m_headerEntries->setColumnWidth(2,100);
     
 
 	setLayout(layout);
-	std::cout<<__PRETTY_FUNCTION__<<"dictionary ("<<m_dictionary<<")"<<std::endl;
-	std::cout<<__PRETTY_FUNCTION__<<m_importedDictionary<<std::endl;
 
 	connect(openImage, SIGNAL(clicked()),this,SLOT(loadInImage()));
 	connect(openHeader, SIGNAL(clicked()),this,SLOT(loadIndcmHDR()));
 	connect(m_horizontalSlider, SIGNAL(valueChanged(int )),this,SLOT(OnSliderChange(int )));
+	
+	QSignalSpy* m_spy = new QSignalSpy(m_renderPreview,SIGNAL(cachedImageClean()));
+	m_parent->setSpy(m_spy);
+	std::cout<<m_spy->count()<<std::endl;
+	
+
 }
 
 init::~init()
 {
-	m_vtkImporter->Delete();
-    m_imageviewer->Delete();
+	std::cout<<"Called ~init"<<std::endl;
+	m_imageviewer->Delete();
 	m_reader->Delete();
 	m_localVTKImage->Delete();
 
+
 }
-template<class TPixel>
-bool init::showImage(n2d::ImageType::Pointer in)
-{
-
-	std::cout<<__PRETTY_FUNCTION__<<std::endl;
-    typedef  itk::Image<TPixel, n2d::Dimension>			InternalImageType;
-	typedef  itk::ImageToVTKImageFilter<InternalImageType> ConnectorType;
 
 
-    typename InternalImageType::Pointer image 	   = 
-		dynamic_cast<InternalImageType* >(m_inputImporter->getImportedImage().GetPointer());
-
-	typename ConnectorType::Pointer connector = ConnectorType::New();
-
-	connector->SetInput(image);
-    double range[2];
-    connector->GetOutput()->GetScalarRange(range);
-    vtkLookupTable* lookupTable = vtkLookupTable::New();
-    lookupTable->SetValueRange(0.0,1.0);
-    lookupTable->SetSaturationRange(0.0,0.0);
-    lookupTable->SetRampToLinear();
-    lookupTable->SetRange(range);
-    lookupTable->Build();
-    m_imageviewer->GetWindowLevel()->SetLookupTable(lookupTable);
-    m_imageviewer->GetWindowLevel()->SetInput(connector->GetOutput());
-
-    //m_imageviewer->SetInputConnection(shiftscalefilter->GetOutputPort());
-	//This is required otherwise RefCount goes to zero and connector'd be destroyed//
-	m_connector = connector.GetPointer();
-	
- 	m_renderer->ResetCamera();
-	m_renderPreview->update();
-
-
-
-    return true;
-}
 
 bool init::loadInImage()
 {
 
-   m_inFname = QFileDialog::getOpenFileName(this,"",".");
+    m_inFname = QFileDialog::getOpenFileName(this,"",".");
     if(m_inFname.isEmpty()) return false;
 
     m_reader->SetFileName(m_inFname.toStdString() );
@@ -167,7 +142,6 @@ bool init::loadInImage()
     double range[2];
     m_localVTKImage = m_reader->HarvestReadImage();
     m_localVTKImage->GetVTKImage()->GetScalarRange(range);
-    std::cout<<range[0]<<" "<<range[1]<<std::endl;
     vtkLookupTable* lookupTable = vtkLookupTable::New();
     lookupTable->SetValueRange(0.0,1.0);
     lookupTable->SetSaturationRange(0.0,0.0);
@@ -179,112 +153,20 @@ bool init::loadInImage()
 
     m_imageviewer->GetRenderer()->ResetCamera();
     m_renderPreview->GetRenderWindow()->Render();
-	m_parent->setImportedImage(m_localVTKImage);
+    m_parent->setImportedImage(m_localVTKImage);
 
-	completeChanged();
+    completeChanged();
+    
+    lookupTable->Delete();
+    
     return true;
 
 }
 
-
-
-
-/*
-bool init::loadInImage()
-{
-
-	std::cout<<__PRETTY_FUNCTION__<<std::endl;
-	m_inFname = QFileDialog::getOpenFileName(this,"","");
-	if(m_inFname.isEmpty()) return false;
-
-	m_inputArgs->inputfile = m_inFname.toStdString();
-	m_parent->storeInputArgs(*m_inputArgs);
-	m_inputImporter  = new n2d::InputImporter(*m_inputArgs);
-
-	try
-	{
-		m_inputImporter->Import();
-	}
-	catch(...)
-	{
-		std::cerr<<"Error while importing the image"<<std::endl;
-		return false;
-	}
-
-	m_parent->setInputImporter(m_inputImporter);
-	n2d::PixelType  m_pixelType = m_inputImporter->getPixelType();
-    bool ret=false;
-
-    switch(m_pixelType)
-    {
-        case itk::ImageIOBase::UCHAR:
-        {
-            ret=showImage<unsigned char>(m_inputImporter->getImportedImage());
-            break;
-        }
-        case itk::ImageIOBase::CHAR:
-        {
-            ret=showImage<char>(m_inputImporter->getImportedImage());
-            break;
-        }
-        case itk::ImageIOBase::USHORT:
-        {
-            ret=showImage<unsigned short>(m_inputImporter->getImportedImage());
-            break;
-        }
-        case itk::ImageIOBase::SHORT:
-        {
-            ret=showImage<short>(m_inputImporter->getImportedImage());
-            break;
-        }
-        case itk::ImageIOBase::UINT:
-        {
-            ret=showImage<unsigned int>(m_inputImporter->getImportedImage());
-            break;
-        }
-        case itk::ImageIOBase::INT:
-        {
-            ret=showImage<int>(m_inputImporter->getImportedImage());
-            break;
-        }
-        case itk::ImageIOBase::ULONG:
-        {
-            ret=showImage<unsigned long>(m_inputImporter->getImportedImage());
-            break;
-        }
-        case itk::ImageIOBase::LONG:
-        {
-            ret=showImage<long>(m_inputImporter->getImportedImage());
-            break;
-        }
-        case itk::ImageIOBase::FLOAT:
-        {
-            ret=showImage<float>(m_inputImporter->getImportedImage());
-            break;
-        }
-        case itk::ImageIOBase::DOUBLE:
-        {
-            ret=showImage<double>(m_inputImporter->getImportedImage());
-            break;
-        }
-        default:
-        {
-            std::cerr<<"ERROR: Unknown pixel type"<<std::endl;
-            return false;
-        }
-   }
-
-	m_importedDictionary = m_parent->getImportedDictionary();
-
-	return ret;
-
-}
-*/
 bool init::OnSliderChange(int z)
 {
-	std::cout<<__PRETTY_FUNCTION__<<std::endl;
     m_imageviewer->SetSlice(z);
-	m_renderPreview->update();
+    m_renderPreview->update();
     return true;
 }
 
@@ -292,14 +174,13 @@ bool init::OnSliderChange(int z)
 bool init::loadIndcmHDR()
 {
 
-	std::cout<<__PRETTY_FUNCTION__<<std::endl;
-    m_dcmRefHDRFname = QFileDialog::getOpenFileName(this,"","");
-    if(m_dcmRefHDRFname.isEmpty()) return false;
-	m_dicomHeaderArgs->dicomheaderfile = m_dcmRefHDRFname.toStdString();
-	m_headerImporter	= new n2d::HeaderImporter(*m_dicomHeaderArgs , *m_importedDictionary);
+      m_dcmRefHDRFname = QFileDialog::getOpenFileName(this,"","");
+      if(m_dcmRefHDRFname.isEmpty()) return false;
+      m_dicomHeaderArgs->dicomheaderfile = m_dcmRefHDRFname.toStdString();
+      m_headerImporter	= new n2d::HeaderImporter(*m_dicomHeaderArgs , *m_importedDictionary);
 
-	m_parent->setDicomHeaderImporter(m_headerImporter);
-	m_parent->storeDicomHeaderArgs(*m_dicomHeaderArgs);
+      m_parent->setDicomHeaderImporter(m_headerImporter);
+      m_parent->storeDicomHeaderArgs(*m_dicomHeaderArgs);
 
     try{
         m_headerImporter->Import();
@@ -308,10 +189,10 @@ bool init::loadIndcmHDR()
         exit(100);
     }
 
-    n2d::DictionaryType::ConstIterator itr = m_importedDictionary->Begin();
-    n2d::DictionaryType::ConstIterator end = m_importedDictionary->End();
+	n2d::DictionaryType::ConstIterator itr = m_importedDictionary->Begin();
+	n2d::DictionaryType::ConstIterator end = m_importedDictionary->End();
 
-    QTableWidgetItem* tagkeyitem  ; 
+	QTableWidgetItem* tagkeyitem  ; 
 	QTableWidgetItem* tagvalueitem;
 	QTableWidgetItem* desc;
 
@@ -332,26 +213,26 @@ bool init::loadIndcmHDR()
                 if(!tagkey.compare(0,4,"0010"))
                 {
                     std::string tagvalue= entryvalue->GetMetaDataObjectValue();
-					int a = 0;
-					int b = 0;
+		    int a = 0;
+		    int b = 0;
 
-					sscanf(tagkey.substr(0,4).c_str(), "%x", &a); 
-					sscanf(tagkey.substr(5,4).c_str(), "%x", &b); 
+		    sscanf(tagkey.substr(0,4).c_str(), "%x", &a); 
+		    sscanf(tagkey.substr(5,4).c_str(), "%x", &b); 
 
-					gdcm::Tag t(a,b);
-					const gdcm::DictEntry &entry1 = pub.GetDictEntry(t);
+		    gdcm::Tag t(a,b);
+		    const gdcm::DictEntry &entry1 = pub.GetDictEntry(t);
 
                     QString item1(tagkey.c_str());
                     QString item2(tagvalue.c_str());
-		    		QString item3(entry1.GetName());
+		    QString item3(entry1.GetName());
 
                     tagkeyitem   = new QTableWidgetItem(item1);
                     tagvalueitem = new QTableWidgetItem(item2);
                     desc         = new QTableWidgetItem(item3);
 
-					tagkeyitem->setFont(QFont("Verdana",10));
-					tagvalueitem->setFont(QFont("Verdana",10));
-					desc->setFont(QFont("Verdana",10));
+		    tagkeyitem->setFont(QFont("Verdana",10));
+		    tagvalueitem->setFont(QFont("Verdana",10));
+		    desc->setFont(QFont("Verdana",10));
 
                     m_headerEntries->insertRow(row);
                     m_headerEntries->setItem(row,0,tagkeyitem);
@@ -365,21 +246,17 @@ bool init::loadIndcmHDR()
     }
 
     delete tagkeyitem;
-	delete tagvalueitem;
+    delete tagvalueitem;
+    delete desc;
     return true;
 }
 
 bool init::validatePage()
 {	
 
-	std::cout<<__PRETTY_FUNCTION__<<std::endl;
-
-	std::cout<<__PRETTY_FUNCTION__<<m_dictionary<<std::endl;
-	std::cout<<__PRETTY_FUNCTION__<<m_importedDictionary<<std::endl;
-
-	n2d::DicomClassArgs 	dicomClassArgs;
-	n2d::AcquisitionArgs 	acquisitionArgs;
-	n2d::OtherDicomTagsArgs otherDicomTagsArgs;
+	n2d::DicomClassArgs 		dicomClassArgs;
+	n2d::AcquisitionArgs 		acquisitionArgs;
+	n2d::OtherDicomTagsArgs 	otherDicomTagsArgs;
 	n2d::SeriesArgs			seriesArgs;
 	n2d::StudyArgs			studyArgs;
 	n2d::PatientArgs		patientArgs;
@@ -387,7 +264,7 @@ bool init::validatePage()
 
 	seriesArgs.useoriginalseries      = false;
 	studyArgs.donotuseoriginalstudy   = false;
-	studyArgs.studydescription 	      = "qnifti2dicom";
+	studyArgs.studydescription 	  = "qnifti2dicom";
 
 //BEGIN DICOM Class
     try
@@ -396,7 +273,7 @@ bool init::validatePage()
         if (!dicomClass.Update())
         {
             std::cerr << "ERROR in \"DICOM Class\"." << std::endl;
-			return false;
+	    return false;
         }
     }
     catch (...)
@@ -415,13 +292,13 @@ bool init::validatePage()
         if (!otherDicomTags.Update())
         {
             std::cerr << "ERROR in \"Other DICOM Tags\"." << std::endl;
-			return false;
+	    return false;
         }
     }
     catch (...)
     {
         std::cerr << "Unknown ERROR in \"Other DICOM Tags\"." << std::endl;
-			return false;
+	return false;
     }
 //END Other DICOM Tags
 
@@ -434,13 +311,13 @@ bool init::validatePage()
         if (!patient.Update())
         {
             std::cerr << "ERROR in \"Patient\"." << std::endl;
-			return false;
+	    return false;
         }
     }
     catch (...)
     {
         std::cerr << "Unknown ERROR in \"Patient\"." << std::endl;
-			return false;
+	return false;
     }
 //END Patient
 	
@@ -452,13 +329,13 @@ bool init::validatePage()
         if (!study.Update())
         {
             std::cerr << "ERROR in \"Study\"." << std::endl;
-			return false;
+	    return false;
         }
     }
     catch (...)
     {
         std::cerr << "Unknown ERROR in \"Study\"." << std::endl;
-			return false;
+	return false;
     }
 //END Study
 
@@ -471,13 +348,13 @@ bool init::validatePage()
         if (!series.Update())
         {
             std::cerr << "ERROR in \"Series\"." << std::endl;
-			return false;
+	    return false;
         }
     }
     catch (...)
     {
         std::cerr << "Unknown ERROR in \"Series\"." << std::endl;
-			return false;
+	return false;
     }
 //END Series
 
@@ -490,13 +367,13 @@ bool init::validatePage()
         if (!acquisition.Update())
         {
             std::cerr << "ERROR in \"Acquisition\"." << std::endl;
-			return false;
+	    return false;
         }
     }
     catch (...)
     {
         std::cerr << "Unknown ERROR in \"Acquisition\"." << std::endl;
-			return false;
+	return false;
     }
 //END Acquisition
 
@@ -514,7 +391,6 @@ bool init::validatePage()
 
 bool init::isComplete() const
 {
-  std::cout<<__PRETTY_FUNCTION__<<std::endl;
 	if(m_localVTKImage == NULL)
 		return false;
 	else 

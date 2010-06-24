@@ -12,6 +12,9 @@
 #include <n2dDefsMetadata.h>
 #include <n2dToolsMetaDataDictionary.h>
 
+#include <QtTest/QSignalSpy>
+
+
 #include "customize.h"
 #include "wizard.h"
 
@@ -20,41 +23,45 @@ namespace gui{
 
 customize::customize(QWidget* parent):QWizardPage(parent)
 {
+  	std::cout<<__PRETTY_FUNCTION__<<std::endl;
+
 	m_parent	 = dynamic_cast<n2d::gui::Wizard* >(parent);
 	
-    this->setTitle("Second Step");
-    this->setSubTitle("Customize dicom header field clicking on proper "
+        this->setTitle("Second Step");
+	this->setSubTitle("Customize dicom header field clicking on proper "
 						"row and the type the desired value");
 
 	QStringList labels;
 	QVBoxLayout* layout = new QVBoxLayout();
 
-
 	m_dicomTable = new QTableWidget(0,3);
-    m_dicomTable->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
+	m_dicomTable->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
 	m_dicomTable->setColumnWidth(0,100);
 	m_dicomTable->setColumnWidth(1,300);
 	m_dicomTable->setColumnWidth(2,200);
 
-    labels << tr("Tag") << tr("Value") <<tr("Desc");
-    m_dicomTable->setHorizontalHeaderLabels(labels);
+        labels << tr("Tag") << tr("Value") <<tr("Desc");
+	m_dicomTable->setHorizontalHeaderLabels(labels);
 	m_dictionary = m_parent->getDictionary();
 
 	layout->addWidget(m_dicomTable);
 
+	
+	QSignalSpy* m_spy = m_parent->getSpy();
+	
+	std::cout<<m_spy->count()<<std::endl;
 	setLayout(layout);
-	
-	std::cout<<__PRETTY_FUNCTION__<<"dictionary ("<<m_dictionary<<")"<<std::endl;
-	
+		
 }
-
+customize::~customize()
+{
+    std::cout<<"Called ~customize"<<std::endl;
+}
 void customize::initializePage()
 {
 
     n2d::DictionaryType::ConstIterator itr = m_dictionary->Begin();
     n2d::DictionaryType::ConstIterator end = m_dictionary->End();
-
-
 
     const gdcm::Global& g = gdcm::Global::GetInstance();
     const gdcm::Dicts &dicts = g.GetDicts();
@@ -71,9 +78,8 @@ void customize::initializePage()
 		if(entryvalue)
         {
                 std::string tagkey  = itr->first;
-                std::string tagvalue= 
-						entryvalue->GetMetaDataObjectValue();
-				int a = 0;
+                std::string tagvalue=  entryvalue->GetMetaDataObjectValue();
+		int a = 0;
                 int b = 0;
 
                 sscanf(tagkey.substr(0,4).c_str(), "%x", &a);
@@ -87,12 +93,12 @@ void customize::initializePage()
                 QString item2(tagvalue.c_str());
                 QString item3(entry1.GetName());
 
-    			QTableWidgetItem* tagkeyitem = 
-					new QTableWidgetItem(item1,Qt::ItemIsEditable); 
-				QTableWidgetItem* tagvalueitem = 
-					new QTableWidgetItem(item2,Qt::ItemIsEditable);
-    			QTableWidgetItem* desc = 
-					new QTableWidgetItem(item3);
+    		QTableWidgetItem* tagkeyitem = 
+		    new QTableWidgetItem(item1,Qt::ItemIsEditable); 
+		QTableWidgetItem* tagvalueitem = 
+		    new QTableWidgetItem(item2,Qt::ItemIsEditable);
+    		QTableWidgetItem* desc = 
+		    new QTableWidgetItem(item3);
 
                 m_dicomTable->insertRow(row);
                 m_dicomTable->setItem(row,0,tagkeyitem);
@@ -110,13 +116,11 @@ void customize::initializePage()
 
 bool customize::OnItemChange(QTableWidgetItem* item)
 {
-	std::cout<<item->row()<<std::endl;
 	std::string value = item->data(0).toString().toStdString();
 	QTableWidgetItem* itemTag = m_dicomTable->item(item->row(),0);
 	std::string tag = itemTag->data(0).toString().toStdString();
-
 	itk::EncapsulateMetaData<std::string>(*m_dictionary, tag, value);
-	std::cout<<"["<<tag<<"] - "<<value<<std::endl;
+	
 	return true;
 }
 
