@@ -4,15 +4,8 @@
 #include <QtGui/QWizardPage>
 #include <QtGui/QLabel>
 #include <QString>
-#include "vtkRenderer.h"
-#include "vtkRenderWindow.h"
 #include "QVTKWidget.h"
 
-#include "vtkImageViewer2.h"
-#include "vtkRenderer.h"
-#include "vtkRenderWindow.h"
-#include "vtkRenderWindowInteractor.h"
-#include "vtkInteractorStyleImage.h"
 
 #include <n2dDefsImage.h>
 #include <n2dDefsIO.h>
@@ -23,6 +16,10 @@ class QSlider;
 class QFont;
 class vtkKWImageIO;
 class vtkKWImage;
+class vktRenderer;
+class vtkRenderWindow;
+class vtkRenderWindowInteractor;
+class vtkImageViewer2;
 
 namespace n2d{
 
@@ -50,6 +47,7 @@ private:
     vtkImageViewer2* 			m_imageviewer;
     vtkRenderer* 			m_renderer;
     vtkRenderWindow* 			m_renderWin;
+    vtkRenderWindowInteractor*		m_interactor;
     vtkKWImageIO*			m_reader;
     vtkKWImage*				m_localVTKImage;
     n2d::HeaderImporter*		m_headerImporter;

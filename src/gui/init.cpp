@@ -12,6 +12,7 @@
 #include <QtCore/QSize>
 #include <QtGui/QFont>
 
+#include "vtkImageViewer2.h"
 #include "itkImage.h"
 #include "vtkRenderer.h"
 #include "vtkActor2D.h"
@@ -20,7 +21,9 @@
 #include "vtkImageMapToWindowLevelColors.h"
 #include "vtkKWImageIO.h"
 #include "vtkKWImage.h"
+#include "vtkRenderWindowInteractor.h"
 #include "vtkImageData.h"
+#include "vtkIndent.h"
 #include "QVTKWidget.h"
 
 #include <gdcmDict.h>
@@ -51,6 +54,7 @@ init::init(QWidget *parent) :
     QWizardPage(parent),
 	m_renderPreview(NULL),
 	m_renderer(NULL),
+	m_interactor(NULL),
 	m_dictionary(NULL)
 {
   
@@ -77,7 +81,7 @@ init::init(QWidget *parent) :
 	m_imageviewer      		= vtkImageViewer2::New();
 	m_renderer			= m_imageviewer->GetRenderer();
 	m_renderWin			= m_imageviewer->GetRenderWindow();
-
+		
 
 	//BEGIN Test vtkKWImage//
 	  m_reader 			= vtkKWImageIO::New();
@@ -86,7 +90,12 @@ init::init(QWidget *parent) :
 	  m_dictionary 			= m_parent->getDictionary();
 	//END
 
+
+	m_imageviewer->SetSliceOrientationToXY();
+
 	m_renderPreview->SetRenderWindow(m_renderWin);
+	m_interactor = m_renderWin->GetInteractor();
+	m_interactor->Disable();
 
 	m_inputArgs			= new n2d::InputArgs();
 	m_dicomHeaderArgs		= new n2d::DicomHeaderArgs();
@@ -120,6 +129,7 @@ init::~init()
 	m_imageviewer->Delete();
 	m_reader->Delete();
 	m_localVTKImage->Delete();
+	m_interactor->Delete();
 
 
 }
