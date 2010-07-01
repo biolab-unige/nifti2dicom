@@ -12,9 +12,6 @@
 #include <n2dDefsMetadata.h>
 #include <n2dToolsMetaDataDictionary.h>
 
-#include <QtTest/QSignalSpy>
-
-
 #include "customize.h"
 #include "wizard.h"
 
@@ -46,10 +43,6 @@ customize::customize(QWidget* parent):QWizardPage(parent)
 
 	layout->addWidget(m_dicomTable);
 
-	
-	QSignalSpy* m_spy = m_parent->getSpy();
-	
-	std::cout<<m_spy->count()<<std::endl;
 	setLayout(layout);
 		
 }

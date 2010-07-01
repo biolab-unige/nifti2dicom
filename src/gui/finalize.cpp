@@ -16,9 +16,6 @@
 #include <n2dAccessionNumberValidator.h>
 #include <n2dDefsCommandLineArgsStructs.h>
 
-#include <QtTest/QSignalSpy>
-
-
 #include "finalize.h"
 #include "wizard.h"
 
@@ -31,6 +28,7 @@ finalize::finalize(QWidget* parent):QWizardPage(parent)
 
 	m_parent	= dynamic_cast<n2d::gui::Wizard* >(parent);
 	m_dictionary 	= m_parent->getDictionary();
+
     
 	this->setTitle("Last Step");
 	this->setSubTitle("Review the final header, fill the output directory and the accession number");
@@ -48,12 +46,9 @@ finalize::finalize(QWidget* parent):QWizardPage(parent)
 	QPushButton *browseFile			= new QPushButton("Browse");
 	
 	m_digits 				= 4;
-
-
 	m_headerTable->setColumnWidth(0,100);
 	m_headerTable->setColumnWidth(1,200);
 
-	
 	QStringList labels;
 	labels << tr("Tag") << tr("Value");
 	m_headerTable->setHorizontalHeaderLabels(labels);
