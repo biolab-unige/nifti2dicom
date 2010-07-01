@@ -115,11 +115,7 @@ init::init(QWidget *parent) :
 	connect(openImage, SIGNAL(clicked()),this,SLOT(loadInImage()));
 	connect(openHeader, SIGNAL(clicked()),this,SLOT(loadIndcmHDR()));
 	connect(m_horizontalSlider, SIGNAL(valueChanged(int )),this,SLOT(OnSliderChange(int )));
-	
-	QSignalSpy* m_spy = new QSignalSpy(m_renderPreview,SIGNAL(cachedImageClean()));
-	m_parent->setSpy(m_spy);
-	std::cout<<m_spy->count()<<std::endl;
-	
+
 
 }
 
@@ -129,7 +125,7 @@ init::~init()
 	m_imageviewer->Delete();
 	m_reader->Delete();
 	m_localVTKImage->Delete();
-	m_interactor->Delete();
+	//m_interactor->Delete();
 
 
 }

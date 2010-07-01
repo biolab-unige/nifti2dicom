@@ -72,16 +72,12 @@ finalize::finalize(QWidget* parent):QWizardPage(parent)
 	baselayout->addLayout(leftlayout,0,1);
 	baselayout->addLayout(rightlayout,0,0);
 	setLayout(baselayout);
-
+	
 	connect(m_accessionNumberLine,SIGNAL(textChanged(const QString & )),this, 
 				SLOT(OnAccessionNumberChange(const QString &)));
 	connect(m_outDirLine,SIGNAL(textChanged(const QString & )),this, 
 				SLOT(OnOutputDirectoryChange(const QString & )));
 	connect(browseFile,SIGNAL(clicked()),this,SLOT(OnBrowseClick()));	
-	
-	QSignalSpy* m_spy = m_parent->getSpy();
-	
-	std::cout<<m_spy->count()<<std::endl;
 }
 
 void finalize::initializePage()
