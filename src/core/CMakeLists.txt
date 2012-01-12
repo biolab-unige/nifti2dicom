@@ -16,8 +16,6 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Nifti2Dicom.  If not, see <http://www.gnu.org/licenses/>.
 
-# $Id$
-
 
 set(nifti2dicom_SOURCES nifti2dicom.cxx
                         n2dVersion.cxx
