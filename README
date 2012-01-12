@@ -1,1 +1,20 @@
+Nifti2Dicom
+===========
+
 Convert 3D NIfTI images (and other formats supported by ITK) to DICOM 2D series
+
+
+Source code is in directory is split into 2 parts:
+ - src/core (command line tool)
+ - src/gui (GUI)
+
+
+To build Nifti2Dicom you need:
+
+ * Command line tools:
+   - Insight Toolkit (ITK) 3.17 or later using GDCM 2.xx
+   - Templatized command-line argument parser for C++ (TCLAP) 1.2 or later
+
+ * GUI
+   - Qt4 (4.4 or later)
+   - Visualization toolkit (VTK) with Qt4 support enabled
