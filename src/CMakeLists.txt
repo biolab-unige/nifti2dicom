@@ -16,7 +16,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Nifti2Dicom.  If not, see <http://www.gnu.org/licenses/>.
 
-# $Id: CMakeLists.txt 251 2010-03-01 15:11:05Z gabri $
+
 add_subdirectory(core)
 if(N2D_BUILD_GUI)
 #Search for installed Qt4 

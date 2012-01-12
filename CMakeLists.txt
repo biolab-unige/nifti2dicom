@@ -16,8 +16,6 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Nifti2Dicom.  If not, see <http://www.gnu.org/licenses/>.
 
-# $Id$
-
 
 cmake_minimum_required(VERSION 2.6.2)
 project(Nifti2Dicom)

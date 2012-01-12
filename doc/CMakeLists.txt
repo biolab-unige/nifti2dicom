@@ -16,7 +16,6 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Nifti2Dicom.  If not, see <http://www.gnu.org/licenses/>.
 
-# $Id$
 
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in" "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile")
 add_custom_target(doc ${DOXYGEN_EXECUTABLE} "Doxyfile")
