@@ -57,6 +57,23 @@ endif(ITK_FOUND)
 #    message(FATAL_ERROR "GDCM 2 not found")
 #endif(GDCM_FOUND)
 
+if(N2D_BUILD_GUI)
+    #Check Qt4 Library [Qt4] (4.4.0)
+    find_package(Qt4 REQUIRED)
+    if(QT_FOUND)
+        include(${QT_USE_FILE})
+    else(QT_FOUND)
+        message(FATAL ERROR "Qt4 not found")
+    endif(QT_FOUND)
+
+    #Check VTK Library [Visualization ToolKit]
+    find_package(VTK REQUIRED)
+    if(VTK_FOUND)
+        include(${VTK_USE_FILE})
+    else(VTK_FOUND)
+        message(FATAL ERROR "VTK not found")
+    endif(VTK_FOUND)
+endif(N2D_BUILD_GUI)
 
 configure_file(${CMAKE_SOURCE_DIR}/Nifti2DicomConfig.h.cmake ${CMAKE_BINARY_DIR}/Nifti2DicomConfig.h)
 
@@ -95,5 +112,3 @@ include(CPack)
 add_custom_target(dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
 
 add_subdirectory(src)
-
-

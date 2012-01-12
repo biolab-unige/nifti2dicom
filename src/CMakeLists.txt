@@ -19,18 +19,5 @@
 
 add_subdirectory(core)
 if(N2D_BUILD_GUI)
-#Search for installed Qt4 
-  FIND_PACKAGE(Qt4 REQUIRED)
-  IF(QT_FOUND)
-    INCLUDE(${QT_USE_FILE})
-  ELSE(QT_FOUND)
-    MESSAGE(FATAL ERROR "  Qt4 not found")
-  ENDIF(QT_FOUND)
-
-  find_package(VTK REQUIRED)
-   if(VTK_FOUND)
-    include(${VTK_USE_FILE})
-   endif(VTK_FOUND)
    add_subdirectory(gui)
-
 endif(N2D_BUILD_GUI)
