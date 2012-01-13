@@ -18,6 +18,4 @@
 
 
 add_subdirectory(core)
-if(N2D_BUILD_GUI)
-   add_subdirectory(gui)
-endif(N2D_BUILD_GUI)
+add_subdirectory(gui)
