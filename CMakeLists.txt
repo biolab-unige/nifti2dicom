@@ -98,17 +98,4 @@ else (DOXYGEN_FOUND AND DOXYGEN_DOT_FOUND)
     message(STATUS "You will need both doxygen and graphviz 'dot' to build documentation")
 endif (DOXYGEN_FOUND AND DOXYGEN_DOT_FOUND)
 
-# make dist target
-
-set(CPACK_PACKAGE_VERSION_MAJOR ${Nifti2Dicom_MAJOR_VERSION})
-set(CPACK_PACKAGE_VERSION_MINOR ${Nifti2Dicom_MINOR_VERSION})
-set(CPACK_PACKAGE_VERSION_PATCH ${Nifti2Dicom_PATCH_VERSION})
-set(CPACK_SOURCE_GENERATOR "TGZ")
-set(CPACK_SOURCE_PACKAGE_FILE_NAME
-  "${CMAKE_PROJECT_NAME}-${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
-set(CPACK_SOURCE_IGNORE_FILES
-  "~$;/build/;/.svn/;/.git/;/.kdev4/;\\\\.kdev4;${CPACK_SOURCE_IGNORE_FILES}")
-include(CPack)
-add_custom_target(dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
-
 add_subdirectory(src)
