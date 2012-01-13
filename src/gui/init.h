@@ -22,7 +22,7 @@
 
 #include <QtGui/QWizardPage>
 #include <QtGui/QLabel>
-#include <QString>
+#include <QtCore/QString>
 #include "QVTKWidget.h"
 
 
