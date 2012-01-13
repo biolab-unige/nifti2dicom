@@ -29,6 +29,7 @@ set(Nifti2Dicom_INTERNAL_VERSION "${Nifti2Dicom_MAJOR_VERSION}.${Nifti2Dicom_MIN
 
 #Check pkg-config
 find_package(PkgConfig)
+#TODO error if not found
 
 #Check TCLAP Library [Templatized C++ Command Line Parser] (1.2.0)
 pkg_check_modules(TCLAP REQUIRED tclap>=1.2.0)
@@ -60,11 +61,9 @@ endif(ITK_FOUND)
 
 #Check Qt4 Library [Qt4] (4.4.0)
 find_package(Qt4 REQUIRED)
-if(QT_FOUND)
-    include(${QT_USE_FILE})
-else(QT_FOUND)
+if(NOT QT_FOUND)
     message(FATAL ERROR "Qt4 not found")
-endif(QT_FOUND)
+endif(NOT QT_FOUND)
 
 #Check VTK Library [Visualization ToolKit]
 find_package(VTK REQUIRED)
@@ -74,16 +73,17 @@ else(VTK_FOUND)
     message(FATAL ERROR "VTK not found")
 endif(VTK_FOUND)
 
+#TODO Check QVTK
+
 configure_file(${CMAKE_SOURCE_DIR}/Nifti2DicomConfig.h.cmake ${CMAKE_BINARY_DIR}/Nifti2DicomConfig.h)
 
 include_directories(${CMAKE_BINARY_DIR})
 
+#TODO add DebugFull
 if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebugInfo")
   message(STATUS "DEBUG ENABLED")
   add_definitions("-DDEBUG")
-else()
-  message(STATUS "DEBUG NOT ENABLED")
-endif()
+endif() #TODO this endif?
 
 
 # Build documentation if doxygen and graphviz are found
