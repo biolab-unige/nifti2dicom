@@ -17,4 +17,4 @@ To build Nifti2Dicom you need:
 
  * GUI
    - Qt4 (4.4 or later)
-   - Visualization toolkit (VTK) with Qt4 support enabled
+   - Visualization toolkit (VTK) 5.xx with Qt4 support enabled
