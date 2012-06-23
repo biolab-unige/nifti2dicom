@@ -1,0 +1,27 @@
+Source: nifti2dicom
+Section: science
+Priority: optional
+Maintainer: Daniele E. Domenichelli <daniele.domenichelli@gmail.com>
+Build-Depends: debhelper (>= 7.3.16), dpkg-dev (>= 1.16.1~),
+ cdbs, cmake (>= 2.6.4), libqt4-dev (>= 4.4),
+ libinsighttoolkit3-dev, libtclap-dev (>= 1.2.0),
+ libvtk5-dev, libvtk5-qt4-dev
+Standards-Version: 3.9.3
+Homepage: https://github.com/biolab-unige/nifti2dicom
+
+Package: nifti2dicom
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: convert NIfTI files to DICOM  
+ TODO: Add a description
+ .
+ This package includes the command line tools.
+
+Package: qnifti2dicom
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends},
+ nifti2dicom (= ${binary:Version})
+Description: convert NIfTI files to DICOM - Qt4 GUI
+ TODO: Add a description
+ .
+ This package contains the Qt4 GUI

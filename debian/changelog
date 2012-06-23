@@ -1,0 +1,5 @@
+nifti2dicom (0.4.1-0r5) UNRELEASED; urgency=low
+
+  * Initial release. (Closes: #670171)
+
+ -- Daniele E. Domenichelli <daniele.domenichelli@gmail.com>  Sat, 23 Jun 2012 15:24:09 +0200
