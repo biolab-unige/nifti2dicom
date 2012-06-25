@@ -47,6 +47,7 @@ finalize::finalize(QWidget* parent):QWizardPage(parent)
 	m_parent	= dynamic_cast<n2d::gui::Wizard* >(parent);
 	m_dictionary 	= m_parent->getDictionary();
 
+
     
 	this->setTitle("Last Step");
 	this->setSubTitle("Review the final header, fill the output directory and the accession number");

@@ -60,25 +60,25 @@ public:
 
 
 private:
-    QString	 			m_inFname;
-    QString 	 			m_dcmRefHDRFname;
-    QVTKWidget*  			m_renderPreview;
-    vtkImageViewer2* 			m_imageviewer;
-    vtkRenderer* 			m_renderer;
-    vtkRenderWindow* 			m_renderWin;
+    QString	 						m_inFname;
+    QString 	 					m_dcmRefHDRFname;
+    QVTKWidget*  					m_renderPreview;
+    vtkImageViewer2* 				m_imageviewer;
+    vtkRenderer* 					m_renderer;
+    vtkRenderWindow* 				m_renderWin;
     vtkRenderWindowInteractor*		m_interactor;
-    vtkKWImageIO*			m_reader;
-    vtkKWImage*				m_localVTKImage;
-    n2d::HeaderImporter*		m_headerImporter;
-    Wizard*				m_parent;
-    n2d::DictionaryType* 		m_importedDictionary;
-    n2d::DictionaryType*		m_dictionary;
-    QTableWidget*			m_headerEntries;
-    QSlider*				m_horizontalSlider;
-    QFont*				m_font;
+    vtkKWImageIO*					m_reader;
+    vtkKWImage*						m_localVTKImage;
+    n2d::HeaderImporter*			m_headerImporter;
+    Wizard*							m_parent;
+    n2d::DictionaryType* 			m_importedDictionary;
+    n2d::DictionaryType*			m_dictionary;
+    QTableWidget*					m_headerEntries;
+    QSlider*						m_horizontalSlider;
+    QFont*							m_font;
 
-    n2d::InputArgs* 			m_inputArgs;
-    n2d::DicomHeaderArgs*		m_dicomHeaderArgs;
+    n2d::InputArgs* 				m_inputArgs;
+    n2d::DicomHeaderArgs*			m_dicomHeaderArgs;
 
 
 private slots:

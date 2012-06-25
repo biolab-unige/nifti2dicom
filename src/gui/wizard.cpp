@@ -33,6 +33,7 @@ Wizard::Wizard(QWizard* parent):QWizard(parent)
 
     setWindowTitle(tr("QNifti2Dicom"));
     this->setGeometry(10,10,1000,600);
+	this->setButtonText(QWizard::FinishButton,"Do!");
 
     setOption(QWizard::HaveHelpButton,true);
     setPixmap(QWizard::BackgroundPixmap, QPixmap(":/images/background.png"));
@@ -53,19 +54,19 @@ void Wizard::showHelp()
 
      switch (currentId()) 
 	 {
-     case 1:
-     	message = tr("In this first page you should provide the nifti image to convert and optionally a reference DICOM header from which copy anagraphical data of the patient ");
-        break;
-     case 2:
-	 	message = tr("In this page you should edit DICOM field filling proper information required for the output header. To do this simply right-click on the proper row. At the end press enter to confirm your change for the selected tag.");
-		break;
+		 case 0:
+			message = tr("In this first page you should provide the nifti image to convert and optionally a reference DICOM header from which copy anagraphical data of the patient ");
+			break;
+		 case 1:
+			message = tr("In this page you should edit DICOM field filling proper information required for the output header. To do this simply right-click on the proper row. At the end press enter to confirm your change for the selected tag.");
+			break;
 
-	 case 3:
-	 	message = tr("In this page you would be asked for an output directory where all the dicom slices will be written to and the accession Number. All those fields are mandatory. At the right side of the page you could review the final header. Nothing has been allready written to the final files so you could go back to previews page in order to edit correctly the header tags");
-		break;
+		 case 2:
+			message = tr("In this page you would be asked for an output directory where all the dicom slices will be written to and the accession Number. All those fields are mandatory. At the right side of the page you could review the final header. Nothing has been already written to the final files so you can go back to the previous page and edit correctly the header tags");
+			break;
 
-     default:
-         message = tr("This Dialog will contain information for the current step");
+		 default:
+			 message = tr("This Dialog will contain information for the current step");
      }
 
      QMessageBox::information(this, tr("QNifti2Dicom Help dialog"), message);

@@ -84,13 +84,15 @@ init::init(QWidget *parent) :
 	m_headerEntries 		= new QTableWidget(0,3);
 	m_horizontalSlider		= new QSlider(Qt::Horizontal);
 	m_renderPreview 		= new QVTKWidget();
-	
+
+	m_horizontalSlider->setVisible(0);
 
 	layout->addWidget(openImage, 0,0);
 	layout->addWidget(openHeader, 0,1);
 	layout->addWidget(m_renderPreview,1,0);
 	layout->addWidget(m_headerEntries,1,1);
 	layout->addWidget(m_horizontalSlider,2,0);
+	//layout->addWidget(QLayout)
 
 	
 	m_imageviewer      	= vtkImageViewer2::New();
@@ -99,12 +101,12 @@ init::init(QWidget *parent) :
 		
 
 	//BEGIN Test vtkKWImage//
-	  m_reader 				= vtkKWImageIO::New();
-	  m_localVTKImage 		= vtkKWImage::New();
-	  m_importedDictionary 	= m_parent->getImportedDictionary();
-	  m_dictionary 			= m_parent->getDictionary();
+	m_reader 			= vtkKWImageIO::New();
+	m_localVTKImage 	= vtkKWImage::New();
+	m_importedDictionary= m_parent->getImportedDictionary();
+	m_dictionary 		= m_parent->getDictionary();
 	//END
-
+	
 
 	m_imageviewer->SetSliceOrientationToXY();
 
@@ -140,8 +142,6 @@ init::~init()
 	m_reader->Delete();
 	m_localVTKImage->Delete();
 	//m_interactor->Delete();
-
-
 }
 
 
@@ -174,7 +174,9 @@ bool init::loadInImage()
     m_imageviewer->GetRenderer()->ResetCamera();
     m_renderPreview->GetRenderWindow()->Render();
     m_parent->setImportedImage(m_localVTKImage);
-
+	
+	m_horizontalSlider->setVisible(1);
+	m_horizontalSlider->setRange(0,m_localVTKImage->GetVTKImage()->GetDimensions()[2]);
     completeChanged();
     
     lookupTable->Delete();
@@ -267,6 +269,11 @@ bool init::loadIndcmHDR()
     delete tagvalueitem;
     delete desc;
     return true;
+}
+
+bool init::isComplete() const
+{
+    return m_localVTKImage->GetVTKImage()->GetDimensions()[0] != 0;
 }
 
 bool init::validatePage()
@@ -407,15 +414,15 @@ bool init::validatePage()
 }
 
 
-bool init::isComplete() const
-{
-	if(m_localVTKImage == NULL)
-		return false;
-	else 
-	{
-		return true;
-	}
-}
+//bool init::isComplete() const
+//{
+//	if(m_localVTKImage == NULL)
+//		return false;
+//	else 
+//	{
+//		return true;
+//	}
+//}
 
 }//namespace gui
 }//namespace n2d
