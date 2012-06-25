@@ -60,9 +60,6 @@
 
 #include <QtTest/QSignalSpy>
 
-
-
-
 #include "wizard.h"
 #include "init.h"
 
@@ -77,14 +74,13 @@ init::init(QWidget *parent) :
 	m_dictionary(NULL)
 {
   
-	std::cout<<__PRETTY_FUNCTION__<<std::endl;
 	m_parent = dynamic_cast<n2d::gui::Wizard* >(parent);
 	this->setTitle("First Step");
 	this->setSubTitle("Required input: Nifti filename and optional dicom reference header");
 
-	QGridLayout *layout 		= new QGridLayout();
-	QPushButton *openImage 		= new QPushButton("Open Nifti Image");
-	QPushButton *openHeader		= new QPushButton("Open Dicom Header");
+	QGridLayout *layout 	= new QGridLayout();
+	QPushButton *openImage 	= new QPushButton("Open Nifti Image");
+	QPushButton *openHeader	= new QPushButton("Open Dicom Header");
 	m_headerEntries 		= new QTableWidget(0,3);
 	m_horizontalSlider		= new QSlider(Qt::Horizontal);
 	m_renderPreview 		= new QVTKWidget();
@@ -97,15 +93,15 @@ init::init(QWidget *parent) :
 	layout->addWidget(m_horizontalSlider,2,0);
 
 	
-	m_imageviewer      		= vtkImageViewer2::New();
+	m_imageviewer      	= vtkImageViewer2::New();
 	m_renderer			= m_imageviewer->GetRenderer();
 	m_renderWin			= m_imageviewer->GetRenderWindow();
 		
 
 	//BEGIN Test vtkKWImage//
-	  m_reader 			= vtkKWImageIO::New();
+	  m_reader 				= vtkKWImageIO::New();
 	  m_localVTKImage 		= vtkKWImage::New();
-	  m_importedDictionary 		= m_parent->getImportedDictionary();
+	  m_importedDictionary 	= m_parent->getImportedDictionary();
 	  m_dictionary 			= m_parent->getDictionary();
 	//END
 
@@ -117,7 +113,7 @@ init::init(QWidget *parent) :
 	m_interactor->Disable();
 
 	m_inputArgs			= new n2d::InputArgs();
-	m_dicomHeaderArgs		= new n2d::DicomHeaderArgs();
+	m_dicomHeaderArgs	= new n2d::DicomHeaderArgs();
 
 	QStringList labels;
 	labels << tr("Tag") << tr("Value") << tr("Desc");
@@ -127,7 +123,6 @@ init::init(QWidget *parent) :
 	m_headerEntries->setColumnWidth(0,100);
 	m_headerEntries->setColumnWidth(1,350);
 	m_headerEntries->setColumnWidth(2,100);
-    
 
 	setLayout(layout);
 
@@ -140,7 +135,7 @@ init::init(QWidget *parent) :
 
 init::~init()
 {
-	std::cout<<"Called ~init"<<std::endl;
+	//std::cout<<"Called ~init"<<std::endl;
 	m_imageviewer->Delete();
 	m_reader->Delete();
 	m_localVTKImage->Delete();
@@ -230,44 +225,42 @@ bool init::loadIndcmHDR()
         int row = m_headerEntries->rowCount();
         itk::MetaDataObjectBase::Pointer entry = itr->second;
         MetaDataStringType::Pointer entryvalue = 
-			dynamic_cast<MetaDataStringType* >(entry.GetPointer());
+		dynamic_cast<MetaDataStringType* >(entry.GetPointer());
 
-	if(entryvalue)
-        {
-                std::string tagkey  = itr->first;
-                if(!tagkey.compare(0,4,"0010"))
-                {
-                    std::string tagvalue= entryvalue->GetMetaDataObjectValue();
-		    int a = 0;
-		    int b = 0;
+		if(entryvalue)
+		{
+				std::string tagkey  = itr->first;
+				if(!tagkey.compare(0,4,"0010"))
+				{
+					std::string tagvalue= entryvalue->GetMetaDataObjectValue();
+					int a = 0;
+					int b = 0;
 
-		    sscanf(tagkey.substr(0,4).c_str(), "%x", &a); 
-		    sscanf(tagkey.substr(5,4).c_str(), "%x", &b); 
+					sscanf(tagkey.substr(0,4).c_str(), "%x", &a); 
+					sscanf(tagkey.substr(5,4).c_str(), "%x", &b); 
 
-		    gdcm::Tag t(a,b);
-		    const gdcm::DictEntry &entry1 = pub.GetDictEntry(t);
+					gdcm::Tag t(a,b);
+					const gdcm::DictEntry &entry1 = pub.GetDictEntry(t);
 
-                    QString item1(tagkey.c_str());
-                    QString item2(tagvalue.c_str());
-		    QString item3(entry1.GetName());
+					QString item1(tagkey.c_str());
+					QString item2(tagvalue.c_str());
+					QString item3(entry1.GetName());
 
-                    tagkeyitem   = new QTableWidgetItem(item1);
-                    tagvalueitem = new QTableWidgetItem(item2);
-                    desc         = new QTableWidgetItem(item3);
+					tagkeyitem   = new QTableWidgetItem(item1);
+					tagvalueitem = new QTableWidgetItem(item2);
+					desc         = new QTableWidgetItem(item3);
 
-		    tagkeyitem->setFont(QFont("Verdana",10));
-		    tagvalueitem->setFont(QFont("Verdana",10));
-		    desc->setFont(QFont("Verdana",10));
+					tagkeyitem->setFont(QFont("Verdana",10));
+					tagvalueitem->setFont(QFont("Verdana",10));
+					desc->setFont(QFont("Verdana",10));
 
-                    m_headerEntries->insertRow(row);
-                    m_headerEntries->setItem(row,0,tagkeyitem);
-                    m_headerEntries->setItem(row,1,tagvalueitem);
-                    m_headerEntries->setItem(row,2,desc);
-
-                }
-        }
-        ++itr;
-
+					m_headerEntries->insertRow(row);
+					m_headerEntries->setItem(row,0,tagkeyitem);
+					m_headerEntries->setItem(row,1,tagvalueitem);
+					m_headerEntries->setItem(row,2,desc);
+				}
+		}
+    	++itr;
     }
 
     delete tagkeyitem;
@@ -282,16 +275,16 @@ bool init::validatePage()
 	n2d::DicomClassArgs 		dicomClassArgs;
 	n2d::AcquisitionArgs 		acquisitionArgs;
 	n2d::OtherDicomTagsArgs 	otherDicomTagsArgs;
-	n2d::SeriesArgs			seriesArgs;
-	n2d::StudyArgs			studyArgs;
-	n2d::PatientArgs		patientArgs;
+	n2d::SeriesArgs				seriesArgs;
+	n2d::StudyArgs				studyArgs;
+	n2d::PatientArgs			patientArgs;
 
 
-	seriesArgs.useoriginalseries      = false;
-	studyArgs.donotuseoriginalstudy   = false;
-	studyArgs.studydescription 	  = "qnifti2dicom";
+	seriesArgs.useoriginalseries    = false;
+	studyArgs.donotuseoriginalstudy = false;
+	studyArgs.studydescription		= "qnifti2dicom";
 
-//BEGIN DICOM Class
+	//BEGIN DICOM Class
     try
     {
         n2d::DicomClass dicomClass(dicomClassArgs, *m_importedDictionary, *m_dictionary);
@@ -306,11 +299,11 @@ bool init::validatePage()
         std::cerr << "Unknown ERROR in \"DICOM Class\"." << std::endl;
         return false;
     }
-//END DICOM Class
+	//END DICOM Class
 
 
 
-//BEGIN Other DICOM Tags
+	//BEGIN Other DICOM Tags
     try
     {
         n2d::OtherDicomTags otherDicomTags(otherDicomTagsArgs, *m_dictionary);
@@ -325,11 +318,11 @@ bool init::validatePage()
         std::cerr << "Unknown ERROR in \"Other DICOM Tags\"." << std::endl;
 	return false;
     }
-//END Other DICOM Tags
+	//END Other DICOM Tags
 
 
 
-//BEGIN Patient
+	//BEGIN Patient
     try
     {
         n2d::Patient patient(patientArgs, *m_importedDictionary, *m_dictionary);
@@ -344,10 +337,10 @@ bool init::validatePage()
         std::cerr << "Unknown ERROR in \"Patient\"." << std::endl;
 	return false;
     }
-//END Patient
-	
+	//END Patient
 
-//BEGIN Study
+
+	//BEGIN Study
     try
     {
         n2d::Study study(studyArgs, *m_importedDictionary, *m_dictionary);
@@ -362,11 +355,11 @@ bool init::validatePage()
         std::cerr << "Unknown ERROR in \"Study\"." << std::endl;
 	return false;
     }
-//END Study
+	//END Study
 
 
 
-//BEGIN Series
+	//BEGIN Series
     try
     {
         n2d::Series series(seriesArgs, *m_importedDictionary, *m_dictionary);
@@ -381,11 +374,11 @@ bool init::validatePage()
         std::cerr << "Unknown ERROR in \"Series\"." << std::endl;
 	return false;
     }
-//END Series
+	//END Series
 
 
 
-//BEGIN Acquisition
+	//BEGIN Acquisition
     try
     {
         n2d::Acquisition acquisition(acquisitionArgs, *m_dictionary);
@@ -400,7 +393,7 @@ bool init::validatePage()
         std::cerr << "Unknown ERROR in \"Acquisition\"." << std::endl;
 	return false;
     }
-//END Acquisition
+	//END Acquisition
 
 	m_parent->storeDicomClassArgs(dicomClassArgs);
 	m_parent->storeAcquisitionArgs(acquisitionArgs);

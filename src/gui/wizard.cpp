@@ -21,16 +21,15 @@
 #include <QtGui/QMessageBox>
 #include <QtGui/QPixmap>
 
-
 #include "wizard.h"
 #include <n2dInputImporter.h>
 #include <n2dHeaderImporter.h>
+
 namespace n2d{
 namespace gui{
 
 Wizard::Wizard(QWizard* parent):QWizard(parent)
 {
-  	std::cout<<__PRETTY_FUNCTION__<<std::endl;
 
     setWindowTitle(tr("QNifti2Dicom"));
     this->setGeometry(10,10,1000,600);
@@ -45,7 +44,6 @@ Wizard::Wizard(QWizard* parent):QWizard(parent)
 
 Wizard::~Wizard()
 {
-   std::cout<<"Called ~Wizard"<<std::endl;
 }
 
 void Wizard::showHelp()

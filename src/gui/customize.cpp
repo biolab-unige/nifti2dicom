@@ -39,11 +39,10 @@ namespace gui{
 
 customize::customize(QWidget* parent):QWizardPage(parent)
 {
-  	std::cout<<__PRETTY_FUNCTION__<<std::endl;
 
 	m_parent	 = dynamic_cast<n2d::gui::Wizard* >(parent);
 	
-        this->setTitle("Second Step");
+	this->setTitle("Second Step");
 	this->setSubTitle("Customize dicom header field clicking on proper "
 						"row and the type the desired value");
 
@@ -56,7 +55,7 @@ customize::customize(QWidget* parent):QWizardPage(parent)
 	m_dicomTable->setColumnWidth(1,300);
 	m_dicomTable->setColumnWidth(2,200);
 
-        labels << tr("Tag") << tr("Value") <<tr("Desc");
+	labels << tr("Tag") << tr("Value") <<tr("Desc");
 	m_dicomTable->setHorizontalHeaderLabels(labels);
 	m_dictionary = m_parent->getDictionary();
 
@@ -67,7 +66,7 @@ customize::customize(QWidget* parent):QWizardPage(parent)
 }
 customize::~customize()
 {
-    std::cout<<"Called ~customize"<<std::endl;
+    //std::cout<<"Called ~customize"<<std::endl;
 }
 void customize::initializePage()
 {
@@ -85,43 +84,41 @@ void customize::initializePage()
         int row = m_dicomTable->rowCount();
         itk::MetaDataObjectBase::Pointer entry = itr->second;
         MetaDataStringType::Pointer entryvalue = 
-			dynamic_cast<MetaDataStringType* >(entry.GetPointer());
+		dynamic_cast<MetaDataStringType* >(entry.GetPointer());
 
 		if(entryvalue)
         {
-                std::string tagkey  = itr->first;
-                std::string tagvalue=  entryvalue->GetMetaDataObjectValue();
-		int a = 0;
-                int b = 0;
+			std::string tagkey  = itr->first;
+			std::string tagvalue=  entryvalue->GetMetaDataObjectValue();
+			int a = 0;
+			int b = 0;
 
-                sscanf(tagkey.substr(0,4).c_str(), "%x", &a);
-                sscanf(tagkey.substr(5,4).c_str(), "%x", &b);
+			sscanf(tagkey.substr(0,4).c_str(), "%x", &a);
+			sscanf(tagkey.substr(5,4).c_str(), "%x", &b);
 
-                gdcm::Tag t(a,b);
-                const gdcm::DictEntry &entry1 = pub.GetDictEntry(t);
+			gdcm::Tag t(a,b);
+			const gdcm::DictEntry &entry1 = pub.GetDictEntry(t);
 
 
-                QString item1(tagkey.c_str());
-                QString item2(tagvalue.c_str());
-                QString item3(entry1.GetName());
+			QString item1(tagkey.c_str());
+			QString item2(tagvalue.c_str());
+			QString item3(entry1.GetName());
 
     		QTableWidgetItem* tagkeyitem = 
-		    new QTableWidgetItem(item1,Qt::ItemIsEditable); 
-		QTableWidgetItem* tagvalueitem = 
-		    new QTableWidgetItem(item2,Qt::ItemIsEditable);
+		    	new QTableWidgetItem(item1,Qt::ItemIsEditable); 
+			QTableWidgetItem* tagvalueitem = 
+			    new QTableWidgetItem(item2,Qt::ItemIsEditable);
     		QTableWidgetItem* desc = 
-		    new QTableWidgetItem(item3);
+			    new QTableWidgetItem(item3);
 
-                m_dicomTable->insertRow(row);
-                m_dicomTable->setItem(row,0,tagkeyitem);
-                m_dicomTable->setItem(row,1,tagvalueitem);
-                m_dicomTable->setItem(row,2,desc);
+			m_dicomTable->insertRow(row);
+			m_dicomTable->setItem(row,0,tagkeyitem);
+			m_dicomTable->setItem(row,1,tagvalueitem);
+			m_dicomTable->setItem(row,2,desc);
 
         }
         ++itr;
-
     }
-	
 	connect( m_dicomTable, SIGNAL(itemChanged(QTableWidgetItem* )), 
 				this, SLOT( OnItemChange(QTableWidgetItem* ) ));
 }

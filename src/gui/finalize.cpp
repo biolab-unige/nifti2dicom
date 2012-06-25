@@ -43,7 +43,6 @@ namespace gui	{
 
 finalize::finalize(QWidget* parent):QWizardPage(parent)
 {
-  	std::cout<<__PRETTY_FUNCTION__<<std::endl;
 
 	m_parent	= dynamic_cast<n2d::gui::Wizard* >(parent);
 	m_dictionary 	= m_parent->getDictionary();
@@ -56,12 +55,12 @@ finalize::finalize(QWidget* parent):QWizardPage(parent)
 	QGridLayout *rightlayout		= new QGridLayout();
 	QGridLayout *leftlayout			= new QGridLayout();
 	QGridLayout *browselayout		= new QGridLayout();
-	m_outDirLine 				= new QLineEdit();
+	m_outDirLine 					= new QLineEdit();
 	m_accessionNumberLine			= new QLineEdit();
-	QLabel *label1				= new QLabel("Output directory");
-	QLabel *label2				= new QLabel("Accession Number");
-	m_rescaleBox				= new QCheckBox("Rescale");
-	m_headerTable				= new QTableWidget(0,2);
+	QLabel *label1					= new QLabel("Output directory");
+	QLabel *label2					= new QLabel("Accession Number");
+	m_rescaleBox					= new QCheckBox("Rescale");
+	m_headerTable					= new QTableWidget(0,2);
 	QPushButton *browseFile			= new QPushButton("Browse");
 	
 	m_digits 				= 4;
@@ -106,27 +105,27 @@ void finalize::initializePage()
         int row = m_headerTable->rowCount();
         itk::MetaDataObjectBase::Pointer entry = itr->second;
         MetaDataStringType::Pointer entryvalue = 
-			dynamic_cast<MetaDataStringType* >(entry.GetPointer());
+		dynamic_cast<MetaDataStringType* >(entry.GetPointer());
 
-	if(entryvalue)
-        {
-                std::string tagkey  = itr->first;
-                std::string tagvalue= 
+		if(entryvalue)
+		{
+			std::string tagkey  = itr->first;
+			std::string tagvalue= 
 			entryvalue->GetMetaDataObjectValue();
-                QString item1(tagkey.c_str());
-                QString item2(tagvalue.c_str());
+			QString item1(tagkey.c_str());
+			QString item2(tagvalue.c_str());
 
-    		QTableWidgetItem* tagkeyitem = 
-			new QTableWidgetItem(item1); 
-		QTableWidgetItem* tagvalueitem = 
-			new QTableWidgetItem(item2);
+			QTableWidgetItem* tagkeyitem = 
+				new QTableWidgetItem(item1); 
+			QTableWidgetItem* tagvalueitem = 
+				new QTableWidgetItem(item2);
 
-		tagkeyitem->setFont(QFont("Verdana",10));
-		tagvalueitem->setFont(QFont("Verdana",10));
+			tagkeyitem->setFont(QFont("Verdana",10));
+			tagvalueitem->setFont(QFont("Verdana",10));
 
-                m_headerTable->insertRow(row);
-                m_headerTable->setItem(row,0,tagkeyitem);
-                m_headerTable->setItem(row,1,tagvalueitem);
+			m_headerTable->insertRow(row);
+			m_headerTable->setItem(row,0,tagkeyitem);
+			m_headerTable->setItem(row,1,tagvalueitem);
 
         }
         ++itr;
@@ -147,36 +146,32 @@ void finalize::OnOutputDirectoryChange(const QString& in)
 }
 finalize::~finalize()
 {
-    std::cout<<"Called ~finalize"<<std::endl;
+//    std::cout<<"Called ~finalize"<<std::endl;
 }
 
 bool finalize::validatePage()
 {
 
-    n2d::PixelType inputPixelType 		= m_parent->getImportedPixelType();
+    n2d::PixelType inputPixelType 			= m_parent->getImportedPixelType();
     n2d::DICOMImageIOType::Pointer dicomIO	= n2d::DICOMImageIOType::New();
 
     dicomIO->KeepOriginalUIDOn(); // Preserve the original DICOM UID of the input files
     dicomIO->UseCompressionOff();
-    n2d::DICOM3DImageType::ConstPointer 	filteredImage;
-    n2d::FiltersArgs 				filtersArgs;
-    n2d::InstanceArgs 				instanceArgs;
-    n2d::OutputArgs				outputArgs;
+    n2d::DICOM3DImageType::ConstPointer filteredImage;
+    n2d::FiltersArgs 					filtersArgs;
+    n2d::InstanceArgs 					instanceArgs;
+    n2d::OutputArgs						outputArgs;
     n2d::AccessionNumberArgs			accessionNumberArgs;
 
 
-    filtersArgs.rescale 			= m_rescaleBox->checkState();
+    filtersArgs.rescale 				= m_rescaleBox->checkState();
     outputArgs.outputdirectory			= m_outputDirectory;
-    outputArgs.suffix				= ".dcm";//m_suffix;
-    outputArgs.prefix				= "N2D"; //m_prefix;
-    outputArgs.digits				= m_digits;
-    accessionNumberArgs.accessionnumber		= m_accessionNumber;
+    outputArgs.suffix					= ".dcm";//m_suffix;
+    outputArgs.prefix					= "N2D"; //m_prefix;
+    outputArgs.digits					= m_digits;
+    accessionNumberArgs.accessionnumber	= m_accessionNumber;
 
-
-
-
-
-//BEGIN DICOM accession number validation
+	//BEGIN DICOM accession number validation
     try
     {
         n2d::AccessionNumberValidator accessionNumberValidator(accessionNumberArgs, *m_dictionary);
@@ -191,9 +186,9 @@ bool finalize::validatePage()
         std::cerr << "Unknown ERROR in \"DICOM accession number validation\"." << std::endl;
 		return false;
     }
-//END DICOM accession number validation
+	//END DICOM accession number validation
 
-//BEGIN Input filtering
+	//BEGIN Input filtering
     try
     {
         n2d::InputFilter inputFilter(filtersArgs, m_image, inputPixelType, *m_dictionary);
@@ -209,11 +204,11 @@ bool finalize::validatePage()
         std::cerr << "Unknown ERROR in \"Input filtering\"." << std::endl;
         return false;
     }
-//END Input filtering
+	//END Input filtering
 
 
 
-//BEGIN Instance
+	//BEGIN Instance
     try
     {
         n2d::Instance instance(instanceArgs, filteredImage, *m_dictionary, m_dictionaryArray);
@@ -228,11 +223,11 @@ bool finalize::validatePage()
         std::cerr << "Unknown ERROR in \"Instance\"." << std::endl;
         return false;
     }
-//END Instance
+	//END Instance
 
 
 
-//BEGIN Output
+	//BEGIN Output
     try
     {
 
@@ -248,7 +243,7 @@ bool finalize::validatePage()
         std::cerr << "Unknown ERROR in \"Output\"." << std::endl;
 		return false;
     }
-//END Output
+	//END Output
 
 	return true;
 }
