@@ -97,3 +97,4 @@ else (DOXYGEN_FOUND AND DOXYGEN_DOT_FOUND)
 endif (DOXYGEN_FOUND AND DOXYGEN_DOT_FOUND)
 
 add_subdirectory(src)
+add_subdirectory(data)
