@@ -9,9 +9,18 @@ Build-Depends: debhelper (>= 7.3.16), dpkg-dev (>= 1.16.1~),
 Standards-Version: 3.9.3
 Homepage: https://github.com/biolab-unige/nifti2dicom
 
+Package: nifti2dicom-data
+Architecture: all
+Depends: ${misc:Depends}
+Description: data files for nifti2dicom
+ This package contains architecture-independent supporting data files
+ required for use with nifti2dicom, such as such as documentation, icons,
+ and translations.
+
 Package: nifti2dicom
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends},
+ nifti2dicom-data (= ${binary:Version})
 Description: convert NIfTI files to DICOM  
  TODO: Add a description
  .
@@ -20,7 +29,7 @@ Description: convert NIfTI files to DICOM
 Package: qnifti2dicom
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends},
- nifti2dicom (= ${binary:Version})
+ nifti2dicom (= ${binary:Version}), nifti2dicom-data (= ${binary:Version})
 Description: convert NIfTI files to DICOM - Qt4 GUI
  TODO: Add a description
  .
