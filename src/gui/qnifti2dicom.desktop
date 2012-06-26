@@ -1,0 +1,7 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=qNifti2Dicom
+Exec=/usr/local/bin/qnifti2dicom
+Icon=
+Type=Application
+Categories=Development;
