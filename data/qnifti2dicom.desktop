@@ -1,6 +1,6 @@
 [Desktop Entry]
 Encoding=UTF-8
-Name=qNifti2Dicom
+Name=QNifti2Dicom
 Comment=Convert 3D NIfTI images to DICOM 2D series
 Exec=qnifti2dicom
 Icon=qnifti2dicom
