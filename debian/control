@@ -21,8 +21,13 @@ Package: nifti2dicom
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends},
  nifti2dicom-data (= ${binary:Version})
-Description: convert NIfTI files to DICOM  
- TODO: Add a description
+Description: convert 3D medical images to DICOM 2D series
+ Nifti2Dicom is a convertion tool that converts 3D NIfTI files (and other
+ formats supported by ITK) to DICOM.
+ Unlike other conversion tools, it can import a DICOM file that is used
+ to import the patient and study DICOM tags, and allows you to edit the
+ accession number and other DICOM tags, in order to create a valid DICOM
+ that can be imported in a PACS.
  .
  This package includes the command line tools.
 
@@ -30,7 +35,12 @@ Package: qnifti2dicom
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends},
  nifti2dicom (= ${binary:Version}), nifti2dicom-data (= ${binary:Version})
-Description: convert NIfTI files to DICOM - Qt4 GUI
- TODO: Add a description
+Description: convert 3D medical images to DICOM 2D series (gui)
+ Nifti2Dicom is a convertion tool that converts 3D NIfTI files (and other
+ formats supported by ITK) to DICOM.
+ Unlike other conversion tools, it can import a DICOM file that is used
+ to import the patient and study DICOM tags, and allows you to edit the
+ accession number and other DICOM tags, in order to create a valid DICOM
+ that can be imported in a PACS.
  .
- This package contains the Qt4 GUI
+ This package contains the Qt4 GUI.
