@@ -20,7 +20,7 @@
 if( APPLE )
     set( PROGNAME qnifti2dicom )
     set( MACOSX_BUNDLE_NAME qnifti2dicom)
-    set( MACOSX_BUNDLE_ICON_FILE Brain.icns )
+    set( MACOSX_BUNDLE_ICON_FILE qnifti2dicom.icns )
     set( MACOSX_BUNDLE_SHORT_VERSION_STRING ${Nifti2Dicom_VERSION} )
     set( MACOSX_BUNDLE_VERSION ${Nifti2Dicom_VERSION})
     set( MACOSX_BUNDLE_LONG_VERSION_STRING Version ${Nifti2Dicom_INTERNAL_VERSION} )

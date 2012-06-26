@@ -36,7 +36,7 @@ Wizard::Wizard(QWizard* parent):QWizard(parent)
 	this->setButtonText(QWizard::FinishButton,"Do!");
 
     setOption(QWizard::HaveHelpButton,true);
-    setPixmap(QWizard::BackgroundPixmap, QPixmap(":/images/background.png"));
+    setPixmap(QWizard::BackgroundPixmap, QPixmap(":/data/images/background.png"));
 
     connect(button(QWizard::HelpButton),SIGNAL(clicked())
 			,this,SLOT(showHelp()));
