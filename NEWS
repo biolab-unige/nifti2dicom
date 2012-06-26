@@ -1,6 +1,13 @@
-Nifti2Dicom (UNRELEASED) 0.4.1
+Nifti2Dicom (2012-06-26) 0.4.2
 ==============================
 
+- Install icons and .desktop file (Issue #4)
+- Fix "Finish Button Label" (Issue #10)
+- Fix "Scrollbar shows only half volume" (Issue #6)
+- Fix "Crash if you hit next without opening an image" (Issue #3)
+- Fix "Disable the slider when the nifti image is not loaded" (Issue #2)
+- Cleanup
+- Always build gui
 
 Nifti2Dicom (2012-01-12) 0.4
 ============================
