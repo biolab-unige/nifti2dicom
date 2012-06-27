@@ -61,9 +61,11 @@ endif(ITK_FOUND)
 
 #Check Qt4 Library [Qt4] (4.4.0)
 find_package(Qt4 REQUIRED)
-if(NOT QT_FOUND)
+if(QT_FOUND)
+	include(${QT_USE_FILE})
+else(QT_FOUND)
     message(FATAL ERROR "Qt4 not found")
-endif(NOT QT_FOUND)
+endif(QT_FOUND)
 
 #Check VTK Library [Visualization ToolKit]
 find_package(VTK REQUIRED)
