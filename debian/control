@@ -20,7 +20,7 @@ Description: data files for nifti2dicom
 Package: nifti2dicom
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends},
- nifti2dicom-data (= ${binary:Version})
+ nifti2dicom-data (= ${source:Version})
 Description: convert 3D medical images to DICOM 2D series
  Nifti2Dicom is a convertion tool that converts 3D NIfTI files (and other
  formats supported by ITK) to DICOM.
@@ -34,7 +34,7 @@ Description: convert 3D medical images to DICOM 2D series
 Package: qnifti2dicom
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends},
- nifti2dicom (= ${binary:Version}), nifti2dicom-data (= ${binary:Version})
+ nifti2dicom (= ${binary:Version}), nifti2dicom-data (= ${source:Version})
 Description: convert 3D medical images to DICOM 2D series (gui)
  Nifti2Dicom is a convertion tool that converts 3D NIfTI files (and other
  formats supported by ITK) to DICOM.
