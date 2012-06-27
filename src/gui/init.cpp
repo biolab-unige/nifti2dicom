@@ -234,21 +234,23 @@ bool init::OnSliderChange(int z)
 bool init::loadIndcmHDR()
 {
 
-      m_dcmRefHDRFname = QFileDialog::getOpenFileName(this,tr("Open Dicom Header file"),"",tr("DICOM (*.dcm)"));
-      if(m_dcmRefHDRFname.isEmpty()) return false;
-      m_dicomHeaderArgs->dicomheaderfile = m_dcmRefHDRFname.toStdString();
-      m_headerImporter	= new n2d::HeaderImporter(*m_dicomHeaderArgs , *m_importedDictionary);
+	m_dcmRefHDRFname = QFileDialog::getOpenFileName(this,tr("Open Dicom Header file"),"",tr("DICOM (*.dcm);;All (*)"));
+	if(m_dcmRefHDRFname.isEmpty()) return false;
+	m_dicomHeaderArgs->dicomheaderfile = m_dcmRefHDRFname.toStdString();
+	m_headerImporter	= new n2d::HeaderImporter(*m_dicomHeaderArgs , *m_importedDictionary);
+	
+	m_parent->setDicomHeaderImporter(m_headerImporter);
+	m_parent->storeDicomHeaderArgs(*m_dicomHeaderArgs);
 
-      m_parent->setDicomHeaderImporter(m_headerImporter);
-      m_parent->storeDicomHeaderArgs(*m_dicomHeaderArgs);
+	if(!m_headerImporter->Import())
+	{
+		QErrorMessage error_message;
+		error_message.showMessage("Not a valid DICOM Header");
+		error_message.exec();
 
-    try{
-        m_headerImporter->Import();
-    }catch(...){
-        std::cerr<<"Error While Reading Header Information"<<std::endl;
-        exit(100);
-    }
-
+		return false;
+	}
+        
 	n2d::DictionaryType::ConstIterator itr = m_importedDictionary->Begin();
 	n2d::DictionaryType::ConstIterator end = m_importedDictionary->End();
 
