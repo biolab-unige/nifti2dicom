@@ -7,3 +7,5 @@
 ./usr/share/icons/locolor/32x32/apps/qnifti2dicom.png
 ./usr/share/icons/mono/16x16/apps/qnifti2dicom.png
 ./usr/share/icons/mono/32x32/apps/qnifti2dicom.png
+./usr/share/man/man1/nifti2dicom.1.gz
+./usr/share/man/man1/qnifti2dicom.1.gz
