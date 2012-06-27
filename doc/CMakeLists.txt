@@ -17,9 +17,20 @@
 #  along with Nifti2Dicom.  If not, see <http://www.gnu.org/licenses/>.
 
 
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in" "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile")
-add_custom_target(doc ${DOXYGEN_EXECUTABLE} "Doxyfile")
 
+# Build documentation if doxygen and graphviz are found
+find_package(Doxygen)
+if (DOXYGEN_FOUND AND DOXYGEN_DOT_FOUND)
+    message(STATUS "To build documentation run the 'doc' target")
+    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in" "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile")
+add_custom_target(doc ${DOXYGEN_EXECUTABLE} "Doxyfile")
+else (DOXYGEN_FOUND AND DOXYGEN_DOT_FOUND)
+    message(STATUS "You will need both doxygen and graphviz 'dot' to build documentation")
+endif (DOXYGEN_FOUND AND DOXYGEN_DOT_FOUND)
+
+
+
+# Build manpage
 find_file(HELP2MAN help2man HINTS /usr/bin)
 find_file(GZIP gzip HINTS /usr/bin)
 

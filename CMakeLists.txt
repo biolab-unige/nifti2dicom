@@ -88,15 +88,6 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebugI
 endif() #TODO this endif?
 
 
-# Build documentation if doxygen and graphviz are found
-
-find_package(Doxygen)
-if (DOXYGEN_FOUND AND DOXYGEN_DOT_FOUND)
-    message(STATUS "To build documentation run the 'doc' target")
-    add_subdirectory(doc)
-else (DOXYGEN_FOUND AND DOXYGEN_DOT_FOUND)
-    message(STATUS "You will need both doxygen and graphviz 'dot' to build documentation")
-endif (DOXYGEN_FOUND AND DOXYGEN_DOT_FOUND)
-
 add_subdirectory(src)
+add_subdirectory(doc)
 add_subdirectory(data)
