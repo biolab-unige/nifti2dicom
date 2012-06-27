@@ -149,7 +149,7 @@ init::~init()
 bool init::loadInImage()
 {
 
-    m_inFname = QFileDialog::getOpenFileName(this,"",".");
+    m_inFname = QFileDialog::getOpenFileName(this,tr("Open Nifti Volume"),".",tr("Nifti (*.nii.gz *.nii)"));
     if(m_inFname.isEmpty()) return false;
 
     m_reader->SetFileName(m_inFname.toStdString() );
@@ -196,7 +196,7 @@ bool init::OnSliderChange(int z)
 bool init::loadIndcmHDR()
 {
 
-      m_dcmRefHDRFname = QFileDialog::getOpenFileName(this,"","");
+      m_dcmRefHDRFname = QFileDialog::getOpenFileName(this,tr("Open Dicom Header file"),"",tr("DICOM (*.dcm)"));
       if(m_dcmRefHDRFname.isEmpty()) return false;
       m_dicomHeaderArgs->dicomheaderfile = m_dcmRefHDRFname.toStdString();
       m_headerImporter	= new n2d::HeaderImporter(*m_dicomHeaderArgs , *m_importedDictionary);
