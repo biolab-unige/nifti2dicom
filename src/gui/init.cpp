@@ -30,9 +30,11 @@
 #include <QtGui/QSizePolicy>
 #include <QtCore/QSize>
 #include <QtGui/QFont>
+#include <QtGui/QErrorMessage>
 
 #include "vtkImageViewer2.h"
 #include "itkImage.h"
+#include "itkExceptionObject.h"
 #include "vtkRenderer.h"
 #include "vtkActor2D.h"
 #include "vtkRenderWindow.h"
@@ -149,16 +151,21 @@ init::~init()
 bool init::loadInImage()
 {
 
-    m_inFname = QFileDialog::getOpenFileName(this,tr("Open Nifti Volume"),".",tr("Nifti (*.nii.gz *.nii)"));
+    m_inFname = QFileDialog::getOpenFileName(this,tr("Open Nifti Volume"),".",tr("Nifti (*.nii.gz *.nii);; Analyze (*.hdr);; All (*)"));
     if(m_inFname.isEmpty()) return false;
 
     m_reader->SetFileName(m_inFname.toStdString() );
     try{
         m_reader->ReadImage();
-    }catch(...){
+    }catch(itk::ExceptionObject excp){
         std::cerr<<"error"<<std::endl;
+
+		QErrorMessage error_message;
+		error_message.showMessage(excp.GetDescription());
+
         return false;
     }
+
     double range[2];
     m_localVTKImage = m_reader->HarvestReadImage();
     m_localVTKImage->GetVTKImage()->GetScalarRange(range);
