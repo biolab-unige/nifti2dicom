@@ -173,10 +173,11 @@ bool init::loadInImage()
     try{
         m_reader->ReadImage();
     }catch(itk::ExceptionObject excp){
-        std::cerr<<"error"<<std::endl;
+        std::cerr<<"Error while opening image"<<excp.GetDescription()<<std::endl;
 
 		QErrorMessage error_message;
 		error_message.showMessage(excp.GetDescription());
+		error_message.exec();
 
         return false;
     }
