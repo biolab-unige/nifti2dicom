@@ -4,6 +4,10 @@ Nifti2Dicom (UNRELEASED) 0.4.3
 - Filtering files when opening NIfTi/DICOM (Issue #14)
 - Fix warnings on .desktop file reported by lintian
 - Fix build on Mac OS
+- Fix "Crash if nifti image opened is not a nifti image" (Issue #12)
+- Fix "Crash if DICOM opened is not a DICOM" (Issue #13)
+- Improve information about the opened volume (Issue #7)
+- Create and install manpage
 
 Nifti2Dicom (2012-06-26) 0.4.2
 ==============================
