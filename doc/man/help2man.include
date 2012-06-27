@@ -1,0 +1,17 @@
+[name]
+nifti2dicom - Convert 3D medical images to DICOM 2D series
+[description]
+.B Nifti2Dicom
+is a conversion tool that converts 3D NIfTI files (and other
+formats supported by ITK) to DICOM.
+Unlike other conversion tools, it can import a DICOM file that is used
+to import the patient and study DICOM tags, and allows you to edit the
+accession number and other DICOM tags, in order to create a valid DICOM
+that can be imported in a PACS.
+[authors]
+.B Nifti2Dicom
+was primarily written by Daniele E. Domenichelli and Gabriele Arnulfo.
+[see also]
+Full documentation for the
+.B nifti2dicom
+package is stored at https://github.com/biolab-unige/nifti2dicom

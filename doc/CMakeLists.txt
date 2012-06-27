@@ -19,3 +19,16 @@
 
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in" "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile")
 add_custom_target(doc ${DOXYGEN_EXECUTABLE} "Doxyfile")
+
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/man/man1)
+add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/man/man1/nifti2dicom.1.gz
+                   DEPENDS nifti2dicom ${CMAKE_CURRENT_SOURCE_DIR}/man/help2man.include
+                   COMMAND help2man ${CMAKE_BINARY_DIR}/src/core/nifti2dicom
+                                    --version-string=${Nifti2Dicom_VERSION}
+                                    --no-info
+                                    --include=${CMAKE_CURRENT_SOURCE_DIR}/man/help2man.include
+                                    --output=${CMAKE_CURRENT_BINARY_DIR}/man/man1/nifti2dicom.1
+                   COMMAND gzip ${CMAKE_CURRENT_BINARY_DIR}/man/man1/nifti2dicom.1
+)
+add_custom_target(manpages ALL SOURCES ${CMAKE_CURRENT_BINARY_DIR}/man/man1/nifti2dicom.1.gz)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/man/man1/nifti2dicom.1.gz DESTINATION share/man/man1)
