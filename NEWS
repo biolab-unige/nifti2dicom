@@ -1,6 +1,10 @@
 Nifti2Dicom (UNRELEASED) 0.4.3
 ==============================
 
+- Filtering files when opening NIfTi/DICOM (Issue #14)
+- Fix warnings on .desktop file reported by lintian
+- Fix build on Mac OS
+
 Nifti2Dicom (2012-06-26) 0.4.2
 ==============================
 
