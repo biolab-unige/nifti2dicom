@@ -25,10 +25,45 @@
 #include "customize.h"
 #include "finalize.h"
 #include "wizard.h"
+#include "Nifti2DicomConfig.h"
+
+void print_version()
+{
+    std::cout << "qnifti2dicom " << Nifti2Dicom_VERSION << std::endl;
+}
+
+void print_usage()
+{
+    std::cout << "USAGE" << std::endl;
+    std::cout << std::endl;
+    std::cout << "   qnifti2dicom  [-h] [--help] [--version]" << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << "Where:" << std::endl;
+    std::cout << std::endl;
+    std::cout << "--version" << std::endl;
+    std::cout << "     Displays version information and exits." << std::endl;
+    std::cout << std::endl;
+    std::cout << "-h,  --help" << std::endl;
+    std::cout << "     Displays usage information and exits." << std::endl;
+}
+
 
 int main(int argc, char* argv[])
 {
-	QApplication app(argc,argv);
+    QApplication app(argc,argv);
+
+    Q_FOREACH (const QString &arg, app.arguments()) {
+        if (arg == QLatin1String("--version")) {
+            print_version();
+            exit(0);
+        }
+        if (arg == QLatin1String("--help") || arg == QLatin1String("-h")) {
+            print_usage();
+            exit(0);
+        }
+    }
+
 
 	n2d::gui::Wizard*		wiz		= new n2d::gui::Wizard(0);
 	n2d::gui::init*			page1	= new n2d::gui::init(wiz);
