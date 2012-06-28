@@ -190,52 +190,5 @@ void Study::CopyStudyTags (const DictionaryType &fromDict, DictionaryType &toDic
 }
 
 
-
-//BEGIN Old GDCM 1 Stuff
-/*
-#include <gdcm/src/gdcmFile.h>
-#include <gdcm/src/gdcmUtil.h>
-
-    std::string seriesUID = gdcm::Util::CreateUniqueUID( m_DicomIO->GetUIDPrefix() );
-    std::string frameOfReferenceUID = gdcm::Util::CreateUniqueUID( m_DicomIO->GetUIDPrefix() );
-    std::string studyUID;
-    std::string sopClassUID;
-    itk::ExposeMetaData<std::string>(m_Dict, "0020|000d", studyUID);
-    itk::ExposeMetaData<std::string>(m_Dict, "0008|0016", sopClassUID);
-
-    itk::EncapsulateMetaData<std::string>(m_Dict, "0020|000d", studyUID);
-    itk::EncapsulateMetaData<std::string>(m_Dict, "0020|000e", seriesUID);
-    itk::EncapsulateMetaData<std::string>(m_Dict, "0020|0052", frameOfReferenceUID);
-
-    std::string sopInstanceUID = gdcm::Util::CreateUniqueUID(m_DicomIO->GetUIDPrefix());
-
-    itk::EncapsulateMetaData<std::string>(m_Dict, "0008|0018", sopInstanceUID);
-    itk::EncapsulateMetaData<std::string>(m_Dict, "0002|0003", sopInstanceUID);
-
-
-
-
-        value.str("");
-        value << position[0] << "\\" << position[1] << "\\" << position[2];
-//        itk::EncapsulateMetaData<std::string>(*dictionaryRaw[i],"0020|0032", value.str());
-
-
-        // Slice Location: For now, we store the z component of the Image
-        // Position Patient.
-        value.str("");
-        value << position[2] - start_position[2];
-        itk::EncapsulateMetaData<std::string>(*dictionaryRaw[i],"0020|1041", value.str().substr(0,16));
-
-        // Slice Thickness: For now, we store the z spacing
-        value.str("");
-        value << sqrt( pow( spacing[0],2) + pow(spacing[1],2) + pow(spacing[2],2) );
-        itk::EncapsulateMetaData<std::string>(*dictionaryRaw[i],"0018|0050", value.str().substr(0,16));
-
-        // Spacing Between Slices
-        itk::EncapsulateMetaData<std::string>(*dictionaryRaw[i],"0018|0088", value.str().substr(0,16));
-*/
-//END Old GDCM 1 Stuff
-
-
 } // namespace n2d
 
