@@ -1,4 +1,4 @@
-Nifti2Dicom (UNRELEASED) 0.4.3
+Nifti2Dicom (2012-06-28) 0.4.3
 ==============================
 
 - Filtering files when opening NIfTi/DICOM (Issue #14)
