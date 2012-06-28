@@ -1,0 +1,18 @@
+[name]
+qnifti2dicom - Convert 3D medical images to DICOM 2D series (GUI)
+[description]
+.B QNifti2Dicom
+is a conversion tool that converts 3D NIfTI files (and other
+formats supported by ITK) to DICOM.
+Unlike other conversion tools, it can import a DICOM file that is used
+to import the patient and study DICOM tags, and allows you to edit the
+accession number and other DICOM tags, in order to create a valid DICOM
+that can be imported in a PACS.
+[authors]
+.B QNifti2Dicom
+was primarily written by Daniele E. Domenichelli and Gabriele Arnulfo.
+[see also]
+nifti2dicom(1)
+Full documentation for the
+.B Nifti2Dicom
+package is stored at https://github.com/biolab-unige/nifti2dicom

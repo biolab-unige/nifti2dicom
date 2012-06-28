@@ -22,8 +22,8 @@ project(Nifti2Dicom)
 
 set(Nifti2Dicom_MAJOR_VERSION "0")
 set(Nifti2Dicom_MINOR_VERSION "4")
-set(Nifti2Dicom_PATCH_VERSION "2")
-set(Nifti2Dicom_VERSION "0.4.2")
+set(Nifti2Dicom_PATCH_VERSION "3")
+set(Nifti2Dicom_VERSION "0.4.3")
 set(Nifti2Dicom_INTERNAL_VERSION "${Nifti2Dicom_MAJOR_VERSION}.${Nifti2Dicom_MINOR_VERSION}.${Nifti2Dicom_PATCH_VERSION}")
 
 
@@ -61,9 +61,11 @@ endif(ITK_FOUND)
 
 #Check Qt4 Library [Qt4] (4.4.0)
 find_package(Qt4 REQUIRED)
-if(NOT QT_FOUND)
+if(QT_FOUND)
+	include(${QT_USE_FILE})
+else(QT_FOUND)
     message(FATAL ERROR "Qt4 not found")
-endif(NOT QT_FOUND)
+endif(QT_FOUND)
 
 #Check VTK Library [Visualization ToolKit]
 find_package(VTK REQUIRED)
@@ -86,15 +88,6 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebugI
 endif() #TODO this endif?
 
 
-# Build documentation if doxygen and graphviz are found
-
-find_package(Doxygen)
-if (DOXYGEN_FOUND AND DOXYGEN_DOT_FOUND)
-    message(STATUS "To build documentation run the 'doc' target")
-    add_subdirectory(doc)
-else (DOXYGEN_FOUND AND DOXYGEN_DOT_FOUND)
-    message(STATUS "You will need both doxygen and graphviz 'dot' to build documentation")
-endif (DOXYGEN_FOUND AND DOXYGEN_DOT_FOUND)
-
 add_subdirectory(src)
+add_subdirectory(doc)
 add_subdirectory(data)

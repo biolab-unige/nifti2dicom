@@ -18,36 +18,39 @@
 
 
 /*
-Alcune note:
-  1. seriesdescription: l'elenco fisso deve avere questi campi:
+Some notes: [PROBABLY OUTDATED]
+  1. seriesdescription: the fixed list must have those fields:
     1. fMRI;
     2. DTI-ft;
     3. Image Fusion;
     4. Other/postprocessing.
-  2. accessionNumber: di default il campo deve essere compilato a mano dall'utente; se
-     invece viene data un header di riferimento, per la copia dei dati anagrafici ALLORA
-     si prevede la doppia opzione:
-     1. (default) da inserire a mano;
-     2. copia dall'header DICOM ma dà un warning per avvertire che ci saranno due/o più
-        immagini con lo stesso Accession Number.
-  3. [FIXED] studyinstanceUID e seriesnumber: il filtro li completa già da solo (sono campi univoci
-     creati a partire dalla data dell'esame, dall'ora) bisogna capire come vengono creati
-     per controllare l'effettiva correttezza di tali campi.
-  4. [FIXED] patientName: allo stato attuale di default viene settato a "GDCM" quindi loro lo
-     devono cambiare a mano.
-  5. [FIXED] alcune volte, non per tutte le immagini, viene inserito un gantrytilt anche quando
-     non c'è, quindi bisogna capire come funziona il calcolo del gantrytilt e verificare
-     la correttezza delle informazioni relative salvate nell'header.
+  2. accessionNumber: by default the field must be set manually by the user.
+     If a user sets a reference header instead, it must have 2 options:
+     1. (default) set manually
+     2. copy it from the DICOM header, BUT it must prompt a warning to inform
+        the user that there will be 2 or more images with the same Accession
+        Number
+  3. [FIXED] studyinstanceUID e seriesnumber: the filter completes them
+     automatically (those are univocal fields, created using date and time of
+     the exam). we have to understand how they are created to check if those
+     fields are set correctly.
+  4. [FIXED] patientName: at the moment it is set to "GDCM",therefore it must be
+     changed by them manually.
+  5. [FIXED] sometimes (not for all the images) a gantrytilt is added (even when
+     there should not be). patches/ITK_Direction4.patch is a patch for ITK that
+     should fix this problem.
+     This problem was reported upstream (see
+     https://itk.icts.uiowa.edu/jira/browse/ITK-281 )
 */
 
 
 /*
-Altre note:
-  Ordine delle operazioni:
- ( -1. Dichiarazioni degli oggetti comuni  )
- (  0. Lettura della command line  )
-    1. Controllo dell'accession number
-    2. Importazione dell'header
+More notes:
+  Steps performed:
+ ( -1. Declarations of the common objects  )
+ (  0. Command line parsing  )
+    1. Check accession number
+    2. Import DICOM header
     3. Class/Modality/Transfer Syntax
     4. Other DICOM tags
     5. Patient

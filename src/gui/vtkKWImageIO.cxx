@@ -238,6 +238,9 @@ void vtkKWImageIO::ReadImage()
   if( !imageIO )
     {
     std::cerr << "NO IMAGEIO WAS FOUND" << std::endl;
+	itk::ExceptionObject excp;
+    excp.SetDescription("Unable to open the requested Image");
+    throw excp;
     return;
     }
 

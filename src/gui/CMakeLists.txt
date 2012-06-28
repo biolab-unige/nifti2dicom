@@ -94,7 +94,7 @@ if( APPLE )
                         #COMMAND mkdir ARGS ${CMAKE_CURRENT_BINARY_DIR}/${PROGNAME}.app/Contents
                         COMMAND mkdir ARGS ${CONTENTS_DIR}/Frameworks
                         COMMAND mkdir ARGS ${CONTENTS_DIR}/Resources
-                        COMMAND cp ARGS /Users/gabri/icons/${MACOSX_BUNDLE_ICON_FILE} ${CONTENTS_DIR}/Resources/
+						COMMAND cp ARGS ${CMAKE_SOURCE_DIR}/data/icons/${MACOSX_BUNDLE_ICON_FILE} ${CONTENTS_DIR}/Resources/
                         COMMAND cp ARGS /Developer/Applications/Qt/Qt\ Creator.app/Contents/Frameworks/libQtCore.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/
                         COMMAND cp ARGS /Developer/Applications/Qt/Qt\ Creator.app/Contents/Frameworks/libQtGui.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/
                         COMMAND cp ARGS /Developer/Applications/Qt/Qt\ Creator.app/Contents/Frameworks/libQtNetwork.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/

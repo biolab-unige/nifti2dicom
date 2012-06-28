@@ -242,8 +242,8 @@ template<class TPixel> bool InputFilter::InternalFilter(void)
 
 
 
-//TODO settare correttamente BITS ALLOCATED (0028,0100)/ BITS STORED (0028,0101) / HIGH BIT (0028,0102)
-// (pare impossibile con itk+gdcm)
+//TODO set correctly BITS ALLOCATED (0028,0100)/ BITS STORED (0028,0101) / HIGH BIT (0028,0102)
+// (at the moment it looks impossible to do this using itk+gdcm)
 //        // Bits Allocated
 //          itk::EncapsulateMetaData<std::string>( inputDict, "0028|0100", "16");
 //        // Bits Stored

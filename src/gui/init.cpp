@@ -1,7 +1,7 @@
 //  This file is part of Nifti2Dicom, is an open source converter from
 //  3D NIfTI images to 2D DICOM series.
 //
-//  Copyright (C) 2010 Gabriele Arnulfo <gabriele.arnulfo@dist.unige.it>
+//  Copyright (C) 2010, 2012 Gabriele Arnulfo <gabriele.arnulfo@dist.unige.it>
 //
 //  Nifti2Dicom is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 #include <QtGui/QLineEdit>
 #include <QtGui/QCheckBox>
 #include <QtGui/QLabel>
+#include <QtGui/QLineEdit>
 #include <QtGui/QPushButton>
 #include <QtGui/QTableWidget>
 #include <QtGui/QTableWidgetItem>
@@ -30,9 +31,11 @@
 #include <QtGui/QSizePolicy>
 #include <QtCore/QSize>
 #include <QtGui/QFont>
+#include <QtGui/QErrorMessage>
 
 #include "vtkImageViewer2.h"
 #include "itkImage.h"
+#include "itkExceptionObject.h"
 #include "vtkRenderer.h"
 #include "vtkActor2D.h"
 #include "vtkRenderWindow.h"
@@ -58,6 +61,9 @@
 #include <n2dSeries.h>
 #include <n2dAcquisition.h>
 
+
+#include <sstream>
+
 #include <QtTest/QSignalSpy>
 
 #include "wizard.h"
@@ -78,21 +84,32 @@ init::init(QWidget *parent) :
 	this->setTitle("First Step");
 	this->setSubTitle("Required input: Nifti filename and optional dicom reference header");
 
-	QGridLayout *layout 	= new QGridLayout();
-	QPushButton *openImage 	= new QPushButton("Open Nifti Image");
-	QPushButton *openHeader	= new QPushButton("Open Dicom Header");
-	m_headerEntries 		= new QTableWidget(0,3);
-	m_horizontalSlider		= new QSlider(Qt::Horizontal);
-	m_renderPreview 		= new QVTKWidget();
+	QGridLayout *layout 			= new QGridLayout();
+	QGridLayout *infoOpenImageLayout = new QGridLayout();
+	QPushButton *openImage 			= new QPushButton("Open Nifti Image");
+	QPushButton *openHeader			= new QPushButton("Open Dicom Header");
+	QLineEdit	*openedFileName		= new QLineEdit();	
+	QLineEdit	*openedFileSizes	= new QLineEdit();	
+	m_headerEntries 				= new QTableWidget(0,3);
+	m_horizontalSlider				= new QSlider(Qt::Horizontal);
+	m_renderPreview 				= new QVTKWidget();
 
 	m_horizontalSlider->setVisible(0);
+
+	openedFileName->setReadOnly(1);
+	openedFileSizes->setReadOnly(1);
+
+	infoOpenImageLayout->setRowMinimumHeight(0,10);
+
+	infoOpenImageLayout->addWidget(openedFileName,0,0);
+	infoOpenImageLayout->addWidget(openedFileSizes,0,1);
 
 	layout->addWidget(openImage, 0,0);
 	layout->addWidget(openHeader, 0,1);
 	layout->addWidget(m_renderPreview,1,0);
 	layout->addWidget(m_headerEntries,1,1);
-	layout->addWidget(m_horizontalSlider,2,0);
-	//layout->addWidget(QLayout)
+	layout->addLayout(infoOpenImageLayout,2,0);
+	layout->addWidget(m_horizontalSlider,3,0);
 
 	
 	m_imageviewer      	= vtkImageViewer2::New();
@@ -149,16 +166,22 @@ init::~init()
 bool init::loadInImage()
 {
 
-    m_inFname = QFileDialog::getOpenFileName(this,"",".");
+    m_inFname = QFileDialog::getOpenFileName(this,tr("Open Nifti Volume"),".",tr("Nifti (*.nii.gz *.nii);; Analyze (*.hdr);; All (*)"));
     if(m_inFname.isEmpty()) return false;
 
     m_reader->SetFileName(m_inFname.toStdString() );
     try{
         m_reader->ReadImage();
-    }catch(...){
-        std::cerr<<"error"<<std::endl;
+    }catch(itk::ExceptionObject excp){
+        std::cerr<<"Error while opening image"<<excp.GetDescription()<<std::endl;
+
+		QErrorMessage error_message;
+		error_message.showMessage(excp.GetDescription());
+		error_message.exec();
+
         return false;
     }
+
     double range[2];
     m_localVTKImage = m_reader->HarvestReadImage();
     m_localVTKImage->GetVTKImage()->GetScalarRange(range);
@@ -180,7 +203,22 @@ bool init::loadInImage()
     completeChanged();
     
     lookupTable->Delete();
-    
+   
+	// update QLineEdit with proper values
+	QGridLayout *tmp_layout 		= dynamic_cast<QGridLayout *>(this->layout());
+	QGridLayout *tmp_single_cell 	= dynamic_cast<QGridLayout *>(tmp_layout->itemAtPosition(2,0));
+	QLineEdit *tmp_fname_cell 		= dynamic_cast<QLineEdit *>(tmp_single_cell->itemAtPosition(0,0)->widget());
+	QLineEdit *tmp_fname_cell2 		= dynamic_cast<QLineEdit *>(tmp_single_cell->itemAtPosition(0,1)->widget());
+
+	tmp_fname_cell->insert(m_inFname);
+	int *dimensions = m_localVTKImage->GetVTKImage()->GetDimensions();
+
+	std::ostringstream str_dimensions;
+
+	str_dimensions<<"["<<dimensions[0]<<","<<dimensions[1]<<","<<dimensions[2]<<"]";
+
+	tmp_fname_cell2->insert(str_dimensions.str().c_str());
+
     return true;
 
 }
@@ -196,21 +234,23 @@ bool init::OnSliderChange(int z)
 bool init::loadIndcmHDR()
 {
 
-      m_dcmRefHDRFname = QFileDialog::getOpenFileName(this,"","");
-      if(m_dcmRefHDRFname.isEmpty()) return false;
-      m_dicomHeaderArgs->dicomheaderfile = m_dcmRefHDRFname.toStdString();
-      m_headerImporter	= new n2d::HeaderImporter(*m_dicomHeaderArgs , *m_importedDictionary);
+	m_dcmRefHDRFname = QFileDialog::getOpenFileName(this,tr("Open Dicom Header file"),"",tr("DICOM (*.dcm);;All (*)"));
+	if(m_dcmRefHDRFname.isEmpty()) return false;
+	m_dicomHeaderArgs->dicomheaderfile = m_dcmRefHDRFname.toStdString();
+	m_headerImporter	= new n2d::HeaderImporter(*m_dicomHeaderArgs , *m_importedDictionary);
+	
+	m_parent->setDicomHeaderImporter(m_headerImporter);
+	m_parent->storeDicomHeaderArgs(*m_dicomHeaderArgs);
 
-      m_parent->setDicomHeaderImporter(m_headerImporter);
-      m_parent->storeDicomHeaderArgs(*m_dicomHeaderArgs);
+	if(!m_headerImporter->Import())
+	{
+		QErrorMessage error_message;
+		error_message.showMessage("Not a valid DICOM Header");
+		error_message.exec();
 
-    try{
-        m_headerImporter->Import();
-    }catch(...){
-        std::cerr<<"Error While Reading Header Information"<<std::endl;
-        exit(100);
-    }
-
+		return false;
+	}
+        
 	n2d::DictionaryType::ConstIterator itr = m_importedDictionary->Begin();
 	n2d::DictionaryType::ConstIterator end = m_importedDictionary->End();
 
