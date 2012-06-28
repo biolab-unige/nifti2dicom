@@ -205,10 +205,10 @@ bool init::loadInImage()
     lookupTable->Delete();
    
 	// update QLineEdit with proper values
-	QGridLayout *tmp_layout = dynamic_cast<QGridLayout *>(this->layout());
-	QGridLayout *tmp_single_cell = dynamic_cast<QGridLayout *>(tmp_layout->itemAtPosition(2,0));
-	QLineEdit *tmp_fname_cell = dynamic_cast<QLineEdit *>(tmp_single_cell->itemAtPosition(0,0)->widget());
-	QLineEdit *tmp_fname_cell2 = dynamic_cast<QLineEdit *>(tmp_single_cell->itemAtPosition(0,1)->widget());
+	QGridLayout *tmp_layout 		= dynamic_cast<QGridLayout *>(this->layout());
+	QGridLayout *tmp_single_cell 	= dynamic_cast<QGridLayout *>(tmp_layout->itemAtPosition(2,0));
+	QLineEdit *tmp_fname_cell 		= dynamic_cast<QLineEdit *>(tmp_single_cell->itemAtPosition(0,0)->widget());
+	QLineEdit *tmp_fname_cell2 		= dynamic_cast<QLineEdit *>(tmp_single_cell->itemAtPosition(0,1)->widget());
 
 	tmp_fname_cell->insert(m_inFname);
 	int *dimensions = m_localVTKImage->GetVTKImage()->GetDimensions();
