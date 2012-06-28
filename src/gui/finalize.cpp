@@ -26,6 +26,8 @@
 #include <QtGui/QTableWidget>
 #include <QtGui/QTableWidgetItem>
 #include <QtGui/QHeaderView>
+#include <QtGui/QProgressBar>
+#include <QtCore/QCoreApplication>
 
 #include <n2dInputFilter.h>
 #include <n2dInstance.h>
@@ -44,10 +46,8 @@ namespace gui	{
 finalize::finalize(QWidget* parent):QWizardPage(parent)
 {
 
-	m_parent	= dynamic_cast<n2d::gui::Wizard* >(parent);
+	m_parent		= dynamic_cast<n2d::gui::Wizard* >(parent);
 	m_dictionary 	= m_parent->getDictionary();
-
-
     
 	this->setTitle("Last Step");
 	this->setSubTitle("Review the final header, fill the output directory and the accession number");
@@ -56,6 +56,8 @@ finalize::finalize(QWidget* parent):QWizardPage(parent)
 	QGridLayout *rightlayout		= new QGridLayout();
 	QGridLayout *leftlayout			= new QGridLayout();
 	QGridLayout *browselayout		= new QGridLayout();
+	QProgressBar *progressBar		= new QProgressBar();
+	QLineEdit	 *progressInfo		= new QLineEdit();
 	m_outDirLine 					= new QLineEdit();
 	m_accessionNumberLine			= new QLineEdit();
 	QLabel *label1					= new QLabel("Output directory");
@@ -64,7 +66,7 @@ finalize::finalize(QWidget* parent):QWizardPage(parent)
 	m_headerTable					= new QTableWidget(0,2);
 	QPushButton *browseFile			= new QPushButton("Browse");
 	
-	m_digits 				= 4;
+	m_digits 						= 4;
 	m_headerTable->setColumnWidth(0,100);
 	m_headerTable->setColumnWidth(1,200);
 
@@ -85,6 +87,15 @@ finalize::finalize(QWidget* parent):QWizardPage(parent)
 	
 	baselayout->addLayout(leftlayout,0,1);
 	baselayout->addLayout(rightlayout,0,0);
+	baselayout->addWidget(progressBar,1,0);
+	baselayout->addWidget(progressInfo,1,1);
+
+
+//	progressbar->setMaximum(4);
+//	progressbar->setMinimum(0);
+	progressBar->setRange(0,3);
+	progressInfo->setReadOnly(1);
+
 	setLayout(baselayout);
 	
 	connect(m_accessionNumberLine,SIGNAL(textChanged(const QString & )),this, 
@@ -164,13 +175,17 @@ bool finalize::validatePage()
     n2d::OutputArgs						outputArgs;
     n2d::AccessionNumberArgs			accessionNumberArgs;
 
-
     filtersArgs.rescale 				= m_rescaleBox->checkState();
     outputArgs.outputdirectory			= m_outputDirectory;
     outputArgs.suffix					= ".dcm";//m_suffix;
     outputArgs.prefix					= "N2D"; //m_prefix;
     outputArgs.digits					= m_digits;
     accessionNumberArgs.accessionnumber	= m_accessionNumber;
+
+	QGridLayout *tmp_layout			= dynamic_cast<QGridLayout *>(this->layout());
+	QLineEdit   *tmp_progressInfo 	= dynamic_cast<QLineEdit *>(tmp_layout->itemAtPosition(1,1)->widget());
+	QProgressBar *tmp_progressBar 	= dynamic_cast<QProgressBar *>(tmp_layout->itemAtPosition(1,0)->widget());
+
 
 	//BEGIN DICOM accession number validation
     try
@@ -181,6 +196,9 @@ bool finalize::validatePage()
             std::cerr << "ERROR in \"DICOM accession number validation\"." << std::endl;
 			return false;
         }
+		tmp_progressInfo->insert("Accession Number Validated");
+		tmp_progressBar->setValue(1);
+		QCoreApplication::processEvents();
     }
     catch (...)
     {
@@ -199,6 +217,10 @@ bool finalize::validatePage()
 			return false;
         }
         filteredImage = inputFilter.getFilteredImage();
+		tmp_progressInfo->clear();
+		tmp_progressInfo->insert("Volume ranges properly filtered");
+		tmp_progressBar->setValue(2);
+		QCoreApplication::processEvents();
     }
     catch (...)
     {
@@ -206,8 +228,6 @@ bool finalize::validatePage()
         return false;
     }
 	//END Input filtering
-
-
 
 	//BEGIN Instance
     try
@@ -218,6 +238,11 @@ bool finalize::validatePage()
             std::cerr << "ERROR in \"Instance\"." << std::endl;
             return false;
         }
+		tmp_progressInfo->clear();
+		tmp_progressInfo->insert("DICOM Header built");
+		tmp_progressBar->setValue(3);
+		QCoreApplication::processEvents();
+
     }
     catch (...)
     {
@@ -225,7 +250,6 @@ bool finalize::validatePage()
         return false;
     }
 	//END Instance
-
 
 
 	//BEGIN Output
@@ -238,6 +262,10 @@ bool finalize::validatePage()
             std::cerr << "ERROR in \"Output\"." << std::endl;
             return false;
         }
+		tmp_progressInfo->clear();
+		tmp_progressInfo->insert("Output Saved to disk");
+		tmp_progressBar->setValue(4);
+		QCoreApplication::processEvents();
     }
     catch (...)
     {
@@ -251,9 +279,10 @@ bool finalize::validatePage()
 
 bool finalize::isComplete() const 
 {
-	if(m_accessionNumber.empty() || 
-		m_outputDirectory.empty())
+	if(m_accessionNumber.empty() || m_outputDirectory.empty())
+	{
 		return false;
+	}
 	else 
 		return true;
 }
