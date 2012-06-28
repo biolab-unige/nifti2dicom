@@ -7,7 +7,8 @@ Nifti2Dicom (UNRELEASED) 0.4.3
 - Fix "Crash if nifti image opened is not a nifti image" (Issue #12)
 - Fix "Crash if DICOM opened is not a DICOM" (Issue #13)
 - Improve information about the opened volume (Issue #7)
-- Create and install manpage
+- Create and install manpages
+- Cleanup (translate comments into English and remove old GDCM 1 stuff
 
 Nifti2Dicom (2012-06-26) 0.4.2
 ==============================
