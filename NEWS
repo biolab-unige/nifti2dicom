@@ -9,6 +9,8 @@ Nifti2Dicom (UNRELEASED) 0.4.3
 - Improve information about the opened volume (Issue #7)
 - Create and install manpages
 - Cleanup (translate comments into English and remove old GDCM 1 stuff
+- Added progress bar in the finalizing page (Issue #17)
+- Improved information about opened volume (Issue #7)
 
 Nifti2Dicom (2012-06-26) 0.4.2
 ==============================
