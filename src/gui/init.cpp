@@ -1,7 +1,7 @@
 //  This file is part of Nifti2Dicom, is an open source converter from
 //  3D NIfTI images to 2D DICOM series.
 //
-//  Copyright (C) 2010 Gabriele Arnulfo <gabriele.arnulfo@dist.unige.it>
+//  Copyright (C) 2010, 2012 Gabriele Arnulfo <gabriele.arnulfo@dist.unige.it>
 //
 //  Nifti2Dicom is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
