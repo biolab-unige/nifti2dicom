@@ -1,5 +1,5 @@
-nifti2dicom (0.4.3-0r1) UNRELEASED; urgency=low
+nifti2dicom (0.4.3-1) unstable; urgency=low
 
   * Initial release. (Closes: #670171)
 
- -- Daniele E. Domenichelli <daniele.domenichelli@gmail.com>  Wed, 27 Jun 2012 17:03:22 +0200
+ -- Daniele E. Domenichelli <daniele.domenichelli@gmail.com>  Thu, 28 Jun 2012 17:07:54 +0200
