@@ -1,4 +1,4 @@
-nifti2dicom (0.4.3-1r1) UNRELEASED; urgency=low
+nifti2dicom (0.4.3-2) unstable; urgency=low
 
   [ Yaroslav Halchenko ]
   * Build while just keeping that export for hardedning in debian/rules
@@ -7,7 +7,7 @@ nifti2dicom (0.4.3-1r1) UNRELEASED; urgency=low
   [ Daniele E. Domenichelli ]
   * Add libgdcm2-dev to build dependencies
 
- -- Daniele E. Domenichelli <daniele.domenichelli@gmail.com>  Mon, 09 Jul 2012 20:14:18 +0200
+ -- Daniele E. Domenichelli <daniele.domenichelli@gmail.com>  Tue, 10 Jul 2012 00:03:48 +0200
 
 nifti2dicom (0.4.3-1) unstable; urgency=low
 
