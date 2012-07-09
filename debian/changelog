@@ -1,3 +1,11 @@
+nifti2dicom (0.4.3-1r0) UNRELEASED; urgency=low
+
+  [ Yaroslav Halchenko ]
+  * Build while just keeping that export for hardedning in debian/rules
+    while relaxing (removing) versioned dpkg dependency
+
+ -- Daniele E. Domenichelli <daniele.domenichelli@gmail.com>  Mon, 09 Jul 2012 17:04:04 +0200
+
 nifti2dicom (0.4.3-1) unstable; urgency=low
 
   * Initial release. (Closes: #670171)

@@ -2,7 +2,7 @@ Source: nifti2dicom
 Section: science
 Priority: optional
 Maintainer: Daniele E. Domenichelli <daniele.domenichelli@gmail.com>
-Build-Depends: debhelper (>= 7.3.16), dpkg-dev (>= 1.16.1~),
+Build-Depends: debhelper (>= 7.3.16),
  cdbs, cmake (>= 2.6.4), libqt4-dev (>= 4.4),
  libinsighttoolkit3-dev, libtclap-dev (>= 1.2.0),
  libvtk5-dev, libvtk5-qt4-dev
