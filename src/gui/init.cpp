@@ -74,110 +74,107 @@ namespace gui{
 
 init::init(QWidget *parent) :
     QWizardPage(parent),
-	m_renderPreview(NULL),
-	m_renderer(NULL),
-	m_interactor(NULL),
-	m_dictionary(NULL)
+    m_renderPreview(NULL),
+    m_renderer(NULL),
+    m_interactor(NULL),
+    m_dictionary(NULL)
 {
-  
-	m_parent = dynamic_cast<n2d::gui::Wizard* >(parent);
-	this->setTitle("First Step");
-	this->setSubTitle("Required input: Nifti filename and optional dicom reference header");
+    m_parent = dynamic_cast<n2d::gui::Wizard* >(parent);
+    this->setTitle("First Step");
+    this->setSubTitle("Required input: Nifti filename and optional dicom reference header");
 
-	QGridLayout *layout 			= new QGridLayout();
-	QGridLayout *infoOpenImageLayout = new QGridLayout();
-	QPushButton *openImage 			= new QPushButton("Open Nifti Image");
-	QPushButton *openHeader			= new QPushButton("Open Dicom Header");
-	QLineEdit	*openedFileName		= new QLineEdit();	
-	QLineEdit	*openedFileSizes	= new QLineEdit();	
-	m_headerEntries 				= new QTableWidget(0,3);
-	m_horizontalSlider				= new QSlider(Qt::Horizontal);
-	m_renderPreview 				= new QVTKWidget();
+    QGridLayout *layout              = new QGridLayout();
+    QGridLayout *infoOpenImageLayout = new QGridLayout();
+    QPushButton *openImage           = new QPushButton("Open Volume");
+    QPushButton *openHeader          = new QPushButton("Open Dicom Header");
+    QLineEdit    *openedFileName     = new QLineEdit();
+    QLineEdit    *openedFileSizes    = new QLineEdit();
+    m_headerEntries                  = new QTableWidget(0,3);
+    m_horizontalSlider               = new QSlider(Qt::Horizontal);
+    m_renderPreview                  = new QVTKWidget();
 
-	m_horizontalSlider->setVisible(0);
+    m_horizontalSlider->setVisible(0);
 
-	openedFileName->setReadOnly(1);
-	openedFileSizes->setReadOnly(1);
+    openedFileName->setReadOnly(1);
+    openedFileSizes->setReadOnly(1);
 
-	infoOpenImageLayout->setRowMinimumHeight(0,10);
+    infoOpenImageLayout->setRowMinimumHeight(0,10);
 
-	infoOpenImageLayout->addWidget(openedFileName,0,0);
-	infoOpenImageLayout->addWidget(openedFileSizes,0,1);
+    infoOpenImageLayout->addWidget(openedFileName,0,0);
+    infoOpenImageLayout->addWidget(openedFileSizes,0,1);
 
-	layout->addWidget(openImage, 0,0);
-	layout->addWidget(openHeader, 0,1);
-	layout->addWidget(m_renderPreview,1,0);
-	layout->addWidget(m_headerEntries,1,1);
-	layout->addLayout(infoOpenImageLayout,2,0);
-	layout->addWidget(m_horizontalSlider,3,0);
-
-	
-	m_imageviewer      	= vtkImageViewer2::New();
-	m_renderer			= m_imageviewer->GetRenderer();
-	m_renderWin			= m_imageviewer->GetRenderWindow();
-		
-
-	//BEGIN Test vtkKWImage//
-	m_reader 			= vtkKWImageIO::New();
-	m_localVTKImage 	= vtkKWImage::New();
-	m_importedDictionary= m_parent->getImportedDictionary();
-	m_dictionary 		= m_parent->getDictionary();
-	//END
-	
-
-	m_imageviewer->SetSliceOrientationToXY();
-
-	m_renderPreview->SetRenderWindow(m_renderWin);
-	m_interactor = m_renderWin->GetInteractor();
-	m_interactor->Disable();
-
-	m_inputArgs			= new n2d::InputArgs();
-	m_dicomHeaderArgs	= new n2d::DicomHeaderArgs();
-
-	QStringList labels;
-	labels << tr("Tag") << tr("Value") << tr("Desc");
-	m_headerEntries->setHorizontalHeaderLabels(labels);
-	m_headerEntries->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
-	m_headerEntries->setEnabled(false);
-	m_headerEntries->setColumnWidth(0,100);
-	m_headerEntries->setColumnWidth(1,350);
-	m_headerEntries->setColumnWidth(2,100);
-
-	setLayout(layout);
-
-	connect(openImage, SIGNAL(clicked()),this,SLOT(loadInImage()));
-	connect(openHeader, SIGNAL(clicked()),this,SLOT(loadIndcmHDR()));
-	connect(m_horizontalSlider, SIGNAL(valueChanged(int )),this,SLOT(OnSliderChange(int )));
+    layout->addWidget(openImage, 0,0);
+    layout->addWidget(openHeader, 0,1);
+    layout->addWidget(m_renderPreview,1,0);
+    layout->addWidget(m_headerEntries,1,1);
+    layout->addLayout(infoOpenImageLayout,2,0);
+    layout->addWidget(m_horizontalSlider,3,0);
 
 
+    m_imageviewer        = vtkImageViewer2::New();
+    m_renderer           = m_imageviewer->GetRenderer();
+    m_renderWin          = m_imageviewer->GetRenderWindow();
+
+
+    //BEGIN Test vtkKWImage//
+    m_reader             = vtkKWImageIO::New();
+    m_localVTKImage      = vtkKWImage::New();
+    m_importedDictionary = m_parent->getImportedDictionary();
+    m_dictionary         = m_parent->getDictionary();
+    //END
+
+
+    m_imageviewer->SetSliceOrientationToXY();
+
+    m_renderPreview->SetRenderWindow(m_renderWin);
+    m_interactor = m_renderWin->GetInteractor();
+    m_interactor->Disable();
+
+    m_inputArgs          = new n2d::InputArgs();
+    m_dicomHeaderArgs    = new n2d::DicomHeaderArgs();
+
+    QStringList labels;
+    labels << tr("Tag") << tr("Value") << tr("Desc");
+    m_headerEntries->setHorizontalHeaderLabels(labels);
+    m_headerEntries->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
+    m_headerEntries->setEnabled(false);
+    m_headerEntries->setColumnWidth(0,100);
+    m_headerEntries->setColumnWidth(1,350);
+    m_headerEntries->setColumnWidth(2,100);
+
+    setLayout(layout);
+
+    connect(openImage, SIGNAL(clicked()),this,SLOT(loadInImage()));
+    connect(openHeader, SIGNAL(clicked()),this,SLOT(loadIndcmHDR()));
+    connect(m_horizontalSlider, SIGNAL(valueChanged(int )),this,SLOT(OnSliderChange(int )));
 }
+
 
 init::~init()
 {
-	//std::cout<<"Called ~init"<<std::endl;
-	m_imageviewer->Delete();
-	m_reader->Delete();
-	m_localVTKImage->Delete();
-	//m_interactor->Delete();
+    //std::cout<<"Called ~init"<<std::endl;
+    m_imageviewer->Delete();
+    m_reader->Delete();
+    m_localVTKImage->Delete();
+    //m_interactor->Delete();
 }
-
 
 
 bool init::loadInImage()
 {
-
     m_inFname = QFileDialog::getOpenFileName(this,tr("Open Nifti Volume"),".",tr("Nifti (*.nii.gz *.nii);; Analyze (*.hdr);; All (*)"));
-    if(m_inFname.isEmpty()) return false;
+    if(m_inFname.isEmpty())
+        return false;
 
     m_reader->SetFileName(m_inFname.toStdString() );
-    try{
+    try {
         m_reader->ReadImage();
-    }catch(itk::ExceptionObject excp){
-        std::cerr<<"Error while opening image"<<excp.GetDescription()<<std::endl;
+    } catch(itk::ExceptionObject excp) {
+        std::cerr << "Error while opening image" << excp.GetDescription() << std::endl;
 
-		QErrorMessage error_message;
-		error_message.showMessage(excp.GetDescription());
-		error_message.exec();
+        QErrorMessage error_message;
+        error_message.showMessage(excp.GetDescription());
+        error_message.exec();
 
         return false;
     }
@@ -197,31 +194,31 @@ bool init::loadInImage()
     m_imageviewer->GetRenderer()->ResetCamera();
     m_renderPreview->GetRenderWindow()->Render();
     m_parent->setImportedImage(m_localVTKImage);
-	
-	m_horizontalSlider->setVisible(1);
-	m_horizontalSlider->setRange(0,m_localVTKImage->GetVTKImage()->GetDimensions()[2]);
+
+    m_horizontalSlider->setVisible(1);
+    m_horizontalSlider->setRange(0,m_localVTKImage->GetVTKImage()->GetDimensions()[2]);
     completeChanged();
-    
+
     lookupTable->Delete();
-   
-	// update QLineEdit with proper values
-	QGridLayout *tmp_layout 		= dynamic_cast<QGridLayout *>(this->layout());
-	QGridLayout *tmp_single_cell 	= dynamic_cast<QGridLayout *>(tmp_layout->itemAtPosition(2,0));
-	QLineEdit *tmp_fname_cell 		= dynamic_cast<QLineEdit *>(tmp_single_cell->itemAtPosition(0,0)->widget());
-	QLineEdit *tmp_fname_cell2 		= dynamic_cast<QLineEdit *>(tmp_single_cell->itemAtPosition(0,1)->widget());
 
-	tmp_fname_cell->insert(m_inFname);
-	int *dimensions = m_localVTKImage->GetVTKImage()->GetDimensions();
+    // update QLineEdit with proper values
+    QGridLayout *tmp_layout         = dynamic_cast<QGridLayout *>(this->layout());
+    QGridLayout *tmp_single_cell    = dynamic_cast<QGridLayout *>(tmp_layout->itemAtPosition(2,0));
+    QLineEdit *tmp_fname_cell       = dynamic_cast<QLineEdit *>(tmp_single_cell->itemAtPosition(0,0)->widget());
+    QLineEdit *tmp_fname_cell2      = dynamic_cast<QLineEdit *>(tmp_single_cell->itemAtPosition(0,1)->widget());
 
-	std::ostringstream str_dimensions;
+    tmp_fname_cell->insert(m_inFname);
+    int *dimensions = m_localVTKImage->GetVTKImage()->GetDimensions();
 
-	str_dimensions<<"["<<dimensions[0]<<","<<dimensions[1]<<","<<dimensions[2]<<"]";
+    std::ostringstream str_dimensions;
 
-	tmp_fname_cell2->insert(str_dimensions.str().c_str());
+    str_dimensions<<"["<<dimensions[0]<<","<<dimensions[1]<<","<<dimensions[2]<<"]";
+
+    tmp_fname_cell2->insert(str_dimensions.str().c_str());
 
     return true;
-
 }
+
 
 bool init::OnSliderChange(int z)
 {
@@ -233,76 +230,75 @@ bool init::OnSliderChange(int z)
 
 bool init::loadIndcmHDR()
 {
+    m_dcmRefHDRFname = QFileDialog::getOpenFileName(this,tr("Open Dicom Header file"),"",tr("DICOM (*.dcm);;All (*)"));
+    if(m_dcmRefHDRFname.isEmpty()) return false;
+    m_dicomHeaderArgs->dicomheaderfile = m_dcmRefHDRFname.toStdString();
+    m_headerImporter = new n2d::HeaderImporter(*m_dicomHeaderArgs , *m_importedDictionary);
 
-	m_dcmRefHDRFname = QFileDialog::getOpenFileName(this,tr("Open Dicom Header file"),"",tr("DICOM (*.dcm);;All (*)"));
-	if(m_dcmRefHDRFname.isEmpty()) return false;
-	m_dicomHeaderArgs->dicomheaderfile = m_dcmRefHDRFname.toStdString();
-	m_headerImporter	= new n2d::HeaderImporter(*m_dicomHeaderArgs , *m_importedDictionary);
-	
-	m_parent->setDicomHeaderImporter(m_headerImporter);
-	m_parent->storeDicomHeaderArgs(*m_dicomHeaderArgs);
+    m_parent->setDicomHeaderImporter(m_headerImporter);
+    m_parent->storeDicomHeaderArgs(*m_dicomHeaderArgs);
 
-	if(!m_headerImporter->Import())
-	{
-		QErrorMessage error_message;
-		error_message.showMessage("Not a valid DICOM Header");
-		error_message.exec();
+    if(!m_headerImporter->Import())
+    {
+        QErrorMessage error_message;
+        error_message.showMessage("Not a valid DICOM Header");
+        error_message.exec();
 
-		return false;
-	}
-        
-	n2d::DictionaryType::ConstIterator itr = m_importedDictionary->Begin();
-	n2d::DictionaryType::ConstIterator end = m_importedDictionary->End();
+        return false;
+    }
 
-	QTableWidgetItem* tagkeyitem  ; 
-	QTableWidgetItem* tagvalueitem;
-	QTableWidgetItem* desc;
+    n2d::DictionaryType::ConstIterator itr = m_importedDictionary->Begin();
+    n2d::DictionaryType::ConstIterator end = m_importedDictionary->End();
 
-	const gdcm::Global& g = gdcm::Global::GetInstance();
-	const gdcm::Dicts &dicts = g.GetDicts();
-	const gdcm::Dict &pub = dicts.GetPublicDict(); // Part 6
+    QTableWidgetItem* tagkeyitem  ;
+    QTableWidgetItem* tagvalueitem;
+    QTableWidgetItem* desc;
+
+    const gdcm::Global& g = gdcm::Global::GetInstance();
+    const gdcm::Dicts &dicts = g.GetDicts();
+    const gdcm::Dict &pub = dicts.GetPublicDict(); // Part 6
 
     while(itr != end)
     {
         int row = m_headerEntries->rowCount();
         itk::MetaDataObjectBase::Pointer entry = itr->second;
         MetaDataStringType::Pointer entryvalue = 
-		dynamic_cast<MetaDataStringType* >(entry.GetPointer());
+        dynamic_cast<MetaDataStringType* >(entry.GetPointer());
 
-		if(entryvalue)
-		{
-				std::string tagkey  = itr->first;
-				if(!tagkey.compare(0,4,"0010"))
-				{
-					std::string tagvalue= entryvalue->GetMetaDataObjectValue();
-					int a = 0;
-					int b = 0;
+        if(entryvalue)
+        {
+            std::string tagkey  = itr->first;
+            if(!tagkey.compare(0,4,"0010"))
+            {
+                std::string tagvalue= entryvalue->GetMetaDataObjectValue();
+                int a = 0;
+                int b = 0;
 
-					sscanf(tagkey.substr(0,4).c_str(), "%x", &a); 
-					sscanf(tagkey.substr(5,4).c_str(), "%x", &b); 
+                sscanf(tagkey.substr(0,4).c_str(), "%x", &a);
+                sscanf(tagkey.substr(5,4).c_str(), "%x", &b);
 
-					gdcm::Tag t(a,b);
-					const gdcm::DictEntry &entry1 = pub.GetDictEntry(t);
+                gdcm::Tag t(a,b);
+                const gdcm::DictEntry &entry1 = pub.GetDictEntry(t);
 
-					QString item1(tagkey.c_str());
-					QString item2(tagvalue.c_str());
-					QString item3(entry1.GetName());
+                QString item1(tagkey.c_str());
+                QString item2(tagvalue.c_str());
+                QString item3(entry1.GetName());
 
-					tagkeyitem   = new QTableWidgetItem(item1);
-					tagvalueitem = new QTableWidgetItem(item2);
-					desc         = new QTableWidgetItem(item3);
+                tagkeyitem   = new QTableWidgetItem(item1);
+                tagvalueitem = new QTableWidgetItem(item2);
+                desc         = new QTableWidgetItem(item3);
 
-					tagkeyitem->setFont(QFont("Verdana",10));
-					tagvalueitem->setFont(QFont("Verdana",10));
-					desc->setFont(QFont("Verdana",10));
+                tagkeyitem->setFont(QFont("Verdana",10));
+                tagvalueitem->setFont(QFont("Verdana",10));
+                desc->setFont(QFont("Verdana",10));
 
-					m_headerEntries->insertRow(row);
-					m_headerEntries->setItem(row,0,tagkeyitem);
-					m_headerEntries->setItem(row,1,tagvalueitem);
-					m_headerEntries->setItem(row,2,desc);
-				}
-		}
-    	++itr;
+                m_headerEntries->insertRow(row);
+                m_headerEntries->setItem(row,0,tagkeyitem);
+                m_headerEntries->setItem(row,1,tagvalueitem);
+                m_headerEntries->setItem(row,2,desc);
+            }
+        }
+        ++itr;
     }
 
     delete tagkeyitem;
@@ -311,34 +307,35 @@ bool init::loadIndcmHDR()
     return true;
 }
 
+
 bool init::isComplete() const
 {
     return m_localVTKImage->GetVTKImage()->GetDimensions()[0] != 0;
 }
 
+
 bool init::validatePage()
-{	
+{
+    n2d::DicomClassArgs         dicomClassArgs;
+    n2d::AcquisitionArgs        acquisitionArgs;
+    n2d::OtherDicomTagsArgs     otherDicomTagsArgs;
+    n2d::SeriesArgs             seriesArgs;
+    n2d::StudyArgs              studyArgs;
+    n2d::PatientArgs            patientArgs;
 
-	n2d::DicomClassArgs 		dicomClassArgs;
-	n2d::AcquisitionArgs 		acquisitionArgs;
-	n2d::OtherDicomTagsArgs 	otherDicomTagsArgs;
-	n2d::SeriesArgs				seriesArgs;
-	n2d::StudyArgs				studyArgs;
-	n2d::PatientArgs			patientArgs;
 
+    seriesArgs.useoriginalseries    = false;
+    studyArgs.donotuseoriginalstudy = false;
+    studyArgs.studydescription      = "qnifti2dicom";
 
-	seriesArgs.useoriginalseries    = false;
-	studyArgs.donotuseoriginalstudy = false;
-	studyArgs.studydescription		= "qnifti2dicom";
-
-	//BEGIN DICOM Class
+    //BEGIN DICOM Class
     try
     {
         n2d::DicomClass dicomClass(dicomClassArgs, *m_importedDictionary, *m_dictionary);
         if (!dicomClass.Update())
         {
             std::cerr << "ERROR in \"DICOM Class\"." << std::endl;
-	    return false;
+            return false;
         }
     }
     catch (...)
@@ -346,123 +343,122 @@ bool init::validatePage()
         std::cerr << "Unknown ERROR in \"DICOM Class\"." << std::endl;
         return false;
     }
-	//END DICOM Class
+    //END DICOM Class
 
 
 
-	//BEGIN Other DICOM Tags
+    //BEGIN Other DICOM Tags
     try
     {
         n2d::OtherDicomTags otherDicomTags(otherDicomTagsArgs, *m_dictionary);
         if (!otherDicomTags.Update())
         {
             std::cerr << "ERROR in \"Other DICOM Tags\"." << std::endl;
-	    return false;
+            return false;
         }
     }
     catch (...)
     {
         std::cerr << "Unknown ERROR in \"Other DICOM Tags\"." << std::endl;
-	return false;
+    return false;
     }
-	//END Other DICOM Tags
+    //END Other DICOM Tags
 
 
 
-	//BEGIN Patient
+    //BEGIN Patient
     try
     {
         n2d::Patient patient(patientArgs, *m_importedDictionary, *m_dictionary);
         if (!patient.Update())
         {
             std::cerr << "ERROR in \"Patient\"." << std::endl;
-	    return false;
+            return false;
         }
     }
     catch (...)
     {
         std::cerr << "Unknown ERROR in \"Patient\"." << std::endl;
-	return false;
+        return false;
     }
-	//END Patient
+    //END Patient
 
 
-	//BEGIN Study
+    //BEGIN Study
     try
     {
         n2d::Study study(studyArgs, *m_importedDictionary, *m_dictionary);
         if (!study.Update())
         {
             std::cerr << "ERROR in \"Study\"." << std::endl;
-	    return false;
+            return false;
         }
     }
     catch (...)
     {
         std::cerr << "Unknown ERROR in \"Study\"." << std::endl;
-	return false;
+        return false;
     }
-	//END Study
+    //END Study
 
 
 
-	//BEGIN Series
+    //BEGIN Series
     try
     {
         n2d::Series series(seriesArgs, *m_importedDictionary, *m_dictionary);
         if (!series.Update())
         {
             std::cerr << "ERROR in \"Series\"." << std::endl;
-	    return false;
+            return false;
         }
     }
     catch (...)
     {
         std::cerr << "Unknown ERROR in \"Series\"." << std::endl;
-	return false;
+        return false;
     }
-	//END Series
+    //END Series
 
 
 
-	//BEGIN Acquisition
+    //BEGIN Acquisition
     try
     {
         n2d::Acquisition acquisition(acquisitionArgs, *m_dictionary);
         if (!acquisition.Update())
         {
             std::cerr << "ERROR in \"Acquisition\"." << std::endl;
-	    return false;
+            return false;
         }
     }
     catch (...)
     {
         std::cerr << "Unknown ERROR in \"Acquisition\"." << std::endl;
-	return false;
+        return false;
     }
-	//END Acquisition
+    //END Acquisition
 
-	m_parent->storeDicomClassArgs(dicomClassArgs);
-	m_parent->storeAcquisitionArgs(acquisitionArgs);
-	m_parent->storeOtherDicomTagsArgs(otherDicomTagsArgs);
-	m_parent->storeSeriesArgs(seriesArgs);
-	m_parent->storeStudyArgs(studyArgs);
-	m_parent->storePatientArgs(patientArgs);
+    m_parent->storeDicomClassArgs(dicomClassArgs);
+    m_parent->storeAcquisitionArgs(acquisitionArgs);
+    m_parent->storeOtherDicomTagsArgs(otherDicomTagsArgs);
+    m_parent->storeSeriesArgs(seriesArgs);
+    m_parent->storeStudyArgs(studyArgs);
+    m_parent->storePatientArgs(patientArgs);
 
-	return true;
-
+    return true;
 }
 
 
 //bool init::isComplete() const
 //{
-//	if(m_localVTKImage == NULL)
-//		return false;
-//	else 
-//	{
-//		return true;
-//	}
+//    if(m_localVTKImage == NULL)
+//        return false;
+//    else
+//    {
+//        return true;
+//    }
 //}
 
-}//namespace gui
-}//namespace n2d
+} //namespace gui
+} //namespace n2d
