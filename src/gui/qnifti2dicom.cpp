@@ -51,7 +51,13 @@ void print_usage()
 
 int main(int argc, char* argv[])
 {
-    QApplication app(argc,argv);
+#ifdef Q_WS_X11
+    bool useGUI = getenv("DISPLAY") != 0;
+#else
+    bool useGUI = true;
+#endif
+
+    QApplication app(argc, argv, useGUI);
 
     Q_FOREACH (const QString &arg, app.arguments()) {
         if (arg == QLatin1String("--version")) {
@@ -64,6 +70,11 @@ int main(int argc, char* argv[])
         }
     }
 
+    if (!useGUI) {
+        std::cerr << "Cannot run qnifti2dicom without DISPLAY." << std::endl;
+        std::cerr << "Please set the DISPLAY environment variable or use nifti2dicom instead." << std::endl;;
+        exit(1);
+    }
 
     n2d::gui::Wizard*       wiz     = new n2d::gui::Wizard(0);
     n2d::gui::init*         page1   = new n2d::gui::init(wiz);
