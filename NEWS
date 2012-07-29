@@ -1,6 +1,9 @@
 Nifti2Dicom (UNRELEASED) 0.4.4
 ==============================
 
+- Added 64x64 icon
+- Added MetaImage, Nrrd and VTK to filter
+
 Nifti2Dicom (2012-06-28) 0.4.3
 ==============================
 
