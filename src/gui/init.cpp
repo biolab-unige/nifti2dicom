@@ -162,7 +162,15 @@ init::~init()
 
 bool init::loadInImage()
 {
-    m_inFname = QFileDialog::getOpenFileName(this,tr("Open Nifti Volume"),".",tr("Nifti (*.nii.gz *.nii);; Analyze (*.hdr);; All (*)"));
+    m_inFname = QFileDialog::getOpenFileName(this,
+                                             tr("Open Volume"),
+                                             ".",
+                                             tr("Nifti Volume (*.nii.gz *.nii);;"
+                                                "Analyze Volume (*.hdr);;"
+                                                "MetaImage Volume (*.mhd);;"
+                                                "Nrrd Volume (*.nhdr *.nrrd);;"
+                                                "VTK Volume (*.vtk);;"
+                                                "All Files (*)"));
     if(m_inFname.isEmpty())
         return false;
 
