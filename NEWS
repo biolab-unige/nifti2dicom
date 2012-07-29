@@ -3,6 +3,7 @@ Nifti2Dicom (UNRELEASED) 0.4.4
 
 - Added 64x64 icon
 - Added MetaImage, Nrrd and VTK to filter
+- Fix QNifti2Dicom not executing --help and --version when DISPLAY is not set
 
 Nifti2Dicom (2012-06-28) 0.4.3
 ==============================
