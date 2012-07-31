@@ -1,4 +1,4 @@
-Nifti2Dicom (UNRELEASED) 0.4.5
+Nifti2Dicom (2012-07-31) 0.4.5
 ==============================
 
 - Add option ENABLE_REGENERATE_MAN (disabled by default)
