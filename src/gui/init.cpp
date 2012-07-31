@@ -238,7 +238,11 @@ bool init::OnSliderChange(int z)
 
 bool init::loadIndcmHDR()
 {
-    m_dcmRefHDRFname = QFileDialog::getOpenFileName(this,tr("Open Dicom Header file"),"",tr("DICOM (*.dcm);;All Files(*)"));
+    m_dcmRefHDRFname = QFileDialog::getOpenFileName(this,
+                                                    tr("Open Dicom Header file"),
+                                                    "",
+                                                    tr("DICOM Files (*.dcm);;"
+                                                       "All Files (*)"));
     if(m_dcmRefHDRFname.isEmpty()) return false;
     m_dicomHeaderArgs->dicomheaderfile = m_dcmRefHDRFname.toStdString();
     m_headerImporter = new n2d::HeaderImporter(*m_dicomHeaderArgs , *m_importedDictionary);
