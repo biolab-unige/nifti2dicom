@@ -134,7 +134,7 @@ init::init(QWidget *parent) :
     m_dicomHeaderArgs    = new n2d::DicomHeaderArgs();
 
     QStringList labels;
-    labels << tr("Tag") << tr("Value") << tr("Desc");
+    labels << tr("Tag")  << tr("Desc") << tr("Value");
     m_headerEntries->setHorizontalHeaderLabels(labels);
     m_headerEntries->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
     m_headerEntries->setEnabled(false);
@@ -312,8 +312,8 @@ bool init::loadIndcmHDR()
 
                 m_headerEntries->insertRow(row);
                 m_headerEntries->setItem(row,0,tagkeyitem);
-                m_headerEntries->setItem(row,1,tagvalueitem);
-                m_headerEntries->setItem(row,2,desc);
+                m_headerEntries->setItem(row,1,desc);
+                m_headerEntries->setItem(row,2,tagvalueitem);
             }
         }
         ++itr;
