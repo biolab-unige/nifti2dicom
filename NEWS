@@ -5,6 +5,9 @@ Nifti2Dicom (UNRELEASED) 0.4.5
 - Fix filter string "DICOM" -> "DICOM Files"
 - Handle tag "(0018,1020) Software Version(s)"
 - Change default for "(0018,1030) Protocol Name" to "nifti2dicom" (Issue #9)
+- Initialize members that require initialization (Issue #11)
+- Nifti Labels are cleaned everytime user pushes the Load Button (Issue #23)
+- DICOM Header column order now replicates user requirements (Issue #18)
 
 Nifti2Dicom (2012-07-29) 0.4.4
 ==============================
