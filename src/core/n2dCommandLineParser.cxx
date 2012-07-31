@@ -125,6 +125,16 @@ bool CommandLineParser::Parse(int argc, char* argv[])
                 cmd);
 
         // -----------------------------------------------------------------------------
+        // (0018,1020) Software Version(s)
+        // -----------------------------------------------------------------------------
+
+        TCLAP::ValueArg<std::string> softwareversionArg ( "", "softwareversion",
+                "(0018,1020) Software Version(s)",
+                false, "",
+                "string",
+                cmd);
+
+        // -----------------------------------------------------------------------------
         // (0018,1030) Protocol Name
         // -----------------------------------------------------------------------------
 
@@ -541,6 +551,7 @@ bool CommandLineParser::Parse(int argc, char* argv[])
         dicomClassArgs.modality = modalityArg.getValue();
         dicomClassArgs.sopclassuid = sopclassuidArg.getValue();
         dicomClassArgs.imagetype = imagetypeArg.getValue();
+        dicomClassArgs.softwareversion = softwareversionArg.getValue();
         dicomClassArgs.protocolname = protocolnameArg.getValue();
         //END DICOM class command line arguments
 
@@ -666,6 +677,7 @@ void CommandLineParser::DebugPrint( void )
     std::cout << "  (0008,0016) SOP Class UID               = " << dicomClassArgs.sopclassuid       << std::endl;
     std::cout << "  (0008,0060) Modality                    = " << dicomClassArgs.modality          << std::endl;
     std::cout << "  (0008,0008) Image Type                  = " << dicomClassArgs.imagetype         << std::endl;
+    std::cout << "  (0018,1020) Software Version(s)         = " << dicomClassArgs.softwareversion   << std::endl;
     std::cout << "  (0018,1030) Protocol Name               = " << dicomClassArgs.protocolname      << std::endl;
     std::cout << "-----------------------------------------" << std::endl;
 //END DICOM class/modality

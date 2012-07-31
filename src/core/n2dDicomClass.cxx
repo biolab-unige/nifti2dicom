@@ -32,6 +32,7 @@ const std::string transfersyntaxuidtag ( "0002|0010 ");
 const std::string sopclassuidtag       ( "0008|0016" );
 const std::string modalitytag          ( "0008|0060" );
 const std::string imagetypetag         ( "0008|0008" );
+const std::string softwareversiontag   ( "0018|1020" );
 const std::string protocolnametag      ( "0018|1030" );
 //END DICOM tags
 
@@ -41,7 +42,8 @@ const std::string defaulttransfersyntaxuid ( "1.2.840.10008.1.2" );
 const std::string defaultsopclassuid       ( "1.2.840.10008.5.1.4.1.1.4" );
 const std::string defaultmodality          ( "MR" );
 const std::string defaultimagetype         ( "DERIVED\\SECONDARY" );
-const std::string defaultprotocolname      ( GetNameAndInternalVersion() );
+const std::string defaultsoftwareversion   ( GetInternalVersion() );
+const std::string defaultprotocolname      ( "nifti2dicom" );
 //END Default values
 
 
@@ -94,16 +96,25 @@ bool DicomClass::Update()
 
 //BEGIN (0008,0008) Image Type
     if (!m_DicomClassArgs.imagetype.empty())
-        itk::EncapsulateMetaData<std::string>( m_Dict, imagetypetag, m_DicomClassArgs.imagetype );
+        itk::EncapsulateMetaData<std::string>( m_Dict, imagetypetag, m_DicomClassArgs.imagetype);
     else
         itk::EncapsulateMetaData<std::string>( m_Dict, imagetypetag, defaultimagetype);
 //END (0008,0008) Image Type
 
 
 
+//BEGIN (0018,1020) Software Version(s)
+    if (!m_DicomClassArgs.softwareversion.empty())
+        itk::EncapsulateMetaData<std::string>( m_Dict, softwareversiontag, m_DicomClassArgs.softwareversion);
+    else
+    itk::EncapsulateMetaData<std::string>( m_Dict, softwareversiontag, defaultsoftwareversion);
+//END (0018,1020) Software Version(s)
+
+
+
 //BEGIN (0018,1030) Protocol Name
     if (!m_DicomClassArgs.protocolname.empty())
-        itk::EncapsulateMetaData<std::string>( m_Dict, protocolnametag, m_DicomClassArgs.protocolname );
+        itk::EncapsulateMetaData<std::string>( m_Dict, protocolnametag, m_DicomClassArgs.protocolname);
     else
         itk::EncapsulateMetaData<std::string>( m_Dict, protocolnametag, defaultprotocolname);
 //END (0018,1030) Protocol Name

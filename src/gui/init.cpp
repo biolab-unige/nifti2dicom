@@ -134,7 +134,7 @@ init::init(QWidget *parent) :
     m_dicomHeaderArgs    = new n2d::DicomHeaderArgs();
 
     QStringList labels;
-    labels << tr("Tag") << tr("Value") << tr("Desc");
+    labels << tr("Tag")  << tr("Desc") << tr("Value");
     m_headerEntries->setHorizontalHeaderLabels(labels);
     m_headerEntries->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
     m_headerEntries->setEnabled(false);
@@ -162,6 +162,18 @@ init::~init()
 
 bool init::loadInImage()
 {
+    // update QLineEdit with proper values
+    QGridLayout *tmp_layout         = dynamic_cast<QGridLayout *>(this->layout());
+    QGridLayout *tmp_single_cell    = dynamic_cast<QGridLayout *>(tmp_layout->itemAtPosition(2,0));
+    QLineEdit *tmp_fname_cell       = dynamic_cast<QLineEdit *>(tmp_single_cell->itemAtPosition(0,0)->widget());
+    QLineEdit *tmp_dimension_cell      = dynamic_cast<QLineEdit *>(tmp_single_cell->itemAtPosition(0,1)->widget());
+	
+	// just clear the labels every time you push the load button
+	// this prevents multiple append to the same labels when user 
+	// pushes button twice due to wrong file selection in first place
+	tmp_fname_cell->clear();
+	tmp_dimension_cell->clear();
+
     m_inFname = QFileDialog::getOpenFileName(this,
                                              tr("Open Volume"),
                                              ".",
@@ -209,12 +221,6 @@ bool init::loadInImage()
 
     lookupTable->Delete();
 
-    // update QLineEdit with proper values
-    QGridLayout *tmp_layout         = dynamic_cast<QGridLayout *>(this->layout());
-    QGridLayout *tmp_single_cell    = dynamic_cast<QGridLayout *>(tmp_layout->itemAtPosition(2,0));
-    QLineEdit *tmp_fname_cell       = dynamic_cast<QLineEdit *>(tmp_single_cell->itemAtPosition(0,0)->widget());
-    QLineEdit *tmp_fname_cell2      = dynamic_cast<QLineEdit *>(tmp_single_cell->itemAtPosition(0,1)->widget());
-
     tmp_fname_cell->insert(m_inFname);
     int *dimensions = m_localVTKImage->GetVTKImage()->GetDimensions();
 
@@ -222,7 +228,7 @@ bool init::loadInImage()
 
     str_dimensions<<"["<<dimensions[0]<<","<<dimensions[1]<<","<<dimensions[2]<<"]";
 
-    tmp_fname_cell2->insert(str_dimensions.str().c_str());
+    tmp_dimension_cell->insert(str_dimensions.str().c_str());
 
     return true;
 }
@@ -238,7 +244,11 @@ bool init::OnSliderChange(int z)
 
 bool init::loadIndcmHDR()
 {
-    m_dcmRefHDRFname = QFileDialog::getOpenFileName(this,tr("Open Dicom Header file"),"",tr("DICOM (*.dcm);;All Files(*)"));
+    m_dcmRefHDRFname = QFileDialog::getOpenFileName(this,
+                                                    tr("Open Dicom Header file"),
+                                                    "",
+                                                    tr("DICOM Files (*.dcm);;"
+                                                       "All Files (*)"));
     if(m_dcmRefHDRFname.isEmpty()) return false;
     m_dicomHeaderArgs->dicomheaderfile = m_dcmRefHDRFname.toStdString();
     m_headerImporter = new n2d::HeaderImporter(*m_dicomHeaderArgs , *m_importedDictionary);
@@ -302,8 +312,8 @@ bool init::loadIndcmHDR()
 
                 m_headerEntries->insertRow(row);
                 m_headerEntries->setItem(row,0,tagkeyitem);
-                m_headerEntries->setItem(row,1,tagvalueitem);
-                m_headerEntries->setItem(row,2,desc);
+                m_headerEntries->setItem(row,1,desc);
+                m_headerEntries->setItem(row,2,tagvalueitem);
             }
         }
         ++itr;

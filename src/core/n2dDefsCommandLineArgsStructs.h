@@ -36,6 +36,8 @@ namespace n2d {
  */
 typedef struct AccessionNumberArgs
 {
+    AccessionNumberArgs(): yes(false) {}
+
     std::string accessionnumber;
     bool yes;
 } AccessionNumberArgs;
@@ -66,6 +68,7 @@ typedef struct DicomHeaderArgs
  * \li (0008,0016) SOP Class UID
  * \li (0008,0060) Modality
  * \li (0008,0008) Image Type
+ * \li (0018,1020) Software Version(s)
  * \li (0018,1030) Protocol Name
  *
  * \note (0002,0010) Transfer Syntax UID cannot be set by GDCM
@@ -77,6 +80,7 @@ typedef struct DicomClassArgs
     std::string modality;
     std::string sopclassuid;
     std::string imagetype;
+    std::string softwareversion;
     std::string protocolname;
 //    std::map<std::string, std::string> otherdicomtags; //TODO
 } DicomClassArgs;
@@ -152,6 +156,8 @@ typedef struct PatientArgs
  */
 typedef struct StudyArgs
 {
+    StudyArgs() : donotuseoriginalstudy(false) {}
+
     std::string studyinstanceuid;
     std::string studyid;
     std::string studydescription;
@@ -177,6 +183,8 @@ typedef struct StudyArgs
  */
 typedef struct SeriesArgs
 {
+    SeriesArgs() : useoriginalseries(false) {}
+
     std::string seriesinstanceuid;
     std::string seriesnumber;
     std::string seriesdescription;
@@ -229,6 +237,8 @@ typedef struct InputArgs
  */
 typedef struct FiltersArgs
 {
+    FiltersArgs() : rescale(false) {}
+
 //    std::string orientation; //TODO
     bool rescale;
 } FiltersArgs;
