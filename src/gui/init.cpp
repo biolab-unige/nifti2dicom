@@ -84,7 +84,7 @@ init::init(QWidget *parent) :
     this->setSubTitle("Required input: Nifti filename and optional dicom reference header");
 
     QGridLayout *layout              = new QGridLayout();
-    QGridLayout *infoOpenImageLayout = new QGridLayout();
+    QHBoxLayout *infoOpenImageLayout = new QHBoxLayout();
     QPushButton *openImage           = new QPushButton("Open Volume");
     QPushButton *openHeader          = new QPushButton("Open Dicom Header");
     QLineEdit    *openedFileName     = new QLineEdit();
@@ -98,10 +98,8 @@ init::init(QWidget *parent) :
     openedFileName->setReadOnly(1);
     openedFileSizes->setReadOnly(1);
 
-    infoOpenImageLayout->setRowMinimumHeight(0,10);
-
-    infoOpenImageLayout->addWidget(openedFileName,0,0);
-    infoOpenImageLayout->addWidget(openedFileSizes,0,1);
+    infoOpenImageLayout->addWidget(openedFileName, 3);
+    infoOpenImageLayout->addWidget(openedFileSizes, 1);
 
     layout->addWidget(openImage, 0,0);
     layout->addWidget(openHeader, 0,1);
@@ -164,9 +162,9 @@ bool init::loadInImage()
 {
     // update QLineEdit with proper values
     QGridLayout *tmp_layout         = dynamic_cast<QGridLayout *>(this->layout());
-    QGridLayout *tmp_single_cell    = dynamic_cast<QGridLayout *>(tmp_layout->itemAtPosition(2,0));
-    QLineEdit *tmp_fname_cell       = dynamic_cast<QLineEdit *>(tmp_single_cell->itemAtPosition(0,0)->widget());
-    QLineEdit *tmp_dimension_cell      = dynamic_cast<QLineEdit *>(tmp_single_cell->itemAtPosition(0,1)->widget());
+    QHBoxLayout *tmp_single_cell    = dynamic_cast<QHBoxLayout *>(tmp_layout->itemAtPosition(2,0));
+    QLineEdit *tmp_fname_cell       = dynamic_cast<QLineEdit *>(tmp_single_cell->itemAt(0)->widget());
+    QLineEdit *tmp_dimension_cell      = dynamic_cast<QLineEdit *>(tmp_single_cell->itemAt(1)->widget());
 	
 	// just clear the labels every time you push the load button
 	// this prevents multiple append to the same labels when user 
