@@ -174,7 +174,7 @@ bool init::loadInImage()
 
     m_inFname = QFileDialog::getOpenFileName(this,
                                              tr("Open Volume"),
-                                             ".",
+                                             "",
                                              tr("Nifti Volume (*.nii.gz *.nii);;"
                                                 "Analyze Volume (*.hdr);;"
                                                 "MetaImage Volume (*.mhd);;"
