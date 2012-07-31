@@ -43,7 +43,7 @@ const std::string defaultsopclassuid       ( "1.2.840.10008.5.1.4.1.1.4" );
 const std::string defaultmodality          ( "MR" );
 const std::string defaultimagetype         ( "DERIVED\\SECONDARY" );
 const std::string defaultsoftwareversion   ( GetInternalVersion() );
-const std::string defaultprotocolname      ( GetNameAndInternalVersion() );
+const std::string defaultprotocolname      ( "nifti2dicom" );
 //END Default values
 
 
