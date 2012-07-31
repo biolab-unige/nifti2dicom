@@ -1,8 +1,8 @@
-nifti2dicom (0.4.4-0r1) UNRELEASED; urgency=low
+nifti2dicom (0.4.5-0r1) UNRELEASED; urgency=low
 
-  * New Upstream release.
+  * New upstream release.
 
- -- Daniele E. Domenichelli <daniele.domenichelli@gmail.com>  Sun, 29 Jul 2012 18:20:26 +0200
+ -- Daniele E. Domenichelli <daniele.domenichelli@gmail.com>  Tue, 31 Jul 2012 11:15:48 +0200
 
 nifti2dicom (0.4.3-2) unstable; urgency=low
 
