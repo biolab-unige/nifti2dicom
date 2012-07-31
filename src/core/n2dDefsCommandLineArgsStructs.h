@@ -36,6 +36,8 @@ namespace n2d {
  */
 typedef struct AccessionNumberArgs
 {
+    AccessionNumberArgs(): yes(false) {}
+
     std::string accessionnumber;
     bool yes;
 } AccessionNumberArgs;
@@ -154,6 +156,8 @@ typedef struct PatientArgs
  */
 typedef struct StudyArgs
 {
+    StudyArgs() : donotuseoriginalstudy(false) {}
+
     std::string studyinstanceuid;
     std::string studyid;
     std::string studydescription;
@@ -179,6 +183,8 @@ typedef struct StudyArgs
  */
 typedef struct SeriesArgs
 {
+    SeriesArgs() : useoriginalseries(false) {}
+
     std::string seriesinstanceuid;
     std::string seriesnumber;
     std::string seriesdescription;
@@ -231,6 +237,8 @@ typedef struct InputArgs
  */
 typedef struct FiltersArgs
 {
+    FiltersArgs() : rescale(false) {}
+
 //    std::string orientation; //TODO
     bool rescale;
 } FiltersArgs;
