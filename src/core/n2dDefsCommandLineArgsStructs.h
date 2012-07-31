@@ -66,6 +66,7 @@ typedef struct DicomHeaderArgs
  * \li (0008,0016) SOP Class UID
  * \li (0008,0060) Modality
  * \li (0008,0008) Image Type
+ * \li (0018,1020) Software Version(s)
  * \li (0018,1030) Protocol Name
  *
  * \note (0002,0010) Transfer Syntax UID cannot be set by GDCM
@@ -77,6 +78,7 @@ typedef struct DicomClassArgs
     std::string modality;
     std::string sopclassuid;
     std::string imagetype;
+    std::string softwareversion;
     std::string protocolname;
 //    std::map<std::string, std::string> otherdicomtags; //TODO
 } DicomClassArgs;
