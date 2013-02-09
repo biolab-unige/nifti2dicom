@@ -61,5 +61,5 @@ set(nifti2dicom_NO_INSTALL_HEADERS ${CMAKE_BINARY_DIR}/Nifti2DicomConfig.h
 
 # nifti2dicom target
 add_executable(nifti2dicom ${nifti2dicom_SOURCES})
-target_link_libraries(nifti2dicom ITKIO ITKCommon)
+target_link_libraries(nifti2dicom ${ITK_LIBRARIES})
 install(TARGETS nifti2dicom RUNTIME DESTINATION bin)

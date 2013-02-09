@@ -126,9 +126,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}
 #endif( APPLE )
 
 # nifti2dicom target
-target_link_libraries(qnifti2dicom ITKBasicFilters
-                                   ITKIO
-                                   ITKCommon
+target_link_libraries(qnifti2dicom ${ITK_LIBRARIES} 
                                    ${QT_QTCORE_LIBRARY}
                                    ${QT_QTGUI_LIBRARY}
                                    QVTK
