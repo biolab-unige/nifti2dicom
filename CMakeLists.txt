@@ -17,7 +17,7 @@
 #  along with Nifti2Dicom.  If not, see <http://www.gnu.org/licenses/>.
 
 
-cmake_minimum_required(VERSION 2.6.2)
+cmake_minimum_required(VERSION 2.6.4)
 project(Nifti2Dicom)
 
 set(Nifti2Dicom_MAJOR_VERSION "0")
