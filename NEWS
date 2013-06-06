@@ -1,4 +1,4 @@
-Nifti2Dicom (UNRELEASED) 0.4.6
+Nifti2Dicom (2013-06-06) 0.4.6
 ==============================
 
 - Use QHBoxLayout and reduce file size space in infoOpenImageLayout
