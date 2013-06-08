@@ -6,7 +6,7 @@ Build-Depends: debhelper (>= 7.3.16),
  cdbs, cmake (>= 2.6.4), libqt4-dev (>= 4.4),
  libinsighttoolkit4-dev, libtclap-dev (>= 1.2.0),
  libvtk5-dev, libvtk5-qt4-dev, libgdcm2-dev
-Standards-Version: 3.9.3
+Standards-Version: 3.9.4
 Homepage: https://github.com/biolab-unige/nifti2dicom
 Vcs-Git: git://anonscm.debian.org/pkg-exppsy/nifti2dicom.git
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=pkg-exppsy/nifti2dicom.git
