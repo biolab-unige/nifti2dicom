@@ -1,3 +1,10 @@
+Nifti2Dicom (2013-06-06) 0.4.6
+==============================
+
+- Use QHBoxLayout and reduce file size space in infoOpenImageLayout
+- Cleanup CMake stuff
+- Fix build with ITK 4
+
 Nifti2Dicom (2012-07-31) 0.4.5
 ==============================
 

@@ -17,15 +17,15 @@
 #  along with Nifti2Dicom.  If not, see <http://www.gnu.org/licenses/>.
 
 
-if( APPLE )
-    set( PROGNAME qnifti2dicom )
-    set( MACOSX_BUNDLE_NAME qnifti2dicom)
-    set( MACOSX_BUNDLE_ICON_FILE qnifti2dicom.icns )
-    set( MACOSX_BUNDLE_SHORT_VERSION_STRING ${Nifti2Dicom_VERSION} )
-    set( MACOSX_BUNDLE_VERSION ${Nifti2Dicom_VERSION})
-    set( MACOSX_BUNDLE_LONG_VERSION_STRING Version ${Nifti2Dicom_INTERNAL_VERSION} )
-    set( CMAKE_OSX_ARCHITECTURES i386 ) #Comment out if not universal binary
-endif( APPLE )
+#if( APPLE )
+#    set( PROGNAME qnifti2dicom )
+#    set( MACOSX_BUNDLE_NAME qnifti2dicom)
+#    set( MACOSX_BUNDLE_ICON_FILE qnifti2dicom.icns )
+#    set( MACOSX_BUNDLE_SHORT_VERSION_STRING ${Nifti2Dicom_VERSION} )
+#    set( MACOSX_BUNDLE_VERSION ${Nifti2Dicom_VERSION})
+#    set( MACOSX_BUNDLE_LONG_VERSION_STRING Version ${Nifti2Dicom_INTERNAL_VERSION} )
+#    set( CMAKE_OSX_ARCHITECTURES i386 ) #Comment out if not universal binary
+#endif( APPLE )
 
 set(nifti2dicom_gui_SOURCES wizard.cpp
                             init.cpp
@@ -81,54 +81,52 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}
 )
 
 
-if( APPLE )
-    add_executable( ${PROGNAME} MACOSX_BUNDLE ${nifti2dicom_gui_SOURCES}
-                                              ${nifti2dicom_SOURCES}
-                                              ${nifti2dicom_gui_MOC_SRCS}
-                                              ${nifti2dicom_gui_UIS_HDR}
-                                              ${nifti2dicom_gui_QRC_SRCS})
-
-    set( CONTENTS_DIR ${CMAKE_CURRENT_BINARY_DIR}/${PROGNAME}.app/Contents)
-
-    add_custom_command( TARGET ${PROGNAME} POST_BUILD
-                        #COMMAND mkdir ARGS ${CMAKE_CURRENT_BINARY_DIR}/${PROGNAME}.app/Contents
-                        COMMAND mkdir ARGS ${CONTENTS_DIR}/Frameworks
-                        COMMAND mkdir ARGS ${CONTENTS_DIR}/Resources
-						COMMAND cp ARGS ${CMAKE_SOURCE_DIR}/data/icons/${MACOSX_BUNDLE_ICON_FILE} ${CONTENTS_DIR}/Resources/
-                        COMMAND cp ARGS /Developer/Applications/Qt/Qt\ Creator.app/Contents/Frameworks/libQtCore.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/
-                        COMMAND cp ARGS /Developer/Applications/Qt/Qt\ Creator.app/Contents/Frameworks/libQtGui.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/
-                        COMMAND cp ARGS /Developer/Applications/Qt/Qt\ Creator.app/Contents/Frameworks/libQtNetwork.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/
-                        COMMAND cp ARGS /Developer/Applications/Qt/Qt\ Creator.app/Contents/Frameworks/libQtSql.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/
-                        COMMAND ln ARGS -s libQtCore.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/libQtCore.4.6.dylib
-                        COMMAND ln ARGS -s libQtCore.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/libQtCore.4.dylib
-                        COMMAND ln ARGS -s libQtCore.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/libQtCore.dylib
-                        COMMAND ln ARGS -s libQtGui.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/libQtGui.4.6.dylib
-                        COMMAND ln ARGS -s libQtGui.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/libQtGui.4.dylib
-                        COMMAND ln ARGS -s libQtGui.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/libQtGui.dylib
-                        COMMAND ln ARGS -s libQtSql.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/libQtSql.4.6.dylib
-                        COMMAND ln ARGS -s libQtSql.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/libQtSql.4.dylib
-                        COMMAND ln ARGS -s libQtSql.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/libQtSql.dylib
-                        COMMAND ln ARGS -s libQtNetwork.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/libQtNetwork.4.6.dylib
-                        COMMAND ln ARGS -s libQtNetwork.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/libQtNetwork.4.dylib
-                        COMMAND ln ARGS -s libQtNetwork.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/libQtNetwork.dylib
-                        COMMAND install_name_tool ARGS -id @executable_path/../Frameworks/libQtCore.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/libQtCore.4.6.2.dylib
-                        COMMAND install_name_tool ARGS -id @executable_path/../Frameworks/libQtGui.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/libQtGui.4.6.2.dylib
-                        COMMAND install_name_tool ARGS -id @executable_path/../Frameworks/libQtNetwork.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/libQtNetwork.4.6.2.dylib
-                        COMMAND install_name_tool ARGS -id @executable_path/../Frameworks/libQtSql.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/libQtSql.4.6.2.dylib
-                        COMMAND install_name_tool ARGS -change QtGui.framework/Versions/4/QtGui @executable_path/../Frameworks/libQtGui.4.6.2.dylib ${CONTENTS_DIR}/MacOS/qnifti2dicom
-                        COMMAND install_name_tool ARGS -change QtCore.framework/Versions/4/QtCore @executable_path/../Frameworks/libQtCore.4.6.2.dylib ${CONTENTS_DIR}/MacOS/qnifti2dicom
-                        COMMAND install_name_tool ARGS -change QtSql.framework/Versions/4/QtSql @executable_path/../Frameworks/libQtSql.4.6.2.dylib ${CONTENTS_DIR}/MacOS/qnifti2dicom
-                        COMMAND install_name_tool ARGS -change QtNetwork.framework/Versions/4/QtNetwork @executable_path/../Frameworks/libQtNetwork.4.6.2.dylib ${CONTENTS_DIR}/MacOS/qnifti2dicom
-      )
-
-else( APPLE )
+#if( APPLE )
+#    add_executable( ${PROGNAME} MACOSX_BUNDLE ${nifti2dicom_gui_SOURCES}
+#                                              ${nifti2dicom_SOURCES}
+#                                              ${nifti2dicom_gui_MOC_SRCS}
+#                                              ${nifti2dicom_gui_UIS_HDR}
+#                                              ${nifti2dicom_gui_QRC_SRCS})
+#
+#    set( CONTENTS_DIR ${CMAKE_CURRENT_BINARY_DIR}/${PROGNAME}.app/Contents)
+#
+#    add_custom_command( TARGET ${PROGNAME} POST_BUILD
+#                        #COMMAND mkdir ARGS ${CMAKE_CURRENT_BINARY_DIR}/${PROGNAME}.app/Contents
+#                        COMMAND mkdir ARGS ${CONTENTS_DIR}/Frameworks
+#                        COMMAND mkdir ARGS ${CONTENTS_DIR}/Resources
+#                        COMMAND cp ARGS ${CMAKE_SOURCE_DIR}/data/icons/${MACOSX_BUNDLE_ICON_FILE} ${CONTENTS_DIR}/Resources/
+#                        COMMAND cp ARGS /Developer/Applications/Qt/Qt\ Creator.app/Contents/Frameworks/libQtCore.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/
+#                        COMMAND cp ARGS /Developer/Applications/Qt/Qt\ Creator.app/Contents/Frameworks/libQtGui.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/
+#                        COMMAND cp ARGS /Developer/Applications/Qt/Qt\ Creator.app/Contents/Frameworks/libQtNetwork.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/
+#                        COMMAND cp ARGS /Developer/Applications/Qt/Qt\ Creator.app/Contents/Frameworks/libQtSql.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/
+#                        COMMAND ln ARGS -s libQtCore.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/libQtCore.4.6.dylib
+#                        COMMAND ln ARGS -s libQtCore.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/libQtCore.4.dylib
+#                        COMMAND ln ARGS -s libQtCore.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/libQtCore.dylib
+#                        COMMAND ln ARGS -s libQtGui.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/libQtGui.4.6.dylib
+#                        COMMAND ln ARGS -s libQtGui.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/libQtGui.4.dylib
+#                        COMMAND ln ARGS -s libQtGui.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/libQtGui.dylib
+#                        COMMAND ln ARGS -s libQtSql.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/libQtSql.4.6.dylib
+#                        COMMAND ln ARGS -s libQtSql.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/libQtSql.4.dylib
+#                        COMMAND ln ARGS -s libQtSql.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/libQtSql.dylib
+#                        COMMAND ln ARGS -s libQtNetwork.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/libQtNetwork.4.6.dylib
+#                        COMMAND ln ARGS -s libQtNetwork.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/libQtNetwork.4.dylib
+#                        COMMAND ln ARGS -s libQtNetwork.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/libQtNetwork.dylib
+#                        COMMAND install_name_tool ARGS -id @executable_path/../Frameworks/libQtCore.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/libQtCore.4.6.2.dylib
+#                        COMMAND install_name_tool ARGS -id @executable_path/../Frameworks/libQtGui.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/libQtGui.4.6.2.dylib
+#                        COMMAND install_name_tool ARGS -id @executable_path/../Frameworks/libQtNetwork.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/libQtNetwork.4.6.2.dylib
+#                        COMMAND install_name_tool ARGS -id @executable_path/../Frameworks/libQtSql.4.6.2.dylib ${CONTENTS_DIR}/Frameworks/libQtSql.4.6.2.dylib
+#                        COMMAND install_name_tool ARGS -change QtGui.framework/Versions/4/QtGui @executable_path/../Frameworks/libQtGui.4.6.2.dylib ${CONTENTS_DIR}/MacOS/qnifti2dicom
+#                        COMMAND install_name_tool ARGS -change QtCore.framework/Versions/4/QtCore @executable_path/../Frameworks/libQtCore.4.6.2.dylib ${CONTENTS_DIR}/MacOS/qnifti2dicom
+#                        COMMAND install_name_tool ARGS -change QtSql.framework/Versions/4/QtSql @executable_path/../Frameworks/libQtSql.4.6.2.dylib ${CONTENTS_DIR}/MacOS/qnifti2dicom
+#                        COMMAND install_name_tool ARGS -change QtNetwork.framework/Versions/4/QtNetwork @executable_path/../Frameworks/libQtNetwork.4.6.2.dylib ${CONTENTS_DIR}/MacOS/qnifti2dicom
+#      )
+#
+#else( APPLE )
     add_executable(qnifti2dicom ${nifti2dicom_gui_SOURCES} ${nifti2dicom_SOURCES} ${nifti2dicom_gui_MOC_SRCS} ${nifti2dicom_gui_UIS_HDR} ${nifti2dicom_gui_QRC_SRCS})
-endif( APPLE )
+#endif( APPLE )
 
 # nifti2dicom target
-target_link_libraries(qnifti2dicom ITKBasicFilters
-                                   ITKIO
-                                   ITKCommon
+target_link_libraries(qnifti2dicom ${ITK_LIBRARIES} 
                                    ${QT_QTCORE_LIBRARY}
                                    ${QT_QTGUI_LIBRARY}
                                    QVTK
@@ -141,6 +139,6 @@ target_link_libraries(qnifti2dicom ITKBasicFilters
                                    vtkIO
 )
 
-if(NOT APPLE)
+#if(NOT APPLE)
     install(TARGETS qnifti2dicom RUNTIME DESTINATION bin)
-endif(NOT APPLE)
+#endif(NOT APPLE)
