@@ -1,0 +1,69 @@
+--- a/Modules/IO/GDCM/src/itkGDCMImageIO.cxx
++++ b/Modules/IO/GDCM/src/itkGDCMImageIO.cxx
+@@ -697,6 +697,9 @@ void GDCMImageIO::Write(const void *buff
+         m_GlobalNumberOfDimensions = numberOfDimensions;
+         m_Origin.resize(m_GlobalNumberOfDimensions);
+         m_Spacing.resize(m_GlobalNumberOfDimensions);
++        m_Direction.resize(m_GlobalNumberOfDimensions);
++        for (unsigned int i = 0; i < m_GlobalNumberOfDimensions; i++)
++          m_Direction[i].resize(m_GlobalNumberOfDimensions);
+         }
+       else if ( key == ITK_Origin )
+         {
+@@ -716,6 +719,15 @@ void GDCMImageIO::Write(const void *buff
+         m_Spacing[1] = spacingArray[1];
+         m_Spacing[2] = spacingArray[2];
+         }
++      else if( key == ITK_ZDirection )
++        {
++        typedef Matrix< double > DoubleMatrixType;
++        DoubleMatrixType directionMatrix;
++        ExposeMetaData< DoubleMatrixType >( dict, key, directionMatrix );
++        for(int i = 0; i<3; i++)
++            for(int j = 0; j<3; j++)
++                m_Direction[i][j]=directionMatrix[i][j];
++        }
+       else
+         {
+         itkDebugMacro(
+--- a/Modules/IO/ImageBase/include/itkIOCommon.h
++++ b/Modules/IO/ImageBase/include/itkIOCommon.h
+@@ -69,6 +69,7 @@ extern ITK_EXPORT const char *const SPM_
+ extern ITK_EXPORT const char *const ITK_FileNotes;
+ extern ITK_EXPORT const char *const ITK_Origin;
+ extern ITK_EXPORT const char *const ITK_Spacing;
++extern ITK_EXPORT const char *const ITK_ZDirection;
+ extern ITK_EXPORT const char *const ITK_FileOriginator;
+ extern ITK_EXPORT const char *const ITK_OriginationDate;
+ extern ITK_EXPORT const char *const ITK_PatientID;
+--- a/Modules/IO/ImageBase/include/itkImageSeriesWriter.hxx
++++ b/Modules/IO/ImageBase/include/itkImageSeriesWriter.hxx
+@@ -352,6 +352,18 @@ ImageSeriesWriter< TInputImage, TOutputI
+         EncapsulateMetaData< DoubleArrayType >(dictionary, ITK_Origin, originArray);
+         EncapsulateMetaData< DoubleArrayType >(dictionary, ITK_Spacing, spacingArray);
+         EncapsulateMetaData<  unsigned int   >(dictionary, ITK_NumberOfDimensions, inputImageDimension);
++
++        typename InputImageType::DirectionType direction2 = inputImage->GetDirection();
++        typedef Matrix< double, inputImageDimension, inputImageDimension> DoubleMatrixType;
++        DoubleMatrixType directionMatrix;
++        for( unsigned int i = 0; i < inputImageDimension; i++ )
++          {
++          for( unsigned int j = 0; j < inputImageDimension; j++ )
++            {
++            directionMatrix[j][i]  = direction2[i][j];
++            }
++          }
++        EncapsulateMetaData< DoubleMatrixType >( dictionary, ITK_ZDirection, directionMatrix );
+         }
+       }
+ 
+--- a/Modules/IO/ImageBase/src/itkIOCommon.cxx
++++ b/Modules/IO/ImageBase/src/itkIOCommon.cxx
+@@ -27,6 +27,7 @@ const char *const SPM_ROI_SCALE = "SPM_R
+ const char *const ITK_FileNotes = "ITK_FileNotes";
+ const char *const ITK_Origin = "ITK_Origin";
+ const char *const ITK_Spacing = "ITK_Spacing";
++const char *const ITK_ZDirection = "ITK_ZDirection";
+ const char *const ITK_FileOriginator = "ITK_FileOriginator";
+ const char *const ITK_OriginationDate = "ITK_OriginationDate";
+ const char *const ITK_PatientID = "ITK_PatientID";
