@@ -5,7 +5,7 @@ Maintainer: Daniele E. Domenichelli <daniele.domenichelli@gmail.com>
 Build-Depends: debhelper (>= 7.3.16),
  cdbs, cmake (>= 2.6.4), libqt4-dev (>= 4.4),
  libinsighttoolkit4-dev (>= 4.3.0) | libinsighttoolkit3-dev, libtclap-dev (>= 1.2.0),
- libvtk5-dev, libvtk5-qt4-dev, libgdcm2-dev
+ libvtk5-dev, libvtk5-qt4-dev, libgdcm2-dev, libfftw3-dev
 Standards-Version: 3.9.4
 Homepage: https://github.com/biolab-unige/nifti2dicom
 Vcs-Git: git://anonscm.debian.org/pkg-exppsy/nifti2dicom.git
