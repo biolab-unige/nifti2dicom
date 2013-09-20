@@ -1,3 +1,9 @@
+nifti2dicom (0.4.6-2) UNRELEASED; urgency=low
+
+  * Link with -Wl,--as-needed. (Closes: #716712)
+
+ -- Daniele E. Domenichelli <daniele.domenichelli@gmail.com>  Fri, 20 Sep 2013 09:14:50 +0200
+
 nifti2dicom (0.4.6-1) unstable; urgency=low
 
   * New upstream release.
