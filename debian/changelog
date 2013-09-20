@@ -1,4 +1,4 @@
-nifti2dicom (0.4.6-2) UNRELEASED; urgency=low
+nifti2dicom (0.4.6-2) unstable; urgency=low
 
   * Link with -Wl,--as-needed. (Closes: #716712)
 
