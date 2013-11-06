@@ -3,6 +3,9 @@ Nifti2Dicom
 
 Convert 3D medical images to DICOM 2D series
 
+[![Build Status](https://travis-ci.org/biolab-unige/nifti2dicom.png?branch=master)](https://travis-ci.org/biolab-unige/nifti2dicom)
+
+
 Nifti2Dicom is a convertion tool that converts 3D NIfTI files (and other
 formats supported by ITK, including Analyze, MetaImage Nrrd and VTK)
 to DICOM.
