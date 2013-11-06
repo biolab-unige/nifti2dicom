@@ -4,6 +4,9 @@ compiler:
   - gcc
   - clang
 
+install:
+  - sudo apt-get install libqt4-dev libinsighttoolkit4-dev libtclap-dev libvtk5-dev libvtk5-qt4-dev
+
 before_script:
   - cmake --version
   - mkdir build
