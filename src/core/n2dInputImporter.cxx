@@ -24,21 +24,21 @@ namespace n2d {
 
 bool InputImporter::Import( void )
 {
-      itk::ImageIOBase::Pointer imageIO = itk::ImageIOFactory::CreateImageIO( m_InputArgs.inputfile.c_str(), itk::ImageIOFactory::ReadMode );
+    itk::ImageIOBase::Pointer imageIO = itk::ImageIOFactory::CreateImageIO( m_InputArgs.inputfile.c_str(), itk::ImageIOFactory::ReadMode );
 
-   if( !imageIO) 
-   {
-        std::cerr<<"No ImageIO was found Not a valid Nifti"<<std::endl;
+    if(!imageIO)
+    {
+        std::cerr << "No ImageIO was found Not a valid Nifti" << std::endl;
         return false;
-   }
+    }
 
-   imageIO->SetFileName( m_InputArgs.inputfile);
-   imageIO->ReadImageInformation();
-   m_pixelType = imageIO->GetComponentType();
+    imageIO->SetFileName(m_InputArgs.inputfile);
+    imageIO->ReadImageInformation();
+    m_pixelType = imageIO->GetComponentType();
 
-   bool ret = false;
-   switch(m_pixelType)
-   {
+    bool ret = false;
+    switch(m_pixelType)
+    {
         case itk::ImageIOBase::UCHAR:
         {
             ret = InternalRead<unsigned char>();
