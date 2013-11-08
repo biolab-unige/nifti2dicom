@@ -34,6 +34,18 @@ bool InputImporter::Import( void )
 
     imageIO->SetFileName(m_InputArgs.inputfile);
     imageIO->ReadImageInformation();
+
+    if(imageIO->GetPixelType() != itk::ImageIOBase::SCALAR)
+    {
+        std::cerr << "Only images of type SCALAR are supported." << std::endl;
+        return false;
+    }
+
+    if(imageIO->GetNumberOfDimensions() != 3)
+    {
+        std::cerr << "Cannot open a " << imageIO->GetNumberOfDimensions() << "D image. Only 3D images are supported." << std::endl;
+        return false;
+    }
     m_pixelType = imageIO->GetComponentType();
 
     bool ret = false;
