@@ -2,6 +2,8 @@ Nifti2Dicom (UNRELEASED) 0.4.7
 ==============================
 
 - Depend on CMake 2.6.4
+- Ensure that images imported are 3D and SCALAR (Issue #29)
+- Remove old patches
 
 Nifti2Dicom (2013-06-06) 0.4.6
 ==============================
