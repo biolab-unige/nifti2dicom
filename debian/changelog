@@ -2,6 +2,7 @@ nifti2dicom (0.4.7-0r1) UNRELEASED; urgency=low
 
   * New upstream release. (Closes: #729020)
   * Bump Standards-Version to 3.9.5; no changes needed.
+  * Remove libgdcm2-dev and libfftw3-dev from b-d (Closes: #731925)
 
  -- Daniele E. Domenichelli <daniele.domenichelli@gmail.com>  Fri, 03 Jan 2014 18:29:41 +0100
 
