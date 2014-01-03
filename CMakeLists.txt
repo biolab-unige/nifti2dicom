@@ -17,13 +17,13 @@
 #  along with Nifti2Dicom.  If not, see <http://www.gnu.org/licenses/>.
 
 
-cmake_minimum_required(VERSION 2.6.2)
+cmake_minimum_required(VERSION 2.6.4)
 project(Nifti2Dicom)
 
 set(Nifti2Dicom_MAJOR_VERSION "0")
 set(Nifti2Dicom_MINOR_VERSION "4")
-set(Nifti2Dicom_PATCH_VERSION "6")
-set(Nifti2Dicom_VERSION "0.4.6")
+set(Nifti2Dicom_PATCH_VERSION "7")
+set(Nifti2Dicom_VERSION "0.4.7")
 set(Nifti2Dicom_INTERNAL_VERSION "${Nifti2Dicom_MAJOR_VERSION}.${Nifti2Dicom_MINOR_VERSION}.${Nifti2Dicom_PATCH_VERSION}")
 
 
@@ -41,39 +41,15 @@ endif(TCLAP_FOUND)
 
 
 # Check ITK Library [Insight ToolKit] (3.17.0)
-find_package(ITK)
-if(ITK_FOUND)
-    include(${ITK_USE_FILE})
-else(ITK_FOUND)
-    message(FATAL_ERROR "ITK not found")
-endif(ITK_FOUND)
-
-
-#TODO Check GDCM Library [Grassroots DiCoM] (2.1.13)
-#find_package(GDCM REQUIRED)
-#message("GDCM_VERSION = " ${GDCM_VERSION})
-#if(GDCM_FOUND)
-#    include(${GDCM_USE_FILE})
-#else(GDCM_FOUND)
-#    message(FATAL_ERROR "GDCM 2 not found")
-#endif(GDCM_FOUND)
-
+find_package(ITK REQUIRED)
+include(${ITK_USE_FILE})
 
 #Check Qt4 Library [Qt4] (4.4.0)
-find_package(Qt4 REQUIRED)
-if(QT_FOUND)
-	include(${QT_USE_FILE})
-else(QT_FOUND)
-    message(FATAL ERROR "Qt4 not found")
-endif(QT_FOUND)
+find_package(Qt4 4.4.0 REQUIRED)
 
 #Check VTK Library [Visualization ToolKit]
 find_package(VTK REQUIRED)
-if(VTK_FOUND)
-    include(${VTK_USE_FILE})
-else(VTK_FOUND)
-    message(FATAL ERROR "VTK not found")
-endif(VTK_FOUND)
+include(${VTK_USE_FILE})
 
 #TODO Check QVTK
 

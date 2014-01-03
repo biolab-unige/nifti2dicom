@@ -122,7 +122,11 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}
 #      )
 #
 #else( APPLE )
-    add_executable(qnifti2dicom ${nifti2dicom_gui_SOURCES} ${nifti2dicom_SOURCES} ${nifti2dicom_gui_MOC_SRCS} ${nifti2dicom_gui_UIS_HDR} ${nifti2dicom_gui_QRC_SRCS})
+    add_executable(qnifti2dicom ${nifti2dicom_gui_SOURCES}
+                                ${nifti2dicom_SOURCES}
+                                ${nifti2dicom_gui_MOC_SRCS}
+                                ${nifti2dicom_gui_UIS_HDR}
+                                ${nifti2dicom_gui_QRC_SRCS})
 #endif( APPLE )
 
 # nifti2dicom target

@@ -1,3 +1,13 @@
+Nifti2Dicom (2014-01-03) 0.4.7
+==============================
+
+- Depend on CMake 2.6.4
+- Ensure that images imported are 3D and SCALAR (Issue #29)
+- Remove old patches
+- Cleanup CMake stuff
+- Continuous integration using Travis
+- Add Keywords to qnifti2dicom.desktop
+
 Nifti2Dicom (2013-06-06) 0.4.6
 ==============================
 

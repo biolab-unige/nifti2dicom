@@ -30,3 +30,6 @@ To build Nifti2Dicom you need:
  * Documentation
    - Doxygen
    - Graphwiz
+
+
+[![Build Status](https://travis-ci.org/biolab-unige/nifti2dicom.png?branch=master)](https://travis-ci.org/biolab-unige/nifti2dicom)

@@ -34,7 +34,7 @@ const int DICOMDimension = 2;
 typedef itk::ImageIOBase::IOComponentType    PixelType;	
 typedef signed short DICOMPixelType;
 
-typedef itk::ImageBase< Dimension> ImageType;
+typedef itk::ImageBase<Dimension> ImageType;
 typedef itk::Image<DICOMPixelType, Dimension> DICOM3DImageType;
 typedef itk::Image<DICOMPixelType, DICOMDimension> DICOMImageType;
 
