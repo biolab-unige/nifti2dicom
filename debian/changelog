@@ -1,4 +1,4 @@
-nifti2dicom (0.4.7-0r1) UNRELEASED; urgency=low
+nifti2dicom (0.4.7-1) unstable; urgency=low
 
   * New upstream release. (Closes: #729020)
   * Bump Standards-Version to 3.9.5; no changes needed.
