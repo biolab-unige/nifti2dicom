@@ -9,13 +9,7 @@
  Standards-Version: 3.9.5
  Homepage: https://github.com/biolab-unige/nifti2dicom
  Vcs-Git: git://anonscm.debian.org/pkg-exppsy/nifti2dicom.git
---- a/CMakeLists.txt
-+++ b/CMakeLists.txt
-@@ -46,6 +46,7 @@ include(${ITK_USE_FILE})
- 
- #Check Qt4 Library [Qt4] (4.4.0)
- find_package(Qt4 4.4.0 REQUIRED)
-+include(${QT_USE_FILE})
- 
- #Check VTK Library [Visualization ToolKit]
- find_package(VTK REQUIRED)
+--- /dev/null
++++ b/debian/patches/series
+@@ -0,0 +1 @@
++nd-backport_itk-use-file.patch
