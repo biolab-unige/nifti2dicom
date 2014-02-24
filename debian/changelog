@@ -1,16 +1,12 @@
-nifti2dicom (0.4.7-2~0r1) UNRELEASED; urgency=medium
-
-  * Do not modify CMakeLists from nd-backport.patch. Add
-    nd-backport_itk-use-file.patch and fix nd-backport.patch in order to
-    modify files only in debian.
-
- -- Daniele E. Domenichelli <daniele.domenichelli@gmail.com>  Mon, 24 Feb 2014 18:04:17 +0100
-
 nifti2dicom (0.4.7-1) unstable; urgency=low
 
   * New upstream release. (Closes: #729020)
   * Bump Standards-Version to 3.9.5; no changes needed.
   * Remove libgdcm2-dev and libfftw3-dev from b-d (Closes: #731925)
+  * Add neurodebian backport patches
+  * Do not modify CMakeLists from nd-backport.patch. Add
+    nd-backport_itk-use-file.patch and fix nd-backport.patch in order to
+    modify files only in debian.
 
  -- Daniele E. Domenichelli <daniele.domenichelli@gmail.com>  Fri, 03 Jan 2014 18:29:41 +0100
 
