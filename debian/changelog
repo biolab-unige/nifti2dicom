@@ -1,6 +1,7 @@
 nifti2dicom (0.4.7-2~r1) UNRELEASED; urgency=medium
 
   * Build with libinsighttoolkit4-dev only on amd64 and i386.
+    Insighttoolkit4 package is not build on different architectures.
 
  -- Daniele E. Domenichelli <daniele.domenichelli@gmail.com>  Mon, 03 Mar 2014 17:34:25 +0100
 
