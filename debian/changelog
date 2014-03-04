@@ -1,9 +1,11 @@
-nifti2dicom (0.4.7-2~r1) UNRELEASED; urgency=medium
+nifti2dicom (0.4.7-2~r2) UNRELEASED; urgency=medium
 
   * Build with libinsighttoolkit4-dev only on amd64 and i386.
     Insighttoolkit4 package is not build on different architectures.
+  * Restore dependency on libfftw3-dev. This is necessary when building
+    with libinsighttoolkit3-dev, due to #740628.
 
- -- Daniele E. Domenichelli <daniele.domenichelli@gmail.com>  Mon, 03 Mar 2014 17:34:25 +0100
+ -- Daniele E. Domenichelli <daniele.domenichelli@gmail.com>  Tue, 04 Mar 2014 10:17:24 +0100
 
 nifti2dicom (0.4.7-1) unstable; urgency=low
 
