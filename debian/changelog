@@ -1,4 +1,4 @@
-nifti2dicom (0.4.7-2~r3) UNRELEASED; urgency=medium
+nifti2dicom (0.4.7-2) unstable; urgency=medium
 
   * Build with libinsighttoolkit4-dev only on amd64 and i386.
     Insighttoolkit4 package is not build on different architectures.
@@ -6,7 +6,7 @@ nifti2dicom (0.4.7-2~r3) UNRELEASED; urgency=medium
     with libinsighttoolkit3-dev, due to #740628.
   * Refresh nd-backport.patch.
 
- -- Daniele E. Domenichelli <daniele.domenichelli@gmail.com>  Tue, 04 Mar 2014 10:24:18 +0100
+ -- Daniele E. Domenichelli <daniele.domenichelli@gmail.com>  Tue, 04 Mar 2014 15:01:57 +0100
 
 nifti2dicom (0.4.7-1) unstable; urgency=low
 
