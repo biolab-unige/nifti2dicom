@@ -4,6 +4,10 @@ compiler:
   - gcc
   - clang
 
+env:
+  - TRAVIS_BUILD_TYPE=Debug
+  - TRAVIS_BUILD_TYPE=Release
+
 install:
   - sudo apt-get update
   - sudo apt-get install -y libqt4-dev libinsighttoolkit3-dev libtclap-dev libvtk5-dev libvtk5-qt4-dev libgdcm2-dev libfftw3-dev
@@ -12,7 +16,7 @@ before_script:
   - cmake --version
   - mkdir build
   - cd build
-  - cmake .. -DCMAKE_INSTALL_PREFIX=$(pwd)/../install
+  - cmake .. -DCMAKE_BUILD_TYPE=${TRAVIS_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX=$(pwd)/../install
 
 script:
   - make
