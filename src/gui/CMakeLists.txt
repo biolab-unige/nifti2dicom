@@ -130,18 +130,10 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}
 #endif( APPLE )
 
 # nifti2dicom target
-target_link_libraries(qnifti2dicom ${ITK_LIBRARIES} 
+target_link_libraries(qnifti2dicom ${ITK_LIBRARIES}
+                                   ${VTK_LIBRARIES}
                                    ${QT_QTCORE_LIBRARY}
-                                   ${QT_QTGUI_LIBRARY}
-                                   QVTK
-                                   vtkGraphics
-                                   vtkHybrid
-                                   vtkImaging
-                                   vtkFiltering
-                                   vtkCommon
-                                   vtkRendering
-                                   vtkIO
-)
+                                   ${QT_QTGUI_LIBRARY})
 
 #if(NOT APPLE)
     install(TARGETS qnifti2dicom RUNTIME DESTINATION bin)

@@ -207,7 +207,11 @@ bool init::loadInImage()
     lookupTable->SetRange(range);
     lookupTable->Build();
     m_imageviewer->GetWindowLevel()->SetLookupTable(lookupTable);
+#if (VTK_MAJOR_VERSION < 6)
     m_imageviewer->GetWindowLevel()->SetInput(m_localVTKImage->GetVTKImage());
+#else
+    m_imageviewer->GetWindowLevel()->SetInputData(m_localVTKImage->GetVTKImage());
+#endif
 
     m_imageviewer->GetRenderer()->ResetCamera();
     m_renderPreview->GetRenderWindow()->Render();
