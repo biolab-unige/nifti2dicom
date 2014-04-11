@@ -135,6 +135,11 @@ target_link_libraries(qnifti2dicom ${ITK_LIBRARIES}
                                    ${QT_QTCORE_LIBRARY}
                                    ${QT_QTGUI_LIBRARY})
 
+if(VTK_VERSION VERSION_LESS 6.0.0)
+    # In VTK 5 QVTK is not in ${VTK_LIBRARIES} variable
+    target_link_libraries(qnifti2dicom QVTK)
+endif()
+
 #if(NOT APPLE)
     install(TARGETS qnifti2dicom RUNTIME DESTINATION bin)
 #endif(NOT APPLE)
