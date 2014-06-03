@@ -1,3 +1,9 @@
+nifti2dicom (0.4.8-1) UNRELEASED; urgency=medium
+
+  * New upstream release.
+
+ -- Daniele E. Domenichelli <daniele.domenichelli@gmail.com>  Tue, 03 Jun 2014 19:39:30 +0200
+
 nifti2dicom (0.4.7-2) unstable; urgency=medium
 
   * Build with libinsighttoolkit4-dev only on amd64 and i386.
