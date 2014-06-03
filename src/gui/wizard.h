@@ -21,9 +21,10 @@
 #define WIZARD_H
 
 #include <QtGui/QWizard>
+#include <QtTest/QSignalSpy>
+
 #include <n2dDefsCommandLineArgsStructs.h>
 #include <n2dDefsMetadata.h>
-#include <QtTest/QSignalSpy>
 
 #include "vtkKWImage.h"
 
