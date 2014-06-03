@@ -17,49 +17,52 @@
 #  along with Nifti2Dicom.  If not, see <http://www.gnu.org/licenses/>.
 
 
-set(nifti2dicom_SOURCES nifti2dicom.cxx
-                        n2dVersion.cxx
-                        n2dToolsMetaDataDictionary.cxx
-                        n2dToolsDate.cxx
-                        n2dCommandLineParser.cxx
-                        n2dAccessionNumberValidator.cxx
-                        n2dHeaderImporter.cxx
-                        n2dDicomClass.cxx
-                        n2dOtherDicomTags.cxx
-                        n2dPatient.cxx
-                        n2dStudy.cxx
-                        n2dSeries.cxx
-                        n2dAcquisition.cxx
-                        n2dInputImporter.cxx
-                        n2dInputFilter.cxx
-                        n2dInstance.cxx
-                        n2dOutputExporter.cxx
-)
+set(nifti2dicom_core_SOURCES n2dVersion.cxx
+                             n2dToolsMetaDataDictionary.cxx
+                             n2dToolsDate.cxx
+                             n2dCommandLineParser.cxx
+                             n2dAccessionNumberValidator.cxx
+                             n2dHeaderImporter.cxx
+                             n2dDicomClass.cxx
+                             n2dOtherDicomTags.cxx
+                             n2dPatient.cxx
+                             n2dStudy.cxx
+                             n2dSeries.cxx
+                             n2dAcquisition.cxx
+                             n2dInputImporter.cxx
+                             n2dInputFilter.cxx
+                             n2dInstance.cxx
+                             n2dOutputExporter.cxx)
 
-set(nifti2dicom_NO_INSTALL_HEADERS ${CMAKE_BINARY_DIR}/Nifti2DicomConfig.h
-                                   n2dVersion.h
-                                   n2dDefsCommandLineArgsStructs.h
-                                   n2dDefsImage.h
-                                   n2dDefsMetadata.h
-                                   n2dToolsMetaDataDictionary.h
-                                   n2dToolsDate.h
-                                   n2dCommandLineParser.h
-                                   n2dAccessionNumberValidator.h
-                                   n2dHeaderImporter.h
-                                   n2dDicomClass.h
-                                   n2dOtherDicomTags.h
-                                   n2dPatient.h
-                                   n2dStudy.h
-                                   n2dSeries.h
-                                   n2dAcquisition.h
-                                   n2dInputImporter.h
-                                   n2dInputFilter.h
-                                   n2dInstance.h
-                                   n2dOutputExporter.h
-)
+set(nifti2dicom_core_HEADERS ${CMAKE_BINARY_DIR}/Nifti2DicomConfig.h
+                             n2dVersion.h
+                             n2dDefsCommandLineArgsStructs.h
+                             n2dDefsImage.h
+                             n2dDefsMetadata.h
+                             n2dToolsMetaDataDictionary.h
+                             n2dToolsDate.h
+                             n2dCommandLineParser.h
+                             n2dAccessionNumberValidator.h
+                             n2dHeaderImporter.h
+                             n2dDicomClass.h
+                             n2dOtherDicomTags.h
+                             n2dPatient.h
+                             n2dStudy.h
+                             n2dSeries.h
+                             n2dAcquisition.h
+                             n2dInputImporter.h
+                             n2dInputFilter.h
+                             n2dInstance.h
+                             n2dOutputExporter.h)
+
+set(nifti2dicom_SOURCES nifti2dicom.cxx)
+
+# nifti2dicom_core target
+add_library(nifti2dicom_core STATIC ${nifti2dicom_core_SOURCES} ${nifti2dicom_core_HEADERS})
+target_link_libraries(nifti2dicom_core LINK_PRIVATE ${ITK_LIBRARIES})
 
 
 # nifti2dicom target
 add_executable(nifti2dicom ${nifti2dicom_SOURCES})
-target_link_libraries(nifti2dicom ${ITK_LIBRARIES})
+target_link_libraries(nifti2dicom nifti2dicom_core)
 install(TARGETS nifti2dicom RUNTIME DESTINATION bin)

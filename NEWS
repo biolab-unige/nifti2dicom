@@ -1,3 +1,10 @@
+Nifti2Dicom (2014-06-02) 0.4.8
+==============================
+
+- Fix build with VTK 6
+- Fix Keywords entry in .desktop file
+- Cleanup and split nifti2dicom
+
 Nifti2Dicom (2014-01-03) 0.4.7
 ==============================
 

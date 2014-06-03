@@ -33,20 +33,20 @@
 #include <QtGui/QFont>
 #include <QtGui/QErrorMessage>
 
-#include "vtkImageViewer2.h"
-#include "itkImage.h"
-#include "itkExceptionObject.h"
-#include "vtkRenderer.h"
-#include "vtkActor2D.h"
-#include "vtkRenderWindow.h"
-#include "vtkLookupTable.h"
-#include "vtkImageMapToWindowLevelColors.h"
+#include <vtkImageViewer2.h>
+#include <itkImage.h>
+#include <itkExceptionObject.h>
+#include <vtkRenderer.h>
+#include <vtkActor2D.h>
+#include <vtkRenderWindow.h>
+#include <vtkLookupTable.h>
+#include <vtkImageMapToWindowLevelColors.h>
 #include "vtkKWImageIO.h"
 #include "vtkKWImage.h"
-#include "vtkRenderWindowInteractor.h"
-#include "vtkImageData.h"
-#include "vtkIndent.h"
-#include "QVTKWidget.h"
+#include <vtkRenderWindowInteractor.h>
+#include <vtkImageData.h>
+#include <vtkIndent.h>
+#include <QVTKWidget.h>
 
 #include <gdcmDict.h>
 #include <gdcmGlobal.h>
@@ -73,11 +73,11 @@ namespace n2d{
 namespace gui{
 
 init::init(QWidget *parent) :
-    QWizardPage(parent),
-    m_renderPreview(NULL),
-    m_renderer(NULL),
-    m_interactor(NULL),
-    m_dictionary(NULL)
+        QWizardPage(parent),
+        m_renderPreview(NULL),
+        m_renderer(NULL),
+        m_interactor(NULL),
+        m_dictionary(NULL)
 {
     m_parent = dynamic_cast<n2d::gui::Wizard* >(parent);
     this->setTitle("First Step");
@@ -165,12 +165,12 @@ bool init::loadInImage()
     QHBoxLayout *tmp_single_cell    = dynamic_cast<QHBoxLayout *>(tmp_layout->itemAtPosition(2,0));
     QLineEdit *tmp_fname_cell       = dynamic_cast<QLineEdit *>(tmp_single_cell->itemAt(0)->widget());
     QLineEdit *tmp_dimension_cell      = dynamic_cast<QLineEdit *>(tmp_single_cell->itemAt(1)->widget());
-	
-	// just clear the labels every time you push the load button
-	// this prevents multiple append to the same labels when user 
-	// pushes button twice due to wrong file selection in first place
-	tmp_fname_cell->clear();
-	tmp_dimension_cell->clear();
+
+    // just clear the labels every time you push the load button
+    // this prevents multiple append to the same labels when user
+    // pushes button twice due to wrong file selection in first place
+    tmp_fname_cell->clear();
+    tmp_dimension_cell->clear();
 
     m_inFname = QFileDialog::getOpenFileName(this,
                                              tr("Open Volume"),
@@ -207,7 +207,11 @@ bool init::loadInImage()
     lookupTable->SetRange(range);
     lookupTable->Build();
     m_imageviewer->GetWindowLevel()->SetLookupTable(lookupTable);
+#if (VTK_MAJOR_VERSION < 6)
     m_imageviewer->GetWindowLevel()->SetInput(m_localVTKImage->GetVTKImage());
+#else
+    m_imageviewer->GetWindowLevel()->SetInputData(m_localVTKImage->GetVTKImage());
+#endif
 
     m_imageviewer->GetRenderer()->ResetCamera();
     m_renderPreview->GetRenderWindow()->Render();

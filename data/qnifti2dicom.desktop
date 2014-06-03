@@ -5,4 +5,4 @@ Exec=qnifti2dicom
 Icon=qnifti2dicom
 Type=Application
 Categories=Qt;Education;Science;FileTools;ImageProcessing;MedicalSoftware;
-Keywords=DICOM;NIfTI;Medical Images;Converter;PACS
+Keywords=DICOM;NIfTI;Medical Images;Converter;PACS;
