@@ -69,7 +69,16 @@ Nifti2Dicom (2012-06-26) 0.4.2
 - Cleanup
 - Always build gui
 
-Nifti2Dicom (2012-01-12) 0.4
-============================
+Nifti2Dicom (2012-01-13) 0.4.1
+==============================
+
+- Use full path for Qt includes
+- Add some documentation and fix Copyright
+- Remove dist target
+- Always build GUI
+- Cleanup CMake stuff
+
+Nifti2Dicom (2012-01-12) 0.4.0
+==============================
 
 - First public release!
