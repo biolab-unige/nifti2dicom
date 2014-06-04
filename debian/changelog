@@ -2,6 +2,7 @@ nifti2dicom (0.4.8-1) UNRELEASED; urgency=medium
 
   * New upstream release.
   * Change VTK  b-d to libvtk6-dev | libvtk5-qt4-dev.
+  * Refresh nd-backport.patch.
 
  -- Daniele E. Domenichelli <daniele.domenichelli@gmail.com>  Tue, 03 Jun 2014 19:39:30 +0200
 
