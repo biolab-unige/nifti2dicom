@@ -1,11 +1,11 @@
-nifti2dicom (0.4.8-1) UNRELEASED; urgency=medium
+nifti2dicom (0.4.8-1) unstable; urgency=medium
 
   * New upstream release.
   * Change VTK  b-d to libvtk6-dev | libvtk5-qt4-dev.
   * Refresh nd-backport.patch.
   * Add backport patch for Ubuntu trusty.
 
- -- Daniele E. Domenichelli <daniele.domenichelli@gmail.com>  Tue, 03 Jun 2014 19:39:30 +0200
+ -- Daniele E. Domenichelli <daniele.domenichelli@gmail.com>  Thu, 05 Jun 2014 00:37:19 +0200
 
 nifti2dicom (0.4.7-2) unstable; urgency=medium
 
