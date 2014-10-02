@@ -20,6 +20,7 @@
 #include "n2dInstance.h"
 #include "n2dToolsMetaDataDictionary.h"
 #include <iomanip>
+#include <vector>
 
 
 namespace n2d {
@@ -49,7 +50,7 @@ bool Instance::Update(void)
 
 //BEGIN Image info
     unsigned int nbSlices = (m_Image->GetLargestPossibleRegion().GetSize())[2];
-    n2d::SeriesWriterType::DictionaryRawPointer dictionaryRaw[ nbSlices ];
+    std::vector<n2d::SeriesWriterType::DictionaryRawPointer> dictionaryRaw(nbSlices);
 
     ImageType::PointType position;
     ImageType::SpacingType spacing = m_Image->GetSpacing();
