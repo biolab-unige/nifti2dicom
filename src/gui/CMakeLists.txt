@@ -52,7 +52,8 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}
                     ${QT_QTCORE_INCLUDE_DIR}
                     ${QT_QTGUI_INCLUDE_DIR})
 
-add_executable(qnifti2dicom ${qnifti2dicom_SOURCES}
+add_executable(qnifti2dicom WIN32 MACOSX_BUNDLE
+                            ${qnifti2dicom_SOURCES}
                             ${qnifti2dicom_HEADERS}
                             ${qnifti2dicom_MOC_SRCS}
                             ${qnifti2dicom_UIS_HDR}
@@ -65,6 +66,10 @@ target_link_libraries(qnifti2dicom nifti2dicom_core
                                    ${VTK_LIBRARIES}
                                    ${QT_QTCORE_LIBRARY}
                                    ${QT_QTGUI_LIBRARY})
+
+if(MSVC AND CMAKE_VERSION VERSION_LESS 2.8.11)
+    target_link_libraries(qnifti2dicom ${QT_QTMAIN_LIBRARY})
+endif()
 
 if(VTK_VERSION VERSION_LESS 6.0.0)
     # In VTK 5 QVTK is not in ${VTK_LIBRARIES} variable

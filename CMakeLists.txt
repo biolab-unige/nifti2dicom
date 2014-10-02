@@ -18,6 +18,11 @@
 
 
 cmake_minimum_required(VERSION 2.6.4)
+
+if(NOT CMAKE_VERSION VERSION_LESS 2.8.11)
+    cmake_policy(SET CMP0020 NEW) # Remove when CMake >=2.8.11
+endif()
+
 project(Nifti2Dicom)
 
 set(Nifti2Dicom_MAJOR_VERSION "0")
