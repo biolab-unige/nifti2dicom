@@ -61,6 +61,10 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebugI
   add_definitions("-DDEBUG")
 endif() #TODO this endif?
 
+if(MSVC)
+  add_definitions(-D_CRT_SECURE_NO_WARNINGS
+                  -D_SCL_SECURE_NO_WARNINGS)
+endif()
 
 add_subdirectory(src)
 add_subdirectory(doc)

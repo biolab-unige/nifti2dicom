@@ -52,6 +52,8 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}
                     ${QT_QTCORE_INCLUDE_DIR}
                     ${QT_QTGUI_INCLUDE_DIR})
 
+add_definitions(${QT_DEFINITIONS})
+
 add_executable(qnifti2dicom WIN32 MACOSX_BUNDLE
                             ${qnifti2dicom_SOURCES}
                             ${qnifti2dicom_HEADERS}
