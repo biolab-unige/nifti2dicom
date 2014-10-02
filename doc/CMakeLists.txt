@@ -74,20 +74,23 @@ if(ENABLE_REGENERATE_MAN)
 endif(ENABLE_REGENERATE_MAN)
 
 find_file(GZIP_EXECUTABLE gzip HINTS /bin /usr/bin /usr/local/bin)
-file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/man/man1)
-add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/man/man1/nifti2dicom.1.gz
-                   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/man/man1/nifti2dicom.1 ${CMAKE_CURRENT_BINARY_DIR}/man/man1/nifti2dicom.1
-                   COMMAND ${GZIP_EXECUTABLE} -9 -f ${CMAKE_CURRENT_BINARY_DIR}/man/man1/nifti2dicom.1
-                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/man/man1/nifti2dicom.1
-)
-add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/man/man1/qnifti2dicom.1.gz
-                   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/man/man1/qnifti2dicom.1 ${CMAKE_CURRENT_BINARY_DIR}/man/man1/qnifti2dicom.1
-                   COMMAND ${GZIP_EXECUTABLE} -9 -f ${CMAKE_CURRENT_BINARY_DIR}/man/man1/qnifti2dicom.1
-                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/man/man1/qnifti2dicom.1
-)
 
-add_custom_target(manpages ALL SOURCES ${CMAKE_CURRENT_BINARY_DIR}/man/man1/nifti2dicom.1.gz
-                                       ${CMAKE_CURRENT_BINARY_DIR}/man/man1/qnifti2dicom.1.gz)
+if(GZIP_EXECUTABLE)
+    file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/man/man1)
+    add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/man/man1/nifti2dicom.1.gz
+                       COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/man/man1/nifti2dicom.1 ${CMAKE_CURRENT_BINARY_DIR}/man/man1/nifti2dicom.1
+                       COMMAND ${GZIP_EXECUTABLE} -9 -f ${CMAKE_CURRENT_BINARY_DIR}/man/man1/nifti2dicom.1
+                       DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/man/man1/nifti2dicom.1
+    )
+    add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/man/man1/qnifti2dicom.1.gz
+                       COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/man/man1/qnifti2dicom.1 ${CMAKE_CURRENT_BINARY_DIR}/man/man1/qnifti2dicom.1
+                       COMMAND ${GZIP_EXECUTABLE} -9 -f ${CMAKE_CURRENT_BINARY_DIR}/man/man1/qnifti2dicom.1
+                       DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/man/man1/qnifti2dicom.1
+    )
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/man/man1/nifti2dicom.1.gz DESTINATION share/man/man1)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/man/man1/qnifti2dicom.1.gz DESTINATION share/man/man1)
+    add_custom_target(manpages ALL SOURCES ${CMAKE_CURRENT_BINARY_DIR}/man/man1/nifti2dicom.1.gz
+                                           ${CMAKE_CURRENT_BINARY_DIR}/man/man1/qnifti2dicom.1.gz)
+
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/man/man1/nifti2dicom.1.gz DESTINATION share/man/man1)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/man/man1/qnifti2dicom.1.gz DESTINATION share/man/man1)
+endif()
