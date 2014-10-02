@@ -42,6 +42,7 @@ find_package(ITK REQUIRED)
 include(${ITK_USE_FILE})
 
 #Check Qt4 Library [Qt4] (4.4.0)
+set(QT_USE_IMPORTED_TARGETS TRUE)
 find_package(Qt4 4.4.0 REQUIRED)
 
 #Check VTK Library [Visualization ToolKit]
