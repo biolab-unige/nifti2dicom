@@ -23,6 +23,7 @@
 #include "itkImageIOBase.h"
 
 #include "vtkObject.h"
+#include "vtkVersionMacros.h"
 
 class vtkImageData;
 class vtkImageImport;
@@ -42,7 +43,11 @@ class vtkKWImage : public vtkObject
 
 public:
   static vtkKWImage* New();
+#if (VTK_MAJOR_VERSION < 6)
   vtkTypeRevisionMacro(vtkKWImage,vtkObject);
+#else
+  vtkTypeMacro(vtkKWImage,vtkObject);
+#endif
 
   typedef itk::ImageBase< 3 >                    ImageBaseType;
   typedef ImageBaseType::Pointer                 ImagePointer;

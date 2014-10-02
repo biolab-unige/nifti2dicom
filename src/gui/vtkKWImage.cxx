@@ -95,7 +95,9 @@ public:
 
 //----------------------------------------------------------------------------
 vtkStandardNewMacro( vtkKWImage );
+#if (VTK_MAJOR_VERSION < 6)
 vtkCxxRevisionMacro(vtkKWImage, "$Revision: 1.1 $");
+#endif
 
 //----------------------------------------------------------------------------
 vtkKWImage::vtkKWImage()

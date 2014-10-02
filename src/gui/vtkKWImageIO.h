@@ -20,6 +20,7 @@
 
 
 #include "vtkObject.h"
+#include "vtkVersionMacros.h"
 
 #include <string>
 #include <vector>
@@ -38,7 +39,11 @@ class vtkKWImageIO : public vtkObject
 {
 public:
   static vtkKWImageIO* New();
+#if (VTK_MAJOR_VERSION < 6)
   vtkTypeRevisionMacro(vtkKWImageIO,vtkObject);
+#else
+  vtkTypeMacro(vtkKWImageIO,vtkObject);
+#endif
 
   // PixelType
   //BTX

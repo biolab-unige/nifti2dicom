@@ -194,7 +194,9 @@ public:
 
 //----------------------------------------------------------------------------
 vtkStandardNewMacro( vtkKWImageIO );
+#if (VTK_MAJOR_VERSION < 6)
 vtkCxxRevisionMacro(vtkKWImageIO, "$Revision: 1.5 $");
+#endif
 
 //----------------------------------------------------------------------------
 vtkKWImageIO::vtkKWImageIO()

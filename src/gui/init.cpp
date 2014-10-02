@@ -47,6 +47,7 @@
 #include <vtkImageData.h>
 #include <vtkIndent.h>
 #include <QVTKWidget.h>
+#include <vtkVersionMacros.h>
 
 #include <gdcmDict.h>
 #include <gdcmGlobal.h>
