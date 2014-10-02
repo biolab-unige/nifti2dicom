@@ -26,19 +26,11 @@ set(Nifti2Dicom_PATCH_VERSION "9")
 set(Nifti2Dicom_VERSION "0.4.9")
 set(Nifti2Dicom_INTERNAL_VERSION "${Nifti2Dicom_MAJOR_VERSION}.${Nifti2Dicom_MINOR_VERSION}.${Nifti2Dicom_PATCH_VERSION}")
 
-
-#Check pkg-config
-find_package(PkgConfig)
-#TODO error if not found
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 #Check TCLAP Library [Templatized C++ Command Line Parser] (1.2.0)
-pkg_check_modules(TCLAP REQUIRED tclap>=1.2.0)
-if(TCLAP_FOUND)
-    include_directories(${TCLAP_INCLUDE_DIRS})
-else(TCLAP_FOUND)
-    message(FATAL_ERROR "TCLAP not found")
-endif(TCLAP_FOUND)
-
+find_package(TCLAP 1.2.0 REQUIRED)
+include_directories(${TCLAP_INCLUDE_DIRS})
 
 # Check ITK Library [Insight ToolKit] (3.17.0)
 find_package(ITK REQUIRED)
