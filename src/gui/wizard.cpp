@@ -73,6 +73,3 @@ void Wizard::showHelp()
 
 }//namespace gui
 }//namespace n2d
-
-
-

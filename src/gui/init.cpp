@@ -164,7 +164,7 @@ bool init::loadInImage()
     QGridLayout *tmp_layout         = dynamic_cast<QGridLayout *>(this->layout());
     QHBoxLayout *tmp_single_cell    = dynamic_cast<QHBoxLayout *>(tmp_layout->itemAtPosition(2,0));
     QLineEdit *tmp_fname_cell       = dynamic_cast<QLineEdit *>(tmp_single_cell->itemAt(0)->widget());
-    QLineEdit *tmp_dimension_cell      = dynamic_cast<QLineEdit *>(tmp_single_cell->itemAt(1)->widget());
+    QLineEdit *tmp_dimension_cell   = dynamic_cast<QLineEdit *>(tmp_single_cell->itemAt(1)->widget());
 
     // just clear the labels every time you push the load button
     // this prevents multiple append to the same labels when user
