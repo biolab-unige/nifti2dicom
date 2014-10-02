@@ -1,6 +1,20 @@
 Nifti2Dicom (UNRELEASED) 0.4.9
 ==============================
 
+- Update vtkKWImage from ITKApps repository
+- Fix issues with VTK version >=6
+- Add FindTCLAP.cmake file to be able to use it w/o pkg-config
+- Fix empty statement
+- Use "cmake -E copy" instead of "cp"
+- Do not add manpages target if gzip is not available
+- Use a vector instead of variable length arrays
+- Add icon to qnifti2dicom on windows
+- Link qnifti2dicom with qtmain and build as WIN32 and MACOSX_BUNDLE
+- Use FindQt4 imported targets if available
+- Build with Qt4 definitions and disable MSVC warnings
+- Fix adding -DDEBUG on multi-config generators
+- Do not set position of the windows
+- Bugfixes and improvements in the image widget in the init phase
 
 Nifti2Dicom (2014-06-02) 0.4.8
 ==============================
