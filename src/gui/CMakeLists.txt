@@ -39,6 +39,10 @@ set(qnifti2dicom_MOC_HDR wizard.h
 
 set(qnifti2dicom_QRC_RCC resources.qrc)
 
+if(MSVC)
+    set(qnifti2dicom_RCS qnifti2dicom.rc)
+endif()
+
 qt4_wrap_cpp(qnifti2dicom_MOC_SRCS ${qnifti2dicom_MOC_HDR})
 qt4_add_resources(qnifti2dicom_QRC_SRCS ${qnifti2dicom_QRC_RCC})
 
@@ -52,7 +56,8 @@ add_executable(qnifti2dicom ${qnifti2dicom_SOURCES}
                             ${qnifti2dicom_HEADERS}
                             ${qnifti2dicom_MOC_SRCS}
                             ${qnifti2dicom_UIS_HDR}
-                            ${qnifti2dicom_QRC_SRCS})
+                            ${qnifti2dicom_QRC_SRCS}
+                            ${qnifti2dicom_RCS})
 
 # qnifti2dicom target
 target_link_libraries(qnifti2dicom nifti2dicom_core
