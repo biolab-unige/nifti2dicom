@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=QNifti2Dicom
+Name=Nifti2Dicom
 Comment=Convert 3D NIfTI images to DICOM 2D series
 Exec=qnifti2dicom
 Icon=qnifti2dicom

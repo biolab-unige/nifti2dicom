@@ -30,7 +30,7 @@ namespace gui{
 
 Wizard::Wizard(QWizard* parent):QWizard(parent)
 {
-    setWindowTitle(tr("QNifti2Dicom"));
+    setWindowTitle(tr("Nifti2Dicom"));
     this->resize(1000,600);
     this->setButtonText(QWizard::FinishButton,"Do!");
 
@@ -68,7 +68,7 @@ void Wizard::showHelp()
             message = tr("This Dialog will contain information for the current step");
     }
 
-    QMessageBox::information(this, tr("QNifti2Dicom Help dialog"), message);
+    QMessageBox::information(this, tr("Nifti2Dicom Help dialog"), message);
 }
 
 }//namespace gui
