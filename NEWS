@@ -15,6 +15,8 @@ Nifti2Dicom (UNRELEASED) 0.4.9
 - Fix adding -DDEBUG on multi-config generators
 - Do not set position of the windows
 - Bugfixes and improvements in the image widget in the init phase
+- Use Nifti2Dicom instead of QNifti2Dicom as displayed string in GUI
+- Packaging for Windows
 
 Nifti2Dicom (2014-06-02) 0.4.8
 ==============================
