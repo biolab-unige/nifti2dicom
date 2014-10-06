@@ -89,6 +89,10 @@ if(GZIP_EXECUTABLE)
     add_custom_target(manpages ALL SOURCES ${CMAKE_CURRENT_BINARY_DIR}/man/man1/nifti2dicom.1.gz
                                            ${CMAKE_CURRENT_BINARY_DIR}/man/man1/qnifti2dicom.1.gz)
 
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/man/man1/nifti2dicom.1.gz DESTINATION share/man/man1)
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/man/man1/qnifti2dicom.1.gz DESTINATION share/man/man1)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/man/man1/nifti2dicom.1.gz
+            DESTINATION share/man/man1
+            COMPONENT Documentation)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/man/man1/qnifti2dicom.1.gz
+            DESTINATION share/man/man1
+            COMPONENT Documentation)
 endif()
