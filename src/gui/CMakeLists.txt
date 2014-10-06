@@ -41,6 +41,10 @@ set(qnifti2dicom_QRC_RCC resources.qrc)
 
 if(MSVC)
     set(qnifti2dicom_RCS qnifti2dicom.rc)
+elseif(APPLE)
+    set(MACOSX_BUNDLE_ICON_FILE "${CMAKE_SOURCE_DIR}/data/icons/qnifti2dicom.icns")
+    set_source_files_properties("${CMAKE_SOURCE_DIR}/data/icons/qnifti2dicom.icns" PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+    set(qnifti2dicom_RCS "${CMAKE_SOURCE_DIR}/data/icons/qnifti2dicom.icns")
 endif()
 
 qt4_wrap_cpp(qnifti2dicom_MOC_SRCS ${qnifti2dicom_MOC_HDR})
@@ -78,4 +82,38 @@ if(VTK_VERSION VERSION_LESS 6.0.0)
     target_link_libraries(qnifti2dicom QVTK)
 endif()
 
-install(TARGETS qnifti2dicom RUNTIME DESTINATION bin)
+install(TARGETS qnifti2dicom
+        COMPONENT Runtime
+        RUNTIME DESTINATION bin
+        BUNDLE DESTINATION .)
+
+if(WIN32)
+    set(APP "\${CMAKE_INSTALL_PREFIX}/bin/qnifti2dicom.exe")
+elseif(APPLE)
+    set(APP "\${CMAKE_INSTALL_PREFIX}/qnifti2dicom.app")
+else()
+    set(APP "\${CMAKE_INSTALL_PREFIX}/bin/qnifti2dicom")
+endif()
+
+set(DIRS ${QT_LIBRARY_DIR} ${QT_BINARY_DIR})
+
+get_property(ITK_IMPORTED_CONFIGURATIONS TARGET ITKCommon PROPERTY IMPORTED_CONFIGURATIONS)
+foreach(conf ${ITK_IMPORTED_CONFIGURATIONS})
+    get_property(dir TARGET ITKCommon PROPERTY IMPORTED_LOCATION_${conf})
+    get_filename_component(dir "${dir}" PATH)
+    if(IS_DIRECTORY "${dir}")
+        list(APPEND DIRS ${dir})
+    endif()
+endforeach()
+
+get_property(VTK_IMPORTED_CONFIGURATIONS TARGET vtkCommonCore PROPERTY IMPORTED_CONFIGURATIONS)
+foreach(conf ${VTK_IMPORTED_CONFIGURATIONS})
+    get_property(dir TARGET vtkCommonCore PROPERTY IMPORTED_LOCATION_${conf})
+    get_filename_component(dir "${dir}" PATH)
+    if(IS_DIRECTORY "${dir}")
+        list(APPEND DIRS ${dir})
+    endif()
+endforeach()
+
+install(CODE "include(BundleUtilities)\n  fixup_bundle(\"${APP}\" \"\" \"${DIRS}\")"
+        COMPONENT Runtime)

@@ -65,6 +65,24 @@ if(MSVC)
                   -D_SCL_SECURE_NO_WARNINGS)
 endif()
 
+
+if(WIN32 OR APPLE)
+    # Install docs in CMAKE_PREFIX_PATH on windows an mac
+    set(DOCS_FILES AUTHORS
+                   COPYING
+                   COPYING.ITK
+                   COPYING.VTK
+                   packaging/COPYING.Qt4
+                   NEWS
+                   README.md)
+    set(DOCS_FILES_DESTINATION .)
+    install(FILES ${DOCS_FILES}
+            DESTINATION .
+            COMPONENT Documentation)
+endif()
+
+
 add_subdirectory(src)
 add_subdirectory(doc)
 add_subdirectory(data)
+add_subdirectory(packaging)
