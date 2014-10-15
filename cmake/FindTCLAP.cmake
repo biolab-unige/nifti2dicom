@@ -27,6 +27,8 @@
 #  along with Nifti2Dicom.  If not, see <http://www.gnu.org/licenses/>.
 
 
+include(FindPackageHandleStandardArgs)
+
 find_package(PkgConfig QUIET)
 
 if(PKG_CONFIG_FOUND)
