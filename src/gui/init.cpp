@@ -156,8 +156,15 @@ init::init(QWidget *parent) :
     // Without the image, it will cause an error.
     vtkImageData *emptyImage = vtkImageData::New();
     emptyImage->SetExtent(0,0,0,0,0,0);
+#if (VTK_MAJOR_VERSION < 6)
+    emptyImage->SetScalarType(VTK_INT);
+    emptyImage->SetNumberOfScalarComponents(1);
+    emptyImage->AllocateScalars();
+    m_imageviewer->GetWindowLevel()->SetInput(emptyImage);
+#else
     emptyImage->AllocateScalars(VTK_INT,1);
     m_imageviewer->GetWindowLevel()->SetInputData(emptyImage);
+#endif
     emptyImage->Delete();
 
     m_renderPreview->SetRenderWindow(m_imageviewer->GetRenderWindow());
