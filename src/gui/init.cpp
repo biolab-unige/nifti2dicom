@@ -63,7 +63,7 @@
 #include <vtkImageData.h>
 #include <vtkImageActor.h>
 #include <vtkIndent.h>
-#include <vtkVersionMacros.h>
+#include <vtkVersion.h>
 #include <vtkCamera.h>
 #include <QVTKWidget.h>
 

@@ -20,7 +20,7 @@
 
 
 #include "vtkObject.h"
-#include "vtkVersionMacros.h"
+#include "vtkVersion.h"
 
 #include <string>
 #include <vector>

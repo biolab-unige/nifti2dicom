@@ -23,7 +23,7 @@
 #include "itkImageIOBase.h"
 
 #include "vtkObject.h"
-#include "vtkVersionMacros.h"
+#include "vtkVersion.h"
 
 class vtkImageData;
 class vtkImageImport;
