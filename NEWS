@@ -17,6 +17,7 @@ Nifti2Dicom (UNRELEASED) 0.4.9
 - Bugfixes and improvements in the image widget in the init phase
 - Use Nifti2Dicom instead of QNifti2Dicom as displayed string in GUI
 - Packaging for Windows
+- Fix build with Qt 5
 
 Nifti2Dicom (2014-06-02) 0.4.8
 ==============================
