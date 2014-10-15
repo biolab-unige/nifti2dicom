@@ -20,6 +20,9 @@ branches:
   except:
     - travis
 
+install:
+  - cinst qt-sdk
+
 before_build:
   - cmd: md C:\projects\nifti2dicom\build
   - cmd: cd C:\projects\nifti2dicom\build
