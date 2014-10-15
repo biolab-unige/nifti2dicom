@@ -20,7 +20,14 @@
 #ifndef WIZARD_H
 #define WIZARD_H
 
+#include <QtCore/qglobal.h>
+
+#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
 #include <QtGui/QWizard>
+#else
+#include <QtWidgets/QWizard>
+#endif
+
 #include <QtTest/QSignalSpy>
 
 #include <n2dDefsCommandLineArgsStructs.h>

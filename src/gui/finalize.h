@@ -20,7 +20,15 @@
 #ifndef FINALIZE_H
 #define FINALIZE_H
 
+
+#include <QtCore/qglobal.h>
+
+#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
 #include <QtGui/QWizardPage>
+#else
+#include <QtWidgets/QWizardPage>
+#endif
+
 #include <n2dDefsMetadata.h>
 #include <n2dDefsImage.h>
 #include <n2dDefsIO.h>

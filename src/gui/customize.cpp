@@ -17,11 +17,20 @@
 //  along with Nifti2Dicom.  If not, see <http://www.gnu.org/licenses/>.
 
 
+#include <QtCore/qglobal.h>
+#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
 #include <QtGui/QTableWidget>
 #include <QtGui/QTableWidgetItem>
 #include <QtGui/QWidget>
 #include <QtGui/QHeaderView>
 #include <QtGui/QVBoxLayout>
+#else
+#include <QtWidgets/QTableWidget>
+#include <QtWidgets/QTableWidgetItem>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QVBoxLayout>
+#endif
 
 #include <gdcmDict.h>
 #include <gdcmGlobal.h>
@@ -50,7 +59,11 @@ customize::customize(QWidget* parent):QWizardPage(parent)
 	QVBoxLayout* layout = new QVBoxLayout();
 
 	m_dicomTable = new QTableWidget(0,3);
+#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
 	m_dicomTable->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
+#else
+    m_dicomTable->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+#endif
 	m_dicomTable->setColumnWidth(0,100);
 	m_dicomTable->setColumnWidth(1,300);
 	m_dicomTable->setColumnWidth(2,200);

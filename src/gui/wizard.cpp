@@ -17,9 +17,17 @@
 //  along with Nifti2Dicom.  If not, see <http://www.gnu.org/licenses/>.
 
 
+#include <QtCore/qglobal.h>
+#include <QtGui/QPixmap>
+
+#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
 #include <QtGui/QAbstractButton>
 #include <QtGui/QMessageBox>
-#include <QtGui/QPixmap>
+#else
+#include <QtWidgets/QAbstractButton>
+#include <QtWidgets/QMessageBox>
+#endif
+
 
 #include "wizard.h"
 #include <n2dInputImporter.h>

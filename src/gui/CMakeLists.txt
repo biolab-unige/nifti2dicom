@@ -47,8 +47,13 @@ elseif(APPLE)
     set(qnifti2dicom_RCS "${CMAKE_SOURCE_DIR}/data/icons/qnifti2dicom.icns")
 endif()
 
-qt4_wrap_cpp(qnifti2dicom_MOC_SRCS ${qnifti2dicom_MOC_HDR})
-qt4_add_resources(qnifti2dicom_QRC_SRCS ${qnifti2dicom_QRC_RCC})
+if(Nifti2Dicom_QT_VERSION EQUAL 5)
+    qt5_wrap_cpp(qnifti2dicom_MOC_SRCS ${qnifti2dicom_MOC_HDR})
+    qt5_add_resources(qnifti2dicom_QRC_SRCS ${qnifti2dicom_QRC_RCC})
+else()
+    qt4_wrap_cpp(qnifti2dicom_MOC_SRCS ${qnifti2dicom_MOC_HDR})
+    qt4_add_resources(qnifti2dicom_QRC_SRCS ${qnifti2dicom_QRC_RCC})
+endif()
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR}
                     ${CMAKE_CURRENT_SOURCE_DIR}/../core

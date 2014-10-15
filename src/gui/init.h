@@ -20,9 +20,17 @@
 #ifndef INIT_H
 #define INIT_H
 
+#include <QtCore/qglobal.h>
+#include <QtCore/QString>
+
+#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
 #include <QtGui/QWizardPage>
 #include <QtGui/QLabel>
-#include <QtCore/QString>
+#else
+#include <QtWidgets/QWizardPage>
+#include <QtWidgets/QLabel>
+#endif
+
 #include "QVTKWidget.h"
 
 

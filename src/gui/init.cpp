@@ -17,6 +17,11 @@
 //  along with Nifti2Dicom.  If not, see <http://www.gnu.org/licenses/>.
 
 
+#include <QtCore/qglobal.h>
+#include <QtCore/QSize>
+#include <QtGui/QFont>
+
+#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
 #include <QtGui/QFileDialog>
 #include <QtGui/QTableWidgetItem>
 #include <QtGui/QGridLayout>
@@ -29,9 +34,22 @@
 #include <QtGui/QTableWidgetItem>
 #include <QtGui/QHeaderView>
 #include <QtGui/QSizePolicy>
-#include <QtCore/QSize>
-#include <QtGui/QFont>
 #include <QtGui/QErrorMessage>
+#else
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QTableWidgetItem>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QTableWidget>
+#include <QtWidgets/QTableWidgetItem>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QSizePolicy>
+#include <QtWidgets/QErrorMessage>
+#endif
 
 #include <itkImage.h>
 #include <itkExceptionObject.h>
@@ -113,7 +131,11 @@ init::init(QWidget *parent) :
     m_headerEntries->setHorizontalHeaderLabels(QStringList() << tr("Tag")
                                                              << tr("Description")
                                                              << tr("Value"));
+#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
     m_headerEntries->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
+#else
+    m_headerEntries->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+#endif
     m_headerEntries->setEnabled(false);
     m_headerEntries->setColumnWidth(0,100);
     m_headerEntries->setColumnWidth(1,350);

@@ -18,9 +18,19 @@
 
 
 #include <iostream>
+
+#include <QtCore/qglobal.h>
+
+#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
 #include <QtGui/QApplication>
 #include <QtGui/QWizard>
 #include <QtGui/QMainWindow>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QWizard>
+#include <QtWidgets/QMainWindow>
+#endif
+
 #include "init.h"
 #include "customize.h"
 #include "finalize.h"
