@@ -21,17 +21,17 @@ branches:
     - travis
 
 before_build:
-  - cmd: md C:\projects\ycm\build
-  - cmd: cd C:\projects\ycm\build
+  - cmd: md C:\projects\nifti2dicom\build
+  - cmd: cd C:\projects\nifti2dicom\build
   - cmd: if "%platform%"=="Win32" cmake -G"Visual Studio 12" -DCMAKE_INSTALL_PREFIX:PATH=C:\projects\nifti2dicom\install
   - cmd: if "%platform%"=="x64" cmake -G"Visual Studio 12 Win64" -DCMAKE_INSTALL_PREFIX:PATH=C:\projects\nifti2dicom\install
 
 build:
-  project: C:\projects\ycm\build\Nifti2Dicom.sln
+  project: C:\projects\nifti2dicom\build\Nifti2Dicom.sln
 
 after_build:
-  - cmd: cmake --build C:\projects\ycm\build --target INSTALL
-  - cmd: cmake --build C:\projects\ycm\build --target PACKAGE
+  - cmd: cmake --build C:\projects\nifti2dicom\build --target INSTALL
+  - cmd: cmake --build C:\projects\nifti2dicom\build --target PACKAGE
 
 test_script:
   - cmd: ctest -VV
