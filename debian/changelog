@@ -1,3 +1,9 @@
+nifti2dicom (0.4.9-1) UNRELEASED; urgency=medium
+
+  * New upstream release. (Closes: #764833)
+
+ -- Daniele E. Domenichelli <daniele.domenichelli@gmail.com>  Wed, 22 Oct 2014 22:21:49 +0200
+
 nifti2dicom (0.4.8-1) unstable; urgency=medium
 
   * New upstream release.
