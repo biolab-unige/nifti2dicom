@@ -27,7 +27,7 @@ License: GPL-3+
 
 Files: src/gui/itkImageToVTKImageFilter.*
 Copyright: Copyright (c) 2002 Insight Consortium. All rights reserved.
-License: BSD
+License: BSD-4-clause
  Copyright (c) Insight Software Consortium
  All rights reserved.
  .
@@ -71,9 +71,9 @@ License: BSD
  See also the ITK web site: http://www.itk.org for more
  information.
 
-Files: src/core/vtkKWImage*
+Files: src/gui/vtkKWImage*
 Copyright: Copyright (c) Kitware, Inc., Insight Consortium.  All rights reserved.
-License: BSD
+License: BSD-4-clause
  Copyright (c) 1993-2002 Ken Martin, Will Schroeder, Bill Lorensen 
  All rights reserved.
  .
