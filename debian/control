@@ -3,7 +3,7 @@ Section: science
 Priority: optional
 Maintainer: Daniele E. Domenichelli <daniele.domenichelli@gmail.com>
 Build-Depends: debhelper (>= 7.3.16),
- cdbs, cmake (>= 2.6.4), libqt4-dev (>= 4.4),
+ cdbs, cmake (>= 2.6.4), qtbase5-dev | libqt4-dev (>= 4.4),
  libinsighttoolkit4-dev (>= 4.3.0) [i386 amd64] | libinsighttoolkit3-dev,
  libfftw3-dev,
  libtclap-dev (>= 1.2.0),

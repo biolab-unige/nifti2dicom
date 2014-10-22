@@ -1,6 +1,7 @@
 nifti2dicom (0.4.9-1) UNRELEASED; urgency=medium
 
   * New upstream release. (Closes: #764833)
+  * Change Qt b-d to qtbase5-dev | libqt4-dev (>= 4.4).
 
  -- Daniele E. Domenichelli <daniele.domenichelli@gmail.com>  Wed, 22 Oct 2014 22:21:49 +0200
 
