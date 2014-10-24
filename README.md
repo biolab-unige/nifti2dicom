@@ -21,11 +21,14 @@ To build Nifti2Dicom you need:
 
  * Command line tools:
    - Insight Toolkit (ITK) 3.17 or later using GDCM 2.xx
+     (ITK 4.4.1 or later is recommended, as with previous versions, the
+     produced files might be incorrect, see
+     [ITK-281](https://itk.icts.uiowa.edu/jira/browse/ITK-281))
    - Templatized command-line argument parser for C++ (TCLAP) 1.2 or later
 
  * GUI
    - Qt4 (4.4 or later)
-   - Visualization toolkit (VTK) 5.xx with Qt4 support enabled
+   - Visualization toolkit (VTK) 5 or 6 with Qt4 support enabled
 
  * Documentation
    - Doxygen
@@ -34,3 +37,4 @@ To build Nifti2Dicom you need:
 
 [![Build Status](https://travis-ci.org/biolab-unige/nifti2dicom.png?branch=master)](https://travis-ci.org/biolab-unige/nifti2dicom)
 [![GitHub version](https://badge.fury.io/gh/biolab-unige%2Fnifti2dicom.png)](http://badge.fury.io/gh/biolab-unige%2Fnifti2dicom)
+[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.10291.png)](http://dx.doi.org/10.5281/zenodo.10291)

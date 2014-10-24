@@ -18,34 +18,28 @@
 
 
 cmake_minimum_required(VERSION 2.6.4)
+
+if(NOT CMAKE_VERSION VERSION_LESS 2.8.11)
+    cmake_policy(SET CMP0020 NEW) # Remove when CMake >=2.8.11
+endif()
+
 project(Nifti2Dicom)
 
 set(Nifti2Dicom_MAJOR_VERSION "0")
 set(Nifti2Dicom_MINOR_VERSION "4")
-set(Nifti2Dicom_PATCH_VERSION "8")
-set(Nifti2Dicom_VERSION "0.4.8")
+set(Nifti2Dicom_PATCH_VERSION "9")
+set(Nifti2Dicom_VERSION "0.4.9")
 set(Nifti2Dicom_INTERNAL_VERSION "${Nifti2Dicom_MAJOR_VERSION}.${Nifti2Dicom_MINOR_VERSION}.${Nifti2Dicom_PATCH_VERSION}")
 
-
-#Check pkg-config
-find_package(PkgConfig)
-#TODO error if not found
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 #Check TCLAP Library [Templatized C++ Command Line Parser] (1.2.0)
-pkg_check_modules(TCLAP REQUIRED tclap>=1.2.0)
-if(TCLAP_FOUND)
-    include_directories(${TCLAP_INCLUDE_DIRS})
-else(TCLAP_FOUND)
-    message(FATAL_ERROR "TCLAP not found")
-endif(TCLAP_FOUND)
-
+find_package(TCLAP 1.2.0 REQUIRED)
+include_directories(${TCLAP_INCLUDE_DIRS})
 
 # Check ITK Library [Insight ToolKit] (3.17.0)
 find_package(ITK REQUIRED)
 include(${ITK_USE_FILE})
-
-#Check Qt4 Library [Qt4] (4.4.0)
-find_package(Qt4 4.4.0 REQUIRED)
 
 #Check VTK Library [Visualization ToolKit]
 find_package(VTK REQUIRED)
@@ -53,17 +47,53 @@ include(${VTK_USE_FILE})
 
 #TODO Check QVTK
 
+if(VTK_QT_VERSION EQUAL 5)
+    set(Nifti2Dicom_QT_VERSION 5)
+
+    #Check Qt5 Library [Qt5]
+    find_package(Qt5 COMPONENTS Core Gui Widgets)
+else()
+    set(Nifti2Dicom_QT_VERSION 4)
+
+    #Check Qt4 Library [Qt4] (4.4.0)
+    set(QT_USE_IMPORTED_TARGETS TRUE)
+    find_package(Qt4 4.4.0 REQUIRED)
+
+endif()
+
+
 configure_file(${CMAKE_SOURCE_DIR}/Nifti2DicomConfig.h.cmake ${CMAKE_BINARY_DIR}/Nifti2DicomConfig.h)
 
 include_directories(${CMAKE_BINARY_DIR})
 
-#TODO add DebugFull
-if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebugInfo")
-  message(STATUS "DEBUG ENABLED")
-  add_definitions("-DDEBUG")
-endif() #TODO this endif?
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG")
+set(CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO} -DDEBUG")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -DDEBUG")
+
+if(MSVC)
+  add_definitions(-D_CRT_SECURE_NO_WARNINGS
+                  -D_SCL_SECURE_NO_WARNINGS)
+endif()
+
+
+if(WIN32 OR APPLE)
+    # Install docs in CMAKE_PREFIX_PATH on windows an mac
+    set(DOCS_FILES AUTHORS
+                   COPYING
+                   COPYING.ITK
+                   COPYING.VTK
+                   packaging/COPYING.Qt4
+                   NEWS
+                   README.md)
+    set(DOCS_FILES_DESTINATION .)
+    install(FILES ${DOCS_FILES}
+            DESTINATION .
+            COMPONENT Documentation)
+endif()
 
 
 add_subdirectory(src)
 add_subdirectory(doc)
 add_subdirectory(data)
+add_subdirectory(packaging)

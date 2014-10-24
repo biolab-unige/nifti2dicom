@@ -100,7 +100,10 @@ protected:
 
     inline void Execute(const itk::Object *object, const itk::EventObject & event )
     {
-        if ( ! itk::ProgressEvent().CheckEvent( &event ) );
+        if ( ! itk::ProgressEvent().CheckEvent( &event ) )
+        {
+            return;
+        }
 
         const SeriesWriterType* ptr = dynamic_cast<const SeriesWriterType*>(object);
         if (ptr)

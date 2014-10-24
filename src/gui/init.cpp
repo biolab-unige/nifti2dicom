@@ -17,6 +17,11 @@
 //  along with Nifti2Dicom.  If not, see <http://www.gnu.org/licenses/>.
 
 
+#include <QtCore/qglobal.h>
+#include <QtCore/QSize>
+#include <QtGui/QFont>
+
+#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
 #include <QtGui/QFileDialog>
 #include <QtGui/QTableWidgetItem>
 #include <QtGui/QGridLayout>
@@ -29,24 +34,41 @@
 #include <QtGui/QTableWidgetItem>
 #include <QtGui/QHeaderView>
 #include <QtGui/QSizePolicy>
-#include <QtCore/QSize>
-#include <QtGui/QFont>
 #include <QtGui/QErrorMessage>
+#else
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QTableWidgetItem>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QTableWidget>
+#include <QtWidgets/QTableWidgetItem>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QSizePolicy>
+#include <QtWidgets/QErrorMessage>
+#endif
 
-#include <vtkImageViewer2.h>
 #include <itkImage.h>
 #include <itkExceptionObject.h>
+
+#include <vtkImageViewer2.h>
 #include <vtkRenderer.h>
 #include <vtkActor2D.h>
 #include <vtkRenderWindow.h>
 #include <vtkLookupTable.h>
 #include <vtkImageMapToWindowLevelColors.h>
+#include <vtkImageData.h>
+#include <vtkImageActor.h>
+#include <vtkIndent.h>
+#include <vtkVersion.h>
+#include <vtkCamera.h>
+#include <QVTKWidget.h>
+
 #include "vtkKWImageIO.h"
 #include "vtkKWImage.h"
-#include <vtkRenderWindowInteractor.h>
-#include <vtkImageData.h>
-#include <vtkIndent.h>
-#include <QVTKWidget.h>
 
 #include <gdcmDict.h>
 #include <gdcmGlobal.h>
@@ -74,12 +96,21 @@ namespace gui{
 
 init::init(QWidget *parent) :
         QWizardPage(parent),
-        m_renderPreview(NULL),
-        m_renderer(NULL),
-        m_interactor(NULL),
-        m_dictionary(NULL)
+        m_parent(dynamic_cast<n2d::gui::Wizard*>(parent)),
+        m_headerEntries(new QTableWidget(0,3)),
+        m_horizontalSlider(new QSlider(Qt::Horizontal)),
+        m_openedFileName(new QLineEdit()),
+        m_openedFileSizes(new QLineEdit()),
+        m_renderPreview(new QVTKWidget()),
+        m_imageviewer(vtkImageViewer2::New()),
+        m_reader(vtkKWImageIO::New()),
+        m_localVTKImage(vtkKWImage::New()),
+        m_importedDictionary(m_parent->getImportedDictionary()),
+        m_dictionary(m_parent->getDictionary()),
+        m_inputArgs(new n2d::InputArgs()),
+        m_dicomHeaderArgs(new n2d::DicomHeaderArgs()),
+        m_headerImporter(new n2d::HeaderImporter(*m_dicomHeaderArgs, *m_importedDictionary))
 {
-    m_parent = dynamic_cast<n2d::gui::Wizard* >(parent);
     this->setTitle("First Step");
     this->setSubTitle("Required input: Nifti filename and optional dicom reference header");
 
@@ -87,19 +118,28 @@ init::init(QWidget *parent) :
     QHBoxLayout *infoOpenImageLayout = new QHBoxLayout();
     QPushButton *openImage           = new QPushButton("Open Volume");
     QPushButton *openHeader          = new QPushButton("Open Dicom Header");
-    QLineEdit    *openedFileName     = new QLineEdit();
-    QLineEdit    *openedFileSizes    = new QLineEdit();
-    m_headerEntries                  = new QTableWidget(0,3);
-    m_horizontalSlider               = new QSlider(Qt::Horizontal);
-    m_renderPreview                  = new QVTKWidget();
 
-    m_horizontalSlider->setVisible(0);
+    m_horizontalSlider->setEnabled(false);
+    m_horizontalSlider->setRange(0,0);
 
-    openedFileName->setReadOnly(1);
-    openedFileSizes->setReadOnly(1);
+    m_openedFileName->setReadOnly(1);
+    m_openedFileSizes->setReadOnly(1);
 
-    infoOpenImageLayout->addWidget(openedFileName, 3);
-    infoOpenImageLayout->addWidget(openedFileSizes, 1);
+    infoOpenImageLayout->addWidget(m_openedFileName, 3);
+    infoOpenImageLayout->addWidget(m_openedFileSizes, 1);
+
+    m_headerEntries->setHorizontalHeaderLabels(QStringList() << tr("Tag")
+                                                             << tr("Description")
+                                                             << tr("Value"));
+#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
+    m_headerEntries->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
+#else
+    m_headerEntries->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+#endif
+    m_headerEntries->setEnabled(false);
+    m_headerEntries->setColumnWidth(0,100);
+    m_headerEntries->setColumnWidth(1,350);
+    m_headerEntries->setColumnWidth(2,100);
 
     layout->addWidget(openImage, 0,0);
     layout->addWidget(openHeader, 0,1);
@@ -107,40 +147,34 @@ init::init(QWidget *parent) :
     layout->addWidget(m_headerEntries,1,1);
     layout->addLayout(infoOpenImageLayout,2,0);
     layout->addWidget(m_horizontalSlider,3,0);
+    this->setLayout(layout);
 
+    m_renderPreview->setPalette(QPalette(QColor(Qt::black)));
 
-    m_imageviewer        = vtkImageViewer2::New();
-    m_renderer           = m_imageviewer->GetRenderer();
-    m_renderWin          = m_imageviewer->GetRenderWindow();
+    // Ugly hack to remove the garbage in the widget before that the
+    // image is opened. Create an empty image and set it as imput data.
+    // Without the image, it will cause an error.
+    vtkImageData *emptyImage = vtkImageData::New();
+    emptyImage->SetExtent(0,0,0,0,0,0);
+#if (VTK_MAJOR_VERSION < 6)
+    emptyImage->SetScalarType(VTK_INT);
+    emptyImage->SetNumberOfScalarComponents(1);
+    emptyImage->AllocateScalars();
+    m_imageviewer->GetWindowLevel()->SetInput(emptyImage);
+#else
+    emptyImage->AllocateScalars(VTK_INT,1);
+    m_imageviewer->GetWindowLevel()->SetInputData(emptyImage);
+#endif
+    emptyImage->Delete();
 
-
-    //BEGIN Test vtkKWImage//
-    m_reader             = vtkKWImageIO::New();
-    m_localVTKImage      = vtkKWImage::New();
-    m_importedDictionary = m_parent->getImportedDictionary();
-    m_dictionary         = m_parent->getDictionary();
-    //END
-
+    m_renderPreview->SetRenderWindow(m_imageviewer->GetRenderWindow());
 
     m_imageviewer->SetSliceOrientationToXY();
-
-    m_renderPreview->SetRenderWindow(m_renderWin);
-    m_interactor = m_renderWin->GetInteractor();
-    m_interactor->Disable();
-
-    m_inputArgs          = new n2d::InputArgs();
-    m_dicomHeaderArgs    = new n2d::DicomHeaderArgs();
-
-    QStringList labels;
-    labels << tr("Tag")  << tr("Desc") << tr("Value");
-    m_headerEntries->setHorizontalHeaderLabels(labels);
-    m_headerEntries->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
-    m_headerEntries->setEnabled(false);
-    m_headerEntries->setColumnWidth(0,100);
-    m_headerEntries->setColumnWidth(1,350);
-    m_headerEntries->setColumnWidth(2,100);
-
-    setLayout(layout);
+    m_imageviewer->SetSlice(0);
+    m_imageviewer->GetRenderer()->SetBackground(0.1, 0.1, 0.1);
+    m_imageviewer->GetRenderer()->GetActiveCamera()->ParallelProjectionOn();
+    m_imageviewer->GetRenderWindow()->GetInteractor()->SetInteractorStyle(0);
+    m_renderPreview->update();
 
     connect(openImage, SIGNAL(clicked()),this,SLOT(loadInImage()));
     connect(openHeader, SIGNAL(clicked()),this,SLOT(loadIndcmHDR()));
@@ -150,28 +184,17 @@ init::init(QWidget *parent) :
 
 init::~init()
 {
-    //std::cout<<"Called ~init"<<std::endl;
-    m_imageviewer->Delete();
-    m_reader->Delete();
+    delete m_headerImporter;
+    delete m_dicomHeaderArgs;
+    delete m_inputArgs;
     m_localVTKImage->Delete();
-    //m_interactor->Delete();
+    m_reader->Delete();
+    m_imageviewer->Delete();
 }
 
 
 bool init::loadInImage()
 {
-    // update QLineEdit with proper values
-    QGridLayout *tmp_layout         = dynamic_cast<QGridLayout *>(this->layout());
-    QHBoxLayout *tmp_single_cell    = dynamic_cast<QHBoxLayout *>(tmp_layout->itemAtPosition(2,0));
-    QLineEdit *tmp_fname_cell       = dynamic_cast<QLineEdit *>(tmp_single_cell->itemAt(0)->widget());
-    QLineEdit *tmp_dimension_cell      = dynamic_cast<QLineEdit *>(tmp_single_cell->itemAt(1)->widget());
-
-    // just clear the labels every time you push the load button
-    // this prevents multiple append to the same labels when user
-    // pushes button twice due to wrong file selection in first place
-    tmp_fname_cell->clear();
-    tmp_dimension_cell->clear();
-
     m_inFname = QFileDialog::getOpenFileName(this,
                                              tr("Open Volume"),
                                              "",
@@ -184,7 +207,7 @@ bool init::loadInImage()
     if(m_inFname.isEmpty())
         return false;
 
-    m_reader->SetFileName(m_inFname.toStdString() );
+    m_reader->SetFileName(m_inFname.toStdString());
     try {
         m_reader->ReadImage();
     } catch(itk::ExceptionObject excp) {
@@ -207,31 +230,33 @@ bool init::loadInImage()
     lookupTable->SetRange(range);
     lookupTable->Build();
     m_imageviewer->GetWindowLevel()->SetLookupTable(lookupTable);
+    lookupTable->Delete();
+
 #if (VTK_MAJOR_VERSION < 6)
     m_imageviewer->GetWindowLevel()->SetInput(m_localVTKImage->GetVTKImage());
 #else
     m_imageviewer->GetWindowLevel()->SetInputData(m_localVTKImage->GetVTKImage());
 #endif
 
-    m_imageviewer->GetRenderer()->ResetCamera();
-    m_renderPreview->GetRenderWindow()->Render();
-    m_parent->setImportedImage(m_localVTKImage);
-
-    m_horizontalSlider->setVisible(1);
-    m_horizontalSlider->setRange(0,m_localVTKImage->GetVTKImage()->GetDimensions()[2]);
-    completeChanged();
-
-    lookupTable->Delete();
-
-    tmp_fname_cell->insert(m_inFname);
     int *dimensions = m_localVTKImage->GetVTKImage()->GetDimensions();
 
+    m_imageviewer->Render();
+    m_imageviewer->GetRenderer()->ResetCamera();
+    m_imageviewer->GetRenderer()->GetActiveCamera()->SetParallelScale(dimensions[1]);
+    m_renderPreview->update();
+
+    m_horizontalSlider->setValue(0);
+    m_horizontalSlider->setEnabled(true);
+    m_horizontalSlider->setRange(0,dimensions[2]);
+
+    m_openedFileName->setText(m_inFname);
+
     std::ostringstream str_dimensions;
-
     str_dimensions<<"["<<dimensions[0]<<","<<dimensions[1]<<","<<dimensions[2]<<"]";
+    m_openedFileSizes->setText(str_dimensions.str().c_str());
 
-    tmp_dimension_cell->insert(str_dimensions.str().c_str());
-
+    m_parent->setImportedImage(m_localVTKImage);
+    completeChanged();
     return true;
 }
 
@@ -253,7 +278,6 @@ bool init::loadIndcmHDR()
                                                        "All Files (*)"));
     if(m_dcmRefHDRFname.isEmpty()) return false;
     m_dicomHeaderArgs->dicomheaderfile = m_dcmRefHDRFname.toStdString();
-    m_headerImporter = new n2d::HeaderImporter(*m_dicomHeaderArgs , *m_importedDictionary);
 
     m_parent->setDicomHeaderImporter(m_headerImporter);
     m_parent->storeDicomHeaderArgs(*m_dicomHeaderArgs);

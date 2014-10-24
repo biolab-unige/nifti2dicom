@@ -20,9 +20,17 @@
 #ifndef INIT_H
 #define INIT_H
 
+#include <QtCore/qglobal.h>
+#include <QtCore/QString>
+
+#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
 #include <QtGui/QWizardPage>
 #include <QtGui/QLabel>
-#include <QtCore/QString>
+#else
+#include <QtWidgets/QWizardPage>
+#include <QtWidgets/QLabel>
+#endif
+
 #include "QVTKWidget.h"
 
 
@@ -33,11 +41,9 @@
 class QTableWidget;
 class QSlider;
 class QFont;
+class QLineEdit;
 class vtkKWImageIO;
 class vtkKWImage;
-class vktRenderer;
-class vtkRenderWindow;
-class vtkRenderWindowInteractor;
 class vtkImageViewer2;
 
 namespace n2d{
@@ -60,26 +66,22 @@ public:
 
 
 private:
+    Wizard*                         m_parent;
     QString                         m_inFname;
     QString                         m_dcmRefHDRFname;
-    QVTKWidget*                     m_renderPreview;
-    vtkImageViewer2*                m_imageviewer;
-    vtkRenderer*                    m_renderer;
-    vtkRenderWindow*                m_renderWin;
-    vtkRenderWindowInteractor*      m_interactor;
-    vtkKWImageIO*                   m_reader;
-    vtkKWImage*                     m_localVTKImage;
-    n2d::HeaderImporter*            m_headerImporter;
-    Wizard*                         m_parent;
-    n2d::DictionaryType*            m_importedDictionary;
-    n2d::DictionaryType*            m_dictionary;
     QTableWidget*                   m_headerEntries;
     QSlider*                        m_horizontalSlider;
-    QFont*                          m_font;
-
+    QLineEdit*                      m_openedFileName;
+    QLineEdit*                      m_openedFileSizes;
+    QVTKWidget*                     m_renderPreview;
+    vtkImageViewer2*                m_imageviewer;
+    vtkKWImageIO*                   m_reader;
+    vtkKWImage*                     m_localVTKImage;
+    n2d::DictionaryType*            m_importedDictionary;
+    n2d::DictionaryType*            m_dictionary;
     n2d::InputArgs*                 m_inputArgs;
     n2d::DicomHeaderArgs*           m_dicomHeaderArgs;
-
+    n2d::HeaderImporter*            m_headerImporter;
 
 private slots:
     bool loadInImage();

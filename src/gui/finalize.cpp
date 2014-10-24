@@ -17,6 +17,10 @@
 //  along with Nifti2Dicom.  If not, see <http://www.gnu.org/licenses/>.
 
 
+#include <QtCore/QCoreApplication>
+#include <QtCore/qglobal.h>
+
+#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
 #include <QtGui/QGridLayout>
 #include <QtGui/QFileDialog>
 #include <QtGui/QLineEdit>
@@ -27,7 +31,18 @@
 #include <QtGui/QTableWidgetItem>
 #include <QtGui/QHeaderView>
 #include <QtGui/QProgressBar>
-#include <QtCore/QCoreApplication>
+#else
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QTableWidget>
+#include <QtWidgets/QTableWidgetItem>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QProgressBar>
+#endif
 
 #include <n2dInputFilter.h>
 #include <n2dInstance.h>
@@ -73,8 +88,12 @@ finalize::finalize(QWidget* parent):QWizardPage(parent)
 	QStringList labels;
 	labels << tr("Tag") << tr("Value");
 	m_headerTable->setHorizontalHeaderLabels(labels);
+#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
 	m_headerTable->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
-	browselayout->addWidget(m_outDirLine,0,1);
+#else
+    m_headerTable->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+#endif
+    browselayout->addWidget(m_outDirLine,0,1);
 	browselayout->addWidget(browseFile,0,0);
 	
 	rightlayout->addLayout(browselayout,0,1);

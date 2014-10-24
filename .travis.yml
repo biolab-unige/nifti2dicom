@@ -8,11 +8,15 @@ env:
   - TRAVIS_BUILD_TYPE=Debug
   - TRAVIS_BUILD_TYPE=Release
 
+matrix:
+  fast_finish: true
+
 install:
   - sudo apt-get update
   - sudo apt-get install -y libqt4-dev libinsighttoolkit3-dev libtclap-dev libvtk5-dev libvtk5-qt4-dev libgdcm2-dev libfftw3-dev
 
 before_script:
+  - lsb_release -a
   - cmake --version
   - mkdir build
   - cd build

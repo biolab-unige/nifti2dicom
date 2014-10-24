@@ -1,13 +1,16 @@
 /*=========================================================================
 
-  Program:   KWImage - Kitware Image IO Library
-  Module:    $RCSfile: vtkKWImageIO.cxx,v $
+  Program:   Insight Segmentation & Registration Toolkit
+  Module:    vtkKWImageIO.cxx
+  Language:  C++
+  Date:      $Date$
+  Version:   $Revision$
 
-  Copyright (c) Kitware, Inc., Insight Consortium.  All rights reserved.
-  See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
+  Copyright (c) 2002 Insight Consortium. All rights reserved.
+  See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+     This software is distributed WITHOUT ANY WARRANTY; without even 
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
@@ -191,7 +194,9 @@ public:
 
 //----------------------------------------------------------------------------
 vtkStandardNewMacro( vtkKWImageIO );
-vtkCxxRevisionMacro(vtkKWImageIO, "$Revision: 1.1 $");
+#if (VTK_MAJOR_VERSION < 6)
+vtkCxxRevisionMacro(vtkKWImageIO, "$Revision: 1.5 $");
+#endif
 
 //----------------------------------------------------------------------------
 vtkKWImageIO::vtkKWImageIO()
@@ -229,7 +234,7 @@ void vtkKWImageIO::SetDirectory( const std::string & directory )
 void vtkKWImageIO::ReadImage()
 {
   // Find out the pixel type of the image in file
-  typedef itk::ImageIOBase::IOComponentType  PixelType;
+  typedef itk::ImageIOBase::IOComponentType  ScalarPixelType;
 
   itk::ImageIOBase::Pointer imageIO = 
     itk::ImageIOFactory::CreateImageIO( this->FileName.c_str(), 
@@ -238,9 +243,6 @@ void vtkKWImageIO::ReadImage()
   if( !imageIO )
     {
     std::cerr << "NO IMAGEIO WAS FOUND" << std::endl;
-	itk::ExceptionObject excp;
-    excp.SetDescription("Unable to open the requested Image");
-    throw excp;
     return;
     }
 
@@ -249,7 +251,7 @@ void vtkKWImageIO::ReadImage()
   imageIO->SetFileName( this->FileName.c_str() );
   imageIO->ReadImageInformation();
 
-  PixelType pixelType = imageIO->GetComponentType();
+  ScalarPixelType pixelType = imageIO->GetComponentType();
 
   // Use the pixel type to instantiate the appropriate reader
   switch( pixelType )
@@ -328,7 +330,7 @@ void vtkKWImageIO::ReadImage()
 void vtkKWImageIO::ReadImageSeries()
 {
   //Extract the series UID of the selected dicom image
-  typedef itk::ImageIOBase::IOComponentType  PixelType;
+  typedef itk::ImageIOBase::IOComponentType  ScalarPixelType;
 
   itk::GDCMImageIO::Pointer imageIO = 
                                    itk::GDCMImageIO::New();
@@ -342,7 +344,22 @@ void vtkKWImageIO::ReadImageSeries()
   // Now that we found the appropriate ImageIO class, ask it to 
   // read the meta data from the image file.
   imageIO->SetFileName( this->FileName.c_str() );
-  imageIO->ReadImageInformation();
+  try
+    {
+    imageIO->ReadImageInformation();
+    }
+  catch( itk::ExceptionObject & excp )
+    {
+    std::cerr << "Could not read: " << this->FileName.c_str() << std::endl;
+    std::cerr << excp << std::endl;
+    return; 
+    }
+  catch( std::exception & excp )
+    {
+    std::cerr << "Could not read: " << this->FileName.c_str() << std::endl;
+    std::cerr << excp.what() << std::endl;
+    return; 
+    }
 
   itk::MetaDataDictionary & dict = imageIO->GetMetaDataDictionary();
  
@@ -354,6 +371,10 @@ void vtkKWImageIO::ReadImageSeries()
     std::cerr << "Series UID not found: " << std::endl;
     return; 
     }
+
+  // This is needed to remove a extraneous terminator returned by
+  // ExposeMetaData
+  seriesIdentifier = seriesIdentifier.c_str();
 
   //Generate filenames of the DICOM series that belong
   //to the DICOM volume of the selected image  
@@ -367,7 +388,7 @@ void vtkKWImageIO::ReadImageSeries()
   fileNames = nameGenerator->GetFileNames( seriesIdentifier );
   this->SetSeriesFileNames( fileNames );
 
-  PixelType pixelType = imageIO->GetComponentType();
+  ScalarPixelType pixelType = imageIO->GetComponentType();
 
   // Use the pixel type to instantiate the appropriate reader
   switch( pixelType )
@@ -446,7 +467,7 @@ void vtkKWImageIO::ReadImageSeries()
 void vtkKWImageIO::ReadAndCastImage()
 {
   // Find out the pixel type of the image in file
-  typedef itk::ImageIOBase::IOComponentType  PixelType;
+  typedef itk::ImageIOBase::IOComponentType  ScalarPixelType;
 
   itk::ImageIOBase::Pointer imageIO = 
     itk::ImageIOFactory::CreateImageIO( this->FileName.c_str(), 
@@ -463,7 +484,7 @@ void vtkKWImageIO::ReadAndCastImage()
   imageIO->SetFileName( this->FileName.c_str() );
   imageIO->ReadImageInformation();
 
-  PixelType pixelType = imageIO->GetComponentType();
+  ScalarPixelType pixelType = imageIO->GetComponentType();
 
   // Use the pixel type to instantiate the appropriate reader
   switch( pixelType )
@@ -547,9 +568,9 @@ vtkKWImageIO::PixelType vtkKWImageIO::GetImagePixelType()
 // Write Image 
 void vtkKWImageIO::WriteImage()
 {
-  typedef itk::ImageIOBase::IOComponentType  PixelType;
+  typedef itk::ImageIOBase::IOComponentType  ScalarPixelType;
 
-  PixelType pixelType = this->ImageToBeWritten->GetITKScalarPixelType();
+  ScalarPixelType pixelType = this->ImageToBeWritten->GetITKScalarPixelType();
 
   // Use the pixel type to instantiate the appropriate reader
   switch( pixelType )

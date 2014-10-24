@@ -1,16 +1,20 @@
 /*=========================================================================
 
-  Program:   KWImage - Kitware Image IO Library
-  Module:    $RCSfile: vtkKWImage.h,v $
+  Program:   Insight Segmentation & Registration Toolkit
+  Module:    vtkKWImage.h
+  Language:  C++
+  Date:      $Date$
+  Version:   $Revision$
 
-  Copyright (c) Kitware, Inc., Insight Consortium.  All rights reserved.
-  See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
+  Copyright (c) 2002 Insight Consortium. All rights reserved.
+  See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+     This software is distributed WITHOUT ANY WARRANTY; without even 
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
+
 
 #ifndef __vtkKWImage_h
 #define __vtkKWImage_h
@@ -19,6 +23,7 @@
 #include "itkImageIOBase.h"
 
 #include "vtkObject.h"
+#include "vtkVersion.h"
 
 class vtkImageData;
 class vtkImageImport;
@@ -38,7 +43,11 @@ class vtkKWImage : public vtkObject
 
 public:
   static vtkKWImage* New();
+#if (VTK_MAJOR_VERSION < 6)
   vtkTypeRevisionMacro(vtkKWImage,vtkObject);
+#else
+  vtkTypeMacro(vtkKWImage,vtkObject);
+#endif
 
   typedef itk::ImageBase< 3 >                    ImageBaseType;
   typedef ImageBaseType::Pointer                 ImagePointer;

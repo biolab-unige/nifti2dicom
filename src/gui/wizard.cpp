@@ -17,9 +17,17 @@
 //  along with Nifti2Dicom.  If not, see <http://www.gnu.org/licenses/>.
 
 
+#include <QtCore/qglobal.h>
+#include <QtGui/QPixmap>
+
+#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
 #include <QtGui/QAbstractButton>
 #include <QtGui/QMessageBox>
-#include <QtGui/QPixmap>
+#else
+#include <QtWidgets/QAbstractButton>
+#include <QtWidgets/QMessageBox>
+#endif
+
 
 #include "wizard.h"
 #include <n2dInputImporter.h>
@@ -30,8 +38,8 @@ namespace gui{
 
 Wizard::Wizard(QWizard* parent):QWizard(parent)
 {
-    setWindowTitle(tr("QNifti2Dicom"));
-    this->setGeometry(10,10,1000,600);
+    setWindowTitle(tr("Nifti2Dicom"));
+    this->resize(1000,600);
     this->setButtonText(QWizard::FinishButton,"Do!");
 
     setOption(QWizard::HaveHelpButton,true);
@@ -68,11 +76,8 @@ void Wizard::showHelp()
             message = tr("This Dialog will contain information for the current step");
     }
 
-    QMessageBox::information(this, tr("QNifti2Dicom Help dialog"), message);
+    QMessageBox::information(this, tr("Nifti2Dicom Help dialog"), message);
 }
 
 }//namespace gui
 }//namespace n2d
-
-
-

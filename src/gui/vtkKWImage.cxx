@@ -1,16 +1,20 @@
 /*=========================================================================
 
-  Program:   KWImage - Kitware Image IO Library
-  Module:    $RCSfile: vtkKWImage.cxx,v $
+  Program:   Insight Segmentation & Registration Toolkit
+  Module:    vtkKWImage.cxx
+  Language:  C++
+  Date:      $Date$
+  Version:   $Revision$
 
-  Copyright (c) Kitware, Inc., Insight Consortium.  All rights reserved.
-  See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
+  Copyright (c) 2002 Insight Consortium. All rights reserved.
+  See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+     This software is distributed WITHOUT ANY WARRANTY; without even 
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
+
 
 #include "vtkKWImage.h"
 
@@ -91,7 +95,9 @@ public:
 
 //----------------------------------------------------------------------------
 vtkStandardNewMacro( vtkKWImage );
+#if (VTK_MAJOR_VERSION < 6)
 vtkCxxRevisionMacro(vtkKWImage, "$Revision: 1.1 $");
+#endif
 
 //----------------------------------------------------------------------------
 vtkKWImage::vtkKWImage()
