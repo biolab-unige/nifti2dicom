@@ -37,4 +37,4 @@ To build Nifti2Dicom you need:
 
 [![Build Status](https://travis-ci.org/biolab-unige/nifti2dicom.png?branch=master)](https://travis-ci.org/biolab-unige/nifti2dicom)
 [![GitHub version](https://badge.fury.io/gh/biolab-unige%2Fnifti2dicom.png)](http://badge.fury.io/gh/biolab-unige%2Fnifti2dicom)
-[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.10291.png)](http://dx.doi.org/10.5281/zenodo.10291)
+[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.12430.png)](http://dx.doi.org/10.5281/zenodo.12430)
