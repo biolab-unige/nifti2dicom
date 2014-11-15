@@ -1,3 +1,9 @@
+nifti2dicom (0.4.9-2~0r1) UNRELEASED; urgency=medium
+
+  * Add nifti2dicom-dbg package.
+
+ -- Daniele E. Domenichelli <daniele.domenichelli@gmail.com>  Sat, 15 Nov 2014 02:18:23 +0100
+
 nifti2dicom (0.4.9-1) unstable; urgency=medium
 
   * New upstream release. (Closes: #764833)

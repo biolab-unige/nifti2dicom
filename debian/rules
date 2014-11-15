@@ -8,3 +8,6 @@ include /usr/share/cdbs/1/rules/debhelper.mk
 
 CFLAGS+=$(CPPFLAGS)
 CXXFLAGS+=$(CPPFLAGS)
+
+override_dh_strip:
+	dh_strip --dbg-package=nifti2dicom-dbg
