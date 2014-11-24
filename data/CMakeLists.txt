@@ -1,5 +1,6 @@
 if(UNIX AND NOT APPLE)
     install(FILES qnifti2dicom.desktop DESTINATION share/applications)
     install(FILES qnifti2dicom.appdata.xml DESTINATION share/appdata)
+    install(FILES nifti2dicom.metainfo.xml DESTINATION share/appdata)
     add_subdirectory(icons)
 endif()
