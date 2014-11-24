@@ -1,4 +1,4 @@
-#  This file is part of Nifti2Dicom, is an open source converter from 
+#  This file is part of Nifti2Dicom, is an open source converter from
 #  3D NIfTI images to 2D DICOM series.
 #
 #  Copyright (C) 2008, 2009, 2010 Daniele E. Domenichelli <daniele.domenichelli@gmail.com>
