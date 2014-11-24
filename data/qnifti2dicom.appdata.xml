@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component type="desktop">
+  <id>qnifti2dicom.desktop</id>
+  <project_license>GPL-3.0+</project_license>
+  <name>Nifti2Dicom</name>
+  <summary>Convert 3D medical images to DICOM 2D series</summary>
+  <description>
+    <p>
+      Nifti2Dicom is a convertion tool that converts 3D NIfTI files (and
+      other formats supported by ITK, including Analyze, MetaImage Nrrd
+      and VTK) to DICOM.
+    </p>
+    <p>
+      Unlike other conversion tools, it can import a DICOM file that is
+      used to import the patient and study DICOM tags, and allows you to
+      edit the accession number and other DICOM tags, in order to create
+      a valid DICOM that can be imported in a PACS.
+    </p>
+  </description>
+  <url type="homepage">https://travis-ci.org/biolab-unige/</url>
+  <url type="bugtracker">https://travis-ci.org/biolab-unige/issues/</url>
+  <screenshots>
+    <screenshot>
+      <image>http://www.bio.dist.unige.it/images/n2d/mainpage.png</image>
+      <caption>Main Page</caption>
+    </screenshot>
+    <screenshot type="default">
+      <image>http://www.bio.dist.unige.it/images/n2d/mainpage_vol_dcm.png</image>
+      <caption>Main Page (Image and Dicom Header loaded)</caption>
+    </screenshot>
+    <screenshot>
+      <image>http://www.bio.dist.unige.it/images/n2d/editingdcm.png</image>
+      <caption>Dicom Tags Editing</caption>
+    </screenshot>
+    <screenshot>
+      <image>http://www.bio.dist.unige.it/images/n2d/finalpage.png</image>
+      <caption>Final Page</caption>
+    </screenshot>
+  </screenshots>
+  <provides>
+    <binary>qnifti2dicom</binary>
+  </provides>
+</component>
