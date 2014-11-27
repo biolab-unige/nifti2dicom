@@ -6,6 +6,7 @@ nifti2dicom (0.4.10-1~0r1) UNRELEASED; urgency=medium
   * Fix dep5-copyright-license-name-not-unique lintian warning.
   * Change VTK b-d to libvtk6-qt-dev | libvtk6-dev (<< 6.2) |
     libvtk5-qt4-dev (Closes: #793607)
+  * Add appstream files to nifti2dicom-data.
 
  -- Daniele E. Domenichelli <daniele.domenichelli@gmail.com>  Sat, 15 Nov 2014 02:18:23 +0100
 
