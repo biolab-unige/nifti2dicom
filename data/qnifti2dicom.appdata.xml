@@ -38,7 +38,21 @@
       <caption>Final Page</caption>
     </screenshot>
   </screenshots>
+  <developer_name>BIOLAB, University of Genoa, Italy</developer_name>
   <provides>
+    <binary>nifti2dicom</binary>
     <binary>qnifti2dicom</binary>
   </provides>
+  <releases>
+    <release version="0.4.9" timestamp="1414137387" />
+    <release version="0.4.8" timestamp="1401816865" />
+    <release version="0.4.7" timestamp="1388788427" />
+    <release version="0.4.6" timestamp="1370523724" />
+    <release version="0.4.5" timestamp="1343725532" />
+    <release version="0.4.4" timestamp="1343562458" />
+    <release version="0.4.3" timestamp="1340878274" />
+    <release version="0.4.2" timestamp="1340708163" />
+    <release version="0.4.1" timestamp="1326419136" />
+    <release version="0.4.0" timestamp="1326384546" />
+  </releases>
 </component>
