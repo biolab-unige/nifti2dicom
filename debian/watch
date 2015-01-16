@@ -1,2 +1,2 @@
 version=3
-http://githubredir.debian.net/github/biolab-unige/nifti2dicom/v(.*).tar.gz
+https://github.com/biolab-unige/nifti2dicom/releases .*/v(\d[\d\.]*)\.(?:tar.gz|tar.bz2|tar.xz)
