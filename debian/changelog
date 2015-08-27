@@ -1,5 +1,6 @@
-nifti2dicom (0.4.9-2~0r4) UNRELEASED; urgency=medium
+nifti2dicom (0.4.10-1~0r1) UNRELEASED; urgency=medium
 
+  * New upstream release.
   * Add nifti2dicom-dbg package.
   * Use github instead of githubredir in watch file.
   * Fix dep5-copyright-license-name-not-unique lintian warning.
