@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component type="desktop">
+  <id>qnifti2dicom.desktop</id>
+  <name>Nifti2Dicom</name>
+  <project_license>GPL-3.0+</project_license>
+  <metadata_license>CC0-1.0</metadata_license>
+  <summary>Convert 3D medical images to DICOM 2D series</summary>
+  <description>
+    <p>
+      Nifti2Dicom is a convertion tool that converts 3D NIfTI files (and
+      other formats supported by ITK, including Analyze, MetaImage Nrrd
+      and VTK) to DICOM.
+    </p>
+    <p>
+      Unlike other conversion tools, it can import a DICOM file that is
+      used to import the patient and study DICOM tags, and allows you to
+      edit the accession number and other DICOM tags, in order to create
+      a valid DICOM that can be imported in a PACS.
+    </p>
+  </description>
+  <url type="homepage">https://travis-ci.org/biolab-unige/</url>
+  <url type="bugtracker">https://travis-ci.org/biolab-unige/issues/</url>
+  <screenshots>
+    <screenshot>
+      <image>http://www.bio.dist.unige.it/images/n2d/mainpage.png</image>
+      <caption>Main Page</caption>
+    </screenshot>
+    <screenshot type="default">
+      <image>http://www.bio.dist.unige.it/images/n2d/mainpage_vol_dcm.png</image>
+      <caption>Main Page (Image and Dicom Header loaded)</caption>
+    </screenshot>
+    <screenshot>
+      <image>http://www.bio.dist.unige.it/images/n2d/editingdcm.png</image>
+      <caption>Dicom Tags Editing</caption>
+    </screenshot>
+    <screenshot>
+      <image>http://www.bio.dist.unige.it/images/n2d/finalpage.png</image>
+      <caption>Final Page</caption>
+    </screenshot>
+  </screenshots>
+  <developer_name>BIOLAB, University of Genoa, Italy</developer_name>
+  <provides>
+    <binary>nifti2dicom</binary>
+    <binary>qnifti2dicom</binary>
+  </provides>
+  <releases>
+    <release version="0.4.10" timestamp="1440689751" />
+    <release version="0.4.9" timestamp="1414137387" />
+    <release version="0.4.8" timestamp="1401816865" />
+    <release version="0.4.7" timestamp="1388788427" />
+    <release version="0.4.6" timestamp="1370523724" />
+    <release version="0.4.5" timestamp="1343725532" />
+    <release version="0.4.4" timestamp="1343562458" />
+    <release version="0.4.3" timestamp="1340878274" />
+    <release version="0.4.2" timestamp="1340708163" />
+    <release version="0.4.1" timestamp="1326419136" />
+    <release version="0.4.0" timestamp="1326384546" />
+  </releases>
+</component>
