@@ -1,8 +1,10 @@
-nifti2dicom (0.4.9-2~0r3) UNRELEASED; urgency=medium
+nifti2dicom (0.4.9-2~0r4) UNRELEASED; urgency=medium
 
   * Add nifti2dicom-dbg package.
   * Use github instead of githubredir in watch file.
   * Fix dep5-copyright-license-name-not-unique lintian warning.
+  * Change VTK b-d to libvtk6-qt-dev | libvtk6-dev (<< 6.2) |
+    libvtk5-qt4-dev (Closes: #793607)
 
  -- Daniele E. Domenichelli <daniele.domenichelli@gmail.com>  Sat, 15 Nov 2014 02:18:23 +0100
 
