@@ -44,6 +44,7 @@
     <binary>qnifti2dicom</binary>
   </provides>
   <releases>
+    <release version="0.4.10" timestamp="1440689751" />
     <release version="0.4.9" timestamp="1414137387" />
     <release version="0.4.8" timestamp="1401816865" />
     <release version="0.4.7" timestamp="1388788427" />
