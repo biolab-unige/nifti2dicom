@@ -1,6 +1,6 @@
 --- a/debian/control
 +++ b/debian/control
-@@ -5,7 +5,7 @@ Maintainer: Daniele E. Domenichelli <daniele.domenichelli@gmail.com>
+@@ -5,7 +5,7 @@ Maintainer: Daniele E. Domenichelli <ddomenichelli@drdanz.it>
  Build-Depends: debhelper (>= 7.3.16),
   cdbs, cmake (>= 2.6.4), libqt4-dev (>= 4.4),
   libinsighttoolkit4-dev (>= 4.3.0) [i386 amd64] | libinsighttoolkit3-dev,

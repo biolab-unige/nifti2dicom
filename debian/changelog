@@ -7,8 +7,9 @@ nifti2dicom (0.4.10-1~0r1) UNRELEASED; urgency=medium
   * Change VTK b-d to libvtk6-qt-dev | libvtk6-dev (<< 6.2) |
     libvtk5-qt4-dev (Closes: #793607)
   * Add appstream files to nifti2dicom-data.
+  * Update email address.
 
- -- Daniele E. Domenichelli <daniele.domenichelli@gmail.com>  Sat, 15 Nov 2014 02:18:23 +0100
+ -- Daniele E. Domenichelli <ddomenichelli@drdanz.it>  Tue, 27 Oct 2015 17:33:00 +0100
 
 nifti2dicom (0.4.9-1) unstable; urgency=medium
 

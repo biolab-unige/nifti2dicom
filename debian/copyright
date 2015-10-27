@@ -119,7 +119,7 @@ License: BSD-4-clause-VTK
 
 
 Files: debian/*
-Copyright: Copyright (C) Daniele E. Domenichelli <daniele.domenichelli@gmail.com> 
+Copyright: Copyright (C) Daniele E. Domenichelli <ddomenichelli@drdanz.it>
 License: GPL-2+
  This program is free software; you can redistribute it
  and/or modify it under the terms of the GNU General Public
