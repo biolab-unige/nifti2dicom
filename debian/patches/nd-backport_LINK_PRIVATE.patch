@@ -1,0 +1,11 @@
+--- a/src/core/CMakeLists.txt
++++ b/src/core/CMakeLists.txt
+@@ -59,7 +59,7 @@ set(nifti2dicom_SOURCES nifti2dicom.cxx)
+ 
+ # nifti2dicom_core target
+ add_library(nifti2dicom_core STATIC ${nifti2dicom_core_SOURCES} ${nifti2dicom_core_HEADERS})
+-target_link_libraries(nifti2dicom_core LINK_PRIVATE ${ITK_LIBRARIES})
++target_link_libraries(nifti2dicom_core ${ITK_LIBRARIES})
+ 
+ 
+ # nifti2dicom target

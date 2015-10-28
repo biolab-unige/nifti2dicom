@@ -4,8 +4,8 @@
   libinsighttoolkit4-dev (>= 4.3.0) [i386 amd64] | libinsighttoolkit3-dev,
   libfftw3-dev,
   libtclap-dev (>= 1.2.0),
-- libvtk6-dev | libvtk5-qt4-dev
+- libvtk6-qt-dev | libvtk6-dev (<< 6.2) | libvtk5-qt4-dev
 + libvtk6-dev, libpython2.7-dev, libqt4-opengl-dev
- Standards-Version: 3.9.5
+ Standards-Version: 3.9.6
  Homepage: https://github.com/biolab-unige/nifti2dicom
  Vcs-Git: git://anonscm.debian.org/pkg-exppsy/nifti2dicom.git

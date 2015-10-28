@@ -1,10 +1,10 @@
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -46,6 +46,7 @@ include(${ITK_USE_FILE})
+@@ -58,6 +58,7 @@ else()
+     #Check Qt4 Library [Qt4] (4.4.0)
+     set(QT_USE_IMPORTED_TARGETS TRUE)
+     find_package(Qt4 4.4.0 REQUIRED)
++    include(${QT_USE_FILE})
  
- #Check Qt4 Library [Qt4] (4.4.0)
- find_package(Qt4 4.4.0 REQUIRED)
-+include(${QT_USE_FILE})
+ endif()
  
- #Check VTK Library [Visualization ToolKit]
- find_package(VTK REQUIRED)

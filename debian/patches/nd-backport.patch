@@ -2,13 +2,13 @@
 +++ b/debian/control
 @@ -5,7 +5,7 @@ Maintainer: Daniele E. Domenichelli <ddomenichelli@drdanz.it>
  Build-Depends: debhelper (>= 7.3.16),
-  cdbs, cmake (>= 2.6.4), libqt4-dev (>= 4.4),
+  cdbs, cmake (>= 2.6.4), qtbase5-dev | libqt4-dev (>= 4.4),
   libinsighttoolkit4-dev (>= 4.3.0) [i386 amd64] | libinsighttoolkit3-dev,
 - libfftw3-dev,
-+ libfftw3-dev, libgdcm2-dev
++ libfftw3-dev, libgdcm2-dev,
   libtclap-dev (>= 1.2.0),
-  libvtk6-dev | libvtk5-qt4-dev
- Standards-Version: 3.9.5
+  libvtk6-qt-dev | libvtk6-dev (<< 6.2) | libvtk5-qt4-dev
+ Standards-Version: 3.9.6
 --- /dev/null
 +++ b/debian/patches/series
 @@ -0,0 +1 @@
