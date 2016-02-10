@@ -88,7 +88,7 @@ bool Instance::Update(void)
 
 
 
-//WARNING In futuro questa parte potrebbe essere inutile
+//WARNING In the future this part could be useless
 //BEGIN ITK Tags
 
     //BEGIN ITK_NumberOfDimensions
