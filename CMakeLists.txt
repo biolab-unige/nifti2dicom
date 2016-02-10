@@ -27,8 +27,8 @@ project(Nifti2Dicom)
 
 set(Nifti2Dicom_MAJOR_VERSION "0")
 set(Nifti2Dicom_MINOR_VERSION "4")
-set(Nifti2Dicom_PATCH_VERSION "10")
-set(Nifti2Dicom_VERSION "0.4.10")
+set(Nifti2Dicom_PATCH_VERSION "11")
+set(Nifti2Dicom_VERSION "0.4.11")
 set(Nifti2Dicom_INTERNAL_VERSION "${Nifti2Dicom_MAJOR_VERSION}.${Nifti2Dicom_MINOR_VERSION}.${Nifti2Dicom_PATCH_VERSION}")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
