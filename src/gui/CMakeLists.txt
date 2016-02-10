@@ -51,17 +51,22 @@ if(Nifti2Dicom_QT_VERSION EQUAL 5)
     qt5_wrap_cpp(qnifti2dicom_MOC_SRCS ${qnifti2dicom_MOC_HDR})
     qt5_add_resources(qnifti2dicom_QRC_SRCS ${qnifti2dicom_QRC_RCC})
 else()
+    include_directories(${QT_INCLUDE_DIR}
+                        ${QT_QTCORE_INCLUDE_DIR}
+                        ${QT_QTGUI_INCLUDE_DIR})
+    add_definitions(${QT_DEFINITIONS})
+
     qt4_wrap_cpp(qnifti2dicom_MOC_SRCS ${qnifti2dicom_MOC_HDR})
     qt4_add_resources(qnifti2dicom_QRC_SRCS ${qnifti2dicom_QRC_RCC})
 endif()
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR}
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../core
-                    ${QT_INCLUDE_DIR}
-                    ${QT_QTCORE_INCLUDE_DIR}
-                    ${QT_QTGUI_INCLUDE_DIR})
+                    ${CMAKE_CURRENT_SOURCE_DIR}/../core)
 
-add_definitions(${QT_DEFINITIONS})
+if(NOT Nifti2Dicom_QT_VERSION EQUAL 4)
+
+endif()
+
 
 add_executable(qnifti2dicom WIN32 MACOSX_BUNDLE
                             ${qnifti2dicom_SOURCES}
@@ -74,9 +79,16 @@ add_executable(qnifti2dicom WIN32 MACOSX_BUNDLE
 # qnifti2dicom target
 target_link_libraries(qnifti2dicom nifti2dicom_core
                                    ${ITK_LIBRARIES}
-                                   ${VTK_LIBRARIES}
-                                   ${QT_QTCORE_LIBRARY}
-                                   ${QT_QTGUI_LIBRARY})
+                                   ${VTK_LIBRARIES})
+if(Nifti2Dicom_QT_VERSION EQUAL 5)
+    target_link_libraries(qnifti2dicom Qt5::Core
+                                       Qt5::Gui
+                                       Qt5::Widgets)
+else()
+    target_link_libraries(qnifti2dicom ${QT_QTCORE_LIBRARY}
+                                       ${QT_QTGUI_LIBRARY})
+endif()
+
 
 if(MSVC AND CMAKE_VERSION VERSION_LESS 2.8.11)
     target_link_libraries(qnifti2dicom ${QT_QTMAIN_LIBRARY})
