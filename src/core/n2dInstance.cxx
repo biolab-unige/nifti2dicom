@@ -21,6 +21,7 @@
 #include "n2dToolsMetaDataDictionary.h"
 #include <iomanip>
 #include <vector>
+#include <sstream>
 
 
 namespace n2d {
@@ -59,7 +60,7 @@ bool Instance::Update(void)
 //END Image info
 
 
-    itksys_ios::ostringstream value;
+    std::ostringstream value;
     value << std::dec << std::setprecision(15);
 
     for (unsigned int i=0; i<nbSlices; i++)
