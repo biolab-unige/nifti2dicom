@@ -1,4 +1,4 @@
-nifti2dicom (0.4.10-1~0r1) UNRELEASED; urgency=medium
+nifti2dicom (0.4.11-1~0r1) UNRELEASED; urgency=medium
 
   * New upstream release.
   * Add nifti2dicom-dbg package.
