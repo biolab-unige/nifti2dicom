@@ -1,4 +1,4 @@
-Nifti2Dicom (UNRELEASED) 0.4.11
+Nifti2Dicom (2016-03-01) 0.4.11
 ===============================
 
 - Fix build with ITK 4.9 (Issue #32)
