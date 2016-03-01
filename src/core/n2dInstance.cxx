@@ -1,7 +1,7 @@
 //  This file is part of Nifti2Dicom, is an open source converter from 
 //  3D NIfTI images to 2D DICOM series.
 //
-//  Copyright (C) 2008, 2009, 2010 Daniele E. Domenichelli <daniele.domenichelli@gmail.com>
+//  Copyright (C) 2008, 2009, 2010 Daniele E. Domenichelli <ddomenichelli@drdanz.it>
 //
 //  Nifti2Dicom is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 #include "n2dToolsMetaDataDictionary.h"
 #include <iomanip>
 #include <vector>
+#include <sstream>
 
 
 namespace n2d {
@@ -59,7 +60,7 @@ bool Instance::Update(void)
 //END Image info
 
 
-    itksys_ios::ostringstream value;
+    std::ostringstream value;
     value << std::dec << std::setprecision(15);
 
     for (unsigned int i=0; i<nbSlices; i++)
@@ -87,7 +88,7 @@ bool Instance::Update(void)
 
 
 
-//WARNING In futuro questa parte potrebbe essere inutile
+//WARNING In the future this part could be useless
 //BEGIN ITK Tags
 
     //BEGIN ITK_NumberOfDimensions

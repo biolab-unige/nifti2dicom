@@ -1,7 +1,7 @@
 #  This file is part of Nifti2Dicom, is an open source converter from
 #  3D NIfTI images to 2D DICOM series.
 #
-#  Copyright (C) 2008, 2009, 2010 Daniele E. Domenichelli <daniele.domenichelli@gmail.com>
+#  Copyright (C) 2008, 2009, 2010 Daniele E. Domenichelli <ddomenichelli@drdanz.it>
 #
 #  Nifti2Dicom is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -27,8 +27,8 @@ project(Nifti2Dicom)
 
 set(Nifti2Dicom_MAJOR_VERSION "0")
 set(Nifti2Dicom_MINOR_VERSION "4")
-set(Nifti2Dicom_PATCH_VERSION "10")
-set(Nifti2Dicom_VERSION "0.4.10")
+set(Nifti2Dicom_PATCH_VERSION "11")
+set(Nifti2Dicom_VERSION "0.4.11")
 set(Nifti2Dicom_INTERNAL_VERSION "${Nifti2Dicom_MAJOR_VERSION}.${Nifti2Dicom_MINOR_VERSION}.${Nifti2Dicom_PATCH_VERSION}")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
