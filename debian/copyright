@@ -3,7 +3,7 @@ Upstream-Name: nifti2dicom
 Source: https://github.com/biolab-unige/nifti2dicom
 
 Files: *
-Copyright: Copyright (C) 2008, 2009, 2010 Daniele E. Domenichelli <daniele.domenichelli@gmail.com>
+Copyright: Copyright (C) 2008, 2009, 2010, 2014 Daniele E. Domenichelli <ddomenichelli@drdanz.it>
            Copyright (C) 2010, 2012 Gabriele Arnulfo <gabriele.arnulfo@dist.unige.it>
 License: GPL-3+
  Nifti2Dicom is free software: you can redistribute it and/or
