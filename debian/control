@@ -10,8 +10,8 @@ Build-Depends: debhelper (>= 7.3.16),
  libvtk6-qt-dev | libvtk6-dev (<< 6.2) | libvtk5-qt4-dev
 Standards-Version: 3.9.6
 Homepage: https://github.com/biolab-unige/nifti2dicom
-Vcs-Git: git://anonscm.debian.org/pkg-exppsy/nifti2dicom.git
-Vcs-Browser: http://anonscm.debian.org/gitweb/?p=pkg-exppsy/nifti2dicom.git
+Vcs-Git: https://anonscm.debian.org/git/pkg-exppsy/nifti2dicom.git
+Vcs-Browser: https://anonscm.debian.org/cgit/pkg-exppsy/nifti2dicom.git
 
 Package: nifti2dicom-data
 Architecture: all

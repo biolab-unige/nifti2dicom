@@ -9,6 +9,7 @@ nifti2dicom (0.4.11-1~0r1) UNRELEASED; urgency=medium
   * Add appstream files to nifti2dicom-data.
   * Update email address.
   * Refresh and fix NeuroDebian backport patches.
+  * Fix vcs-field-uses-insecure-uri vcs-browser lintian warnings.
 
  -- Daniele E. Domenichelli <ddomenichelli@drdanz.it>  Wed, 28 Oct 2015 22:46:01 +0100
 
