@@ -3,7 +3,7 @@ Nifti2Dicom
 
 Convert 3D medical images to DICOM 2D series
 
-Nifti2Dicom is a convertion tool that converts 3D NIfTI files (and other
+Nifti2Dicom is a conversion tool that converts 3D NIfTI files (and other
 formats supported by ITK, including Analyze, MetaImage Nrrd and VTK)
 to DICOM.
 Unlike other conversion tools, it can import a DICOM file that is used
