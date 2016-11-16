@@ -42,7 +42,7 @@ set(qnifti2dicom_QRC_RCC resources.qrc)
 if(MSVC)
     set(qnifti2dicom_RCS qnifti2dicom.rc)
 elseif(APPLE)
-    set(MACOSX_BUNDLE_ICON_FILE "${CMAKE_SOURCE_DIR}/data/icons/qnifti2dicom.icns")
+    set(MACOSX_BUNDLE_ICON_FILE "qnifti2dicom")
     set_source_files_properties("${CMAKE_SOURCE_DIR}/data/icons/qnifti2dicom.icns" PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
     set(qnifti2dicom_RCS "${CMAKE_SOURCE_DIR}/data/icons/qnifti2dicom.icns")
 endif()
@@ -62,11 +62,6 @@ endif()
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR}
                     ${CMAKE_CURRENT_SOURCE_DIR}/../core)
-
-if(NOT Nifti2Dicom_QT_VERSION EQUAL 4)
-
-endif()
-
 
 add_executable(qnifti2dicom WIN32 MACOSX_BUNDLE
                             ${qnifti2dicom_SOURCES}
@@ -105,11 +100,11 @@ install(TARGETS qnifti2dicom
         BUNDLE DESTINATION .)
 
 if(WIN32)
-    set(APP "\${CMAKE_INSTALL_PREFIX}/bin/qnifti2dicom.exe")
+    set(APP "bin/qnifti2dicom.exe")
 elseif(APPLE)
-    set(APP "\${CMAKE_INSTALL_PREFIX}/qnifti2dicom.app")
+    set(APP "qnifti2dicom.app")
 else()
-    set(APP "\${CMAKE_INSTALL_PREFIX}/bin/qnifti2dicom")
+    set(APP "bin/qnifti2dicom")
 endif()
 
 set(DIRS ${QT_LIBRARY_DIR} ${QT_BINARY_DIR})
@@ -136,7 +131,19 @@ if(TARGET vtkCommonCore)
     endforeach()
 endif()
 
-if(WIN32 OR APPLE)
-    install(CODE "include(BundleUtilities)\n  fixup_bundle(\"${APP}\" \"\" \"${DIRS}\")"
-            COMPONENT Runtime)
+if (WIN32 OR APPLE)
+  if(Nifti2Dicom_QT_VERSION EQUAL 5)
+    if(APPLE)
+      set(QT_PLUGINS  "qcocoa")
+    endif()
+    if(WIN32)
+      set(QT_PLUGINS  "qwindows")
+    endif()
+
+    include(DeployQt5)
+    INSTALL_QT5_EXECUTABLE("${APP}" "${QT_PLUGINS}" "" "${DIRS}" "" "" Runtime)
+  else()
+    include(DeployQt4)
+    INSTALL_QT4_EXECUTABLE("${APP}" "" "" "${DIRS}" "" "" Runtime)
+  endif()
 endif()
